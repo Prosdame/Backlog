@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steam Backlog</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0e141b; color: #c6d4df; margin: 0; padding: 20px; }
+    h1 { color: #ffffff; text-align: center; margin-bottom: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: #1b2838; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #2a475e; }
+    th { background-color: #171a21; color: #66c0f4; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+    tr:hover { background-color: #213245; }
+    .badge-discount { background: #4c6b22; color: #a4d007; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+    .status { font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Steam Backlog</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Gioco</th>
+          <th>ID</th>
+          <th>Stato / Prezzo</th>
+          <th>Sconto</th>
+        </tr>
+      </thead>
+      <tbody id="backlog-body">
+        <tr><td colspan="4" style="text-align:center;">Caricamento dati...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function loadBacklog() {
+      try {
+        const response = await fetch('./games.json');
+        const games = await response.json();
+        const tbody = document.getElementById('backlog-body');
+        tbody.innerHTML = '';
+
+        games.forEach(game => {
+          const tr = document.createElement('tr');
+          const hasDiscount = game.discount && game.discount !== '0%' && game.discount !== 'N/D';
+          
+          tr.innerHTML = `
+            <td style="color: #fff; font-weight: bold;">${game.title}</td>
+            <td style="color: #66c0f4;">${game.id}</td>
+            <td class="status">${game.status || 'N/D'}</td>
+            <td>${hasDiscount ? `<span class="badge-discount">-${game.discount}</span>` : (game.discount || '0%')}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        document.getElementById('backlog-body').innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Errore durante il caricamento dei dati.</td></tr>';
+      }
+    }
+    loadBacklog();
+  </script>
+</body>
+</html>
