@@ -9,8 +9,8 @@ def fetch_wishlist_games(steam_id):
     page = 0
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'X-Requested-With': 'XMLHttpRequest',
         'Referer': f'https://store.steampowered.com/wishlist/profiles/{steam_id}/',
         'Cookie': 'wants_mature_content=1; birthtime=0; lastagecheckage=1-0-1990; timezoneOffset=3600,0'
     }
@@ -23,7 +23,8 @@ def fetch_wishlist_games(steam_id):
                 try:
                     data = res.json()
                 except json.JSONDecodeError:
-                    print(f"[Wishlist] Risposta non JSON alla pagina {page}. Interruzione ciclo.")
+                    if page == 0:
+                        print("[Wishlist Errore] Steam ha restituito HTML anziché JSON. Verifica che la Wishlist nel tuo profilo Steam sia impostata su PUBBLICA.")
                     break
                     
                 if not data or isinstance(data, list) or (isinstance(data, dict) and data.get("success") == 2):
@@ -35,10 +36,10 @@ def fetch_wishlist_games(steam_id):
                 page += 1
                 time.sleep(1.5)
             else:
-                print(f"[Wishlist] HTTP Status {res.status_code} alla pagina {page}")
+                print(f"[Wishlist] Status HTTP {res.status_code} alla pagina {page}")
                 break
         except Exception as e:
-            print(f"[Wishlist] Errore durante il recupero (pagina {page}): {e}")
+            print(f"[Wishlist] Errore alla pagina {page}: {e}")
             break
             
     return wishlist_games
