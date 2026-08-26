@@ -1,5 +1,26 @@
 [
-  { "id": 1097200, "title": "12 Minutes", "hype": 3 },
-  { "id": 1182900, "title": "A Plague Tale: Requiem", "hype": 5 },
-  { "id": 427410, "title": "Abiotic Factor", "hype": 4 }
+  {
+    "id": 1097200,
+    "title": "12 Minutes",
+    "hype": 3,
+    "status": "€7,13",
+    "price": "€7,13",
+    "discount": "70%"
+  },
+  {
+    "id": 1182900,
+    "title": "A Plague Tale: Requiem",
+    "hype": 5,
+    "status": "€49,99",
+    "price": "€49,99",
+    "discount": "0%"
+  },
+  {
+    "id": 427410,
+    "title": "Abiotic Factor",
+    "hype": 4,
+    "status": "€33,99",
+    "price": "€33,99",
+    "discount": "0%"
+  }
 ]
