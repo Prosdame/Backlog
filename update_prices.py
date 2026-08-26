@@ -9,27 +9,36 @@ def fetch_wishlist_games(steam_id):
     page = 0
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'application/json'
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8',
+        'Referer': f'https://store.steampowered.com/wishlist/profiles/{steam_id}/',
+        'Cookie': 'wants_mature_content=1; birthtime=0; lastagecheckage=1-0-1990; timezoneOffset=3600,0'
     }
     
     while True:
         url = f"https://store.steampowered.com/wishlist/profiles/{steam_id}/wishlistdata/?p={page}"
         try:
-            res = requests.get(url, headers=headers, timeout=10)
+            res = requests.get(url, headers=headers, timeout=12)
             if res.status_code == 200:
-                data = res.json()
-                # Se la pagina è vuota o non valida, abbiamo finito le pagine della wishlist
+                try:
+                    data = res.json()
+                except json.JSONDecodeError:
+                    print(f"[Wishlist] Risposta non JSON alla pagina {page}. Interruzione ciclo.")
+                    break
+                    
                 if not data or isinstance(data, list) or (isinstance(data, dict) and data.get("success") == 2):
                     break
+                
                 for app_id, game_info in data.items():
                     if isinstance(game_info, dict) and 'name' in game_info:
                         wishlist_games[int(app_id)] = game_info.get('name', f"App {app_id}")
                 page += 1
-                time.sleep(1)
+                time.sleep(1.5)
             else:
+                print(f"[Wishlist] HTTP Status {res.status_code} alla pagina {page}")
                 break
         except Exception as e:
-            print(f"Errore durante il recupero wishlist (pagina {page}): {e}")
+            print(f"[Wishlist] Errore durante il recupero (pagina {page}): {e}")
             break
             
     return wishlist_games
@@ -76,12 +85,11 @@ def fetch_steam_info(app_id):
         except Exception as e:
             print(f"[Tentativo {attempt+1}] Errore ID {app_id}: {e}")
         
-        time.sleep(3)
+        time.sleep(2)
         
     return {"status": "Errore API", "price": "N/D", "discount": "N/D"}
 
 def main():
-    # 1. Carica i giochi già presenti in games.json
     try:
         with open('games.json', 'r', encoding='utf-8') as f:
             games = json.load(f)
@@ -90,7 +98,6 @@ def main():
 
     existing_ids = {g['id'] for g in games}
 
-    # 2. Sincronizza dalla Wishlist di Steam
     print(f"Sincronizzazione Wishlist per Steam ID: {STEAM_ID}...")
     wishlist = fetch_wishlist_games(STEAM_ID)
     
@@ -107,7 +114,6 @@ def main():
             
     print(f"Wishlist letta ({len(wishlist)} giochi trovati, {new_count} nuovi aggiunti).")
 
-    # 3. Aggiorna prezzi e dati per l'intero catalogo
     for game in games:
         print(f"Aggiornamento: {game.get('title')} ({game.get('id')})")
         info = fetch_steam_info(game['id'])
@@ -116,7 +122,6 @@ def main():
         game['discount'] = info['discount']
         time.sleep(2)
 
-    # 4. Salva il file JSON aggiornato
     with open('games.json', 'w', encoding='utf-8') as f:
         json.dump(games, f, indent=2, ensure_ascii=False)
 
