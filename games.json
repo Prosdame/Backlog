@@ -22,5 +22,133 @@
     "status": "€33,99",
     "price": "€33,99",
     "discount": "0%"
+  },
+  {
+    "id": 435881,
+    "title": "Fallout 4 Far Harbor",
+    "hype": 3,
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "0%"
+  },
+  {
+    "id": 490650,
+    "title": "Fallout 4 Nuka-World",
+    "hype": 3,
+    "status": "€9,99",
+    "price": "€9,99",
+    "discount": "0%"
+  },
+  {
+    "id": 541200,
+    "title": "GTTOD",
+    "hype": 3,
+    "status": "€30,49",
+    "price": "€30,49",
+    "discount": "0%"
+  },
+  {
+    "id": 843390,
+    "title": "Vertigo 2",
+    "hype": 3,
+    "status": "€28,99",
+    "price": "€28,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1274600,
+    "title": "The Last Faith",
+    "hype": 3,
+    "status": "€26,99",
+    "price": "€26,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1318090,
+    "title": "Vertigo Remastered",
+    "hype": 3,
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1388770,
+    "title": "Cruelty Squad",
+    "hype": 3,
+    "status": "€16,79",
+    "price": "€16,79",
+    "discount": "0%"
+  },
+  {
+    "id": 1583230,
+    "title": "High On Life",
+    "hype": 3,
+    "status": "€12,77",
+    "price": "€12,77",
+    "discount": "65%"
+  },
+  {
+    "id": 1592190,
+    "title": "BONELAB",
+    "hype": 3,
+    "status": "€39,99",
+    "price": "€39,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1614330,
+    "title": "Crowsworn",
+    "hype": 3,
+    "status": "Rilascio: Da annunciare",
+    "price": "N/D",
+    "discount": "N/D"
+  },
+  {
+    "id": 1627720,
+    "title": "Lies of P",
+    "hype": 3,
+    "status": "€59,99",
+    "price": "€59,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1663850,
+    "title": "REPLACED",
+    "hype": 3,
+    "status": "€19,99",
+    "price": "€19,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1745510,
+    "title": "Lunacid",
+    "hype": 3,
+    "status": "€13,79",
+    "price": "€13,79",
+    "discount": "0%"
+  },
+  {
+    "id": 1774580,
+    "title": "STAR WARS Jedi: Survivor™",
+    "hype": 3,
+    "status": "€69,99",
+    "price": "€69,99",
+    "discount": "0%"
+  },
+  {
+    "id": 1943950,
+    "title": "Escape the Backrooms",
+    "hype": 3,
+    "status": "€9,49",
+    "price": "€9,49",
+    "discount": "0%"
+  },
+  {
+    "id": 2124780,
+    "title": "Endoparasitic",
+    "hype": 3,
+    "status": "€8,19",
+    "price": "€8,19",
+    "discount": "0%"
   }
 ]
