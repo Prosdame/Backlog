@@ -3,49 +3,49 @@
     "id": 1097200,
     "title": "Twelve Minutes",
     "hype": 3,
-    "status": "€23,79",
-    "price": "€23,79",
-    "discount": "0%"
+    "status": "€7,13",
+    "price": "€7,13",
+    "discount": "70%"
   },
   {
     "id": 1182900,
     "title": "A Plague Tale: Requiem",
     "hype": 5,
-    "status": "€49,99",
-    "price": "€49,99",
-    "discount": "0%"
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "70%"
   },
   {
     "id": 427410,
     "title": "Abiotic Factor",
     "hype": 4,
-    "status": "€33,99",
-    "price": "€33,99",
-    "discount": "0%"
+    "status": "€27,19",
+    "price": "€27,19",
+    "discount": "20%"
   },
   {
     "id": 435881,
     "title": "Fallout 4 Far Harbor",
     "hype": 3,
-    "status": "€14,99",
-    "price": "€14,99",
-    "discount": "0%"
+    "status": "€8,99",
+    "price": "€8,99",
+    "discount": "40%"
   },
   {
     "id": 490650,
     "title": "Fallout 4 Nuka-World",
     "hype": 3,
-    "status": "€9,99",
-    "price": "€9,99",
-    "discount": "0%"
+    "status": "€5,99",
+    "price": "€5,99",
+    "discount": "40%"
   },
   {
     "id": 541200,
     "title": "GTTOD",
     "hype": 3,
-    "status": "€30,49",
-    "price": "€30,49",
-    "discount": "0%"
+    "status": "€19,81",
+    "price": "€19,81",
+    "discount": "35%"
   },
   {
     "id": 843390,
@@ -59,9 +59,9 @@
     "id": 1274600,
     "title": "The Last Faith",
     "hype": 3,
-    "status": "€26,99",
-    "price": "€26,99",
-    "discount": "0%"
+    "status": "€13,49",
+    "price": "€13,49",
+    "discount": "50%"
   },
   {
     "id": 1318090,
@@ -75,25 +75,25 @@
     "id": 1388770,
     "title": "Cruelty Squad",
     "hype": 3,
-    "status": "€16,79",
-    "price": "€16,79",
-    "discount": "0%"
+    "status": "€1,67",
+    "price": "€1,67",
+    "discount": "90%"
   },
   {
     "id": 1583230,
     "title": "High On Life",
     "hype": 3,
-    "status": "€36,49",
-    "price": "€36,49",
-    "discount": "0%"
+    "status": "€9,12",
+    "price": "€9,12",
+    "discount": "75%"
   },
   {
     "id": 1592190,
     "title": "BONELAB",
     "hype": 3,
-    "status": "€39,99",
-    "price": "€39,99",
-    "discount": "0%"
+    "status": "€31,99",
+    "price": "€31,99",
+    "discount": "20%"
   },
   {
     "id": 1614330,
@@ -107,17 +107,17 @@
     "id": 1627720,
     "title": "Lies of P",
     "hype": 3,
-    "status": "€59,99",
-    "price": "€59,99",
-    "discount": "0%"
+    "status": "€29,99",
+    "price": "€29,99",
+    "discount": "50%"
   },
   {
     "id": 1663850,
     "title": "REPLACED",
     "hype": 3,
-    "status": "€19,99",
-    "price": "€19,99",
-    "discount": "0%"
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "25%"
   },
   {
     "id": 1745510,
@@ -131,24 +131,24 @@
     "id": 1774580,
     "title": "STAR WARS Jedi: Survivor™",
     "hype": 3,
-    "status": "€69,99",
-    "price": "€69,99",
-    "discount": "0%"
+    "status": "€10,49",
+    "price": "€10,49",
+    "discount": "85%"
   },
   {
     "id": 1943950,
     "title": "Escape the Backrooms",
     "hype": 3,
-    "status": "€9,49",
-    "price": "€9,49",
-    "discount": "0%"
+    "status": "€7,59",
+    "price": "€7,59",
+    "discount": "20%"
   },
   {
     "id": 2124780,
     "title": "Endoparasitic",
     "hype": 3,
-    "status": "€8,19",
-    "price": "€8,19",
-    "discount": "0%"
+    "status": "€4,91",
+    "price": "€4,91",
+    "discount": "40%"
   }
 ]
