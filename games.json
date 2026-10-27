@@ -11,9 +11,9 @@
     "id": 1182900,
     "title": "A Plague Tale: Requiem",
     "hype": 5,
-    "status": "€49,99",
-    "price": "€49,99",
-    "discount": "0%"
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "70%"
   },
   {
     "id": 427410,
@@ -59,9 +59,9 @@
     "id": 1274600,
     "title": "The Last Faith",
     "hype": 3,
-    "status": "€26,99",
-    "price": "€26,99",
-    "discount": "0%"
+    "status": "€13,49",
+    "price": "€13,49",
+    "discount": "50%"
   },
   {
     "id": 1318090,
@@ -115,9 +115,9 @@
     "id": 1663850,
     "title": "REPLACED",
     "hype": 3,
-    "status": "€19,99",
-    "price": "€19,99",
-    "discount": "0%"
+    "status": "€14,99",
+    "price": "€14,99",
+    "discount": "25%"
   },
   {
     "id": 1745510,
@@ -139,16 +139,16 @@
     "id": 1943950,
     "title": "Escape the Backrooms",
     "hype": 3,
-    "status": "€9,49",
-    "price": "€9,49",
-    "discount": "0%"
+    "status": "€7,59",
+    "price": "€7,59",
+    "discount": "20%"
   },
   {
     "id": 2124780,
     "title": "Endoparasitic",
     "hype": 3,
-    "status": "€8,19",
-    "price": "€8,19",
-    "discount": "0%"
+    "status": "€4,09",
+    "price": "€4,09",
+    "discount": "50%"
   }
 ]
