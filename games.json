@@ -150,5 +150,13 @@
     "status": "€4,09",
     "price": "€4,09",
     "discount": "50%"
+  },
+  {
+    "id": 1532250,
+    "title": "The Catacombs of Solaris Revisited",
+    "hype": 3,
+    "status": "€10,25",
+    "price": "€10,25",
+    "discount": "0%"
   }
 ]
