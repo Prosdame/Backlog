@@ -23814,5 +23814,81 @@
     "free": false,
     "status": "Dropped",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814300964",
+    "title": "The Great Ace Attorney Chronicles",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-504d-7247-b654-1a24b9655103/banner400.jpg?t=1787742315",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-504d-7247-b654-1a24b9655103",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "27 lug 2021",
+    "releaseDateISO": "2021-07-27",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 13.55,
+    "retailPrice": 39.99,
+    "discount": 66,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "oDpshrf%2FI%2BgsJhEQLYUq5aqWjo8IvqBQiy2CZzu2mk0%3D",
+        "price": "13.55",
+        "retailPrice": "39.99",
+        "savings": "66.116529"
+      },
+      {
+        "storeID": "15",
+        "dealID": "oLi0rHRJKRhoQOsCaE358QmTM02fg%2Fy7vjsPGBwHLpo%3D",
+        "price": "13.59",
+        "retailPrice": "39.99",
+        "savings": "66.016504"
+      },
+      {
+        "storeID": "27",
+        "dealID": "GR%2B%2F6TWgqLo0smHgnCJwkr7F%2FjhHX19Ee5xg2rJbr5Q%3D",
+        "price": "14.65",
+        "retailPrice": "39.99",
+        "savings": "63.365841"
+      },
+      {
+        "storeID": "30",
+        "dealID": "jFMx5k%2BG830Sd%2FicJkfi9h8NlJwCaeD6ZmMBkEh1Qws%3D",
+        "price": "15.99",
+        "retailPrice": "39.99",
+        "savings": "60.015004"
+      },
+      {
+        "storeID": "2",
+        "dealID": "bKPf%2FY9xSxF3K9Q%2B%2Be7rxnwHJKaH7euDkJ3Fmlfg3js%3D",
+        "price": "16.00",
+        "retailPrice": "39.99",
+        "savings": "59.989997"
+      },
+      {
+        "storeID": "3",
+        "dealID": "TGwj8LErqi1KtiBt3EpZtO1PIOUmR1ER3AArJVwNDVg%3D",
+        "price": "16.00",
+        "retailPrice": "39.99",
+        "savings": "59.989997"
+      },
+      {
+        "storeID": "1",
+        "dealID": "jKnaZHZWWLk%2FwQXijLqoK%2F0iCjoPORWqyxPp2HNPaFo%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
