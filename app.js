@@ -422,7 +422,7 @@ function bindEvents() {
   });
 
   // Ricarica e aggiornamento massivo
-  document.getElementById("btnReloadBacklog").addEventListener("click", loadBacklog);
+  document.getElementById("btnReloadBacklog").addEventListener("click", () => loadBacklog(false));
   document.getElementById("btnRefreshAll").addEventListener("click", refreshAllPrices);
 
   // Modals
@@ -457,7 +457,7 @@ function bindEvents() {
 
     updateEngineBadge();
     document.getElementById("configModal").classList.add("hidden");
-    await loadBacklog();
+    await loadBacklog(false);
   });
 }
 
@@ -523,7 +523,7 @@ function enqueueBacklogMutation(commitMessage, mutatorFn) {
     return Promise.resolve();
   }
 
-  // 2. Accoda la scrittura su GitHub con auto-merge in caso di HTTP 409 (commit concorrente della Action)
+  // 2. Accoda la scrittura su GitHub con auto-merge in caso di HTTP 409
   saveChain = saveChain.then(async () => {
     isSavingBacklog = true;
     const statusEl = document.getElementById("syncStatus");
@@ -567,7 +567,6 @@ function enqueueBacklogMutation(commitMessage, mutatorFn) {
         }
 
         if (res.status === 409) {
-          // Conflitto con la GitHub Action: riscarica il file aggiornato e riapplica la modifica
           forceRefetch = true;
           await new Promise((r) => setTimeout(r, 250));
           continue;
@@ -671,6 +670,26 @@ async function fetchCheapSharkSearch(query, limit = 15) {
   const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=${limit}`);
   if (!res.ok) return [];
   return await res.json();
+}
+
+async function fetchCheapSharkDealsByTitle(title) {
+  try {
+    const csSearch = await fetchCheapSharkSearch(title, 5);
+    const exactCs = csSearch.find(
+      (c) => normalizeTitleForMatch(c.external) === normalizeTitleForMatch(title)
+    ) || csSearch[0];
+    if (!exactCs || !exactCs.gameID) return null;
+
+    const csDetailRes = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${exactCs.gameID}`);
+    if (!csDetailRes.ok) return null;
+    const csDetail = await csDetailRes.json();
+    return {
+      deals: Array.isArray(csDetail.deals) ? csDetail.deals : [],
+      thumb: csDetail.info?.thumb || null
+    };
+  } catch (err) {
+    return null;
+  }
 }
 
 function buildThumbnailLookup(csResults) {
@@ -871,28 +890,14 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
     status: "Not Played"
   };
 
-  // Fallback istantaneo su CheapShark se i prezzi ITAD nel browser sono stati bloccati via CORS
   if (normalizedDeals.length === 0) {
-    try {
-      const csSearch = await fetchCheapSharkSearch(newGame.title, 3);
-      const exactCs = csSearch.find(
-        (c) => normalizeTitleForMatch(c.external) === normalizeTitleForMatch(newGame.title)
-      ) || csSearch[0];
-      if (exactCs && exactCs.gameID) {
-        const csDetailRes = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${exactCs.gameID}`);
-        if (csDetailRes.ok) {
-          const csDetail = await csDetailRes.json();
-          if (Array.isArray(csDetail.deals) && csDetail.deals.length > 0) {
-            newGame.deals = csDetail.deals;
-            newGame.currency = "USD";
-            if (!newGame.thumb && csDetail.info?.thumb) {
-              newGame.thumb = csDetail.info.thumb;
-            }
-          }
-        }
+    const csFallback = await fetchCheapSharkDealsByTitle(newGame.title);
+    if (csFallback && csFallback.deals.length > 0) {
+      newGame.deals = csFallback.deals;
+      newGame.currency = "USD";
+      if (!newGame.thumb && csFallback.thumb) {
+        newGame.thumb = csFallback.thumb;
       }
-    } catch (e) {
-      /* ignora fallback */
     }
   }
 
@@ -904,7 +909,7 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
   await enqueueBacklogMutation(`Add ${newGame.title}`, (list) => [...list, newGame]);
 
   if (normalizedDeals.length === 0) {
-    setTimeout(() => loadBacklog(true), 20000);
+    setTimeout(() => loadBacklog(true), 22000);
   }
 }
 
@@ -947,7 +952,7 @@ async function addGameFromCheapShark(cheapsharkId) {
     }
 
     await enqueueBacklogMutation(`Add ${newGame.title}`, (list) => [...list, newGame]);
-    setTimeout(() => loadBacklog(true), 20000);
+    setTimeout(() => loadBacklog(true), 22000);
   } catch (err) {
     alert("Errore nel recupero dettagli del gioco.");
   }
@@ -1026,6 +1031,23 @@ async function fetchUpdatedFieldsForGame(game) {
       patch.currency = "EUR";
       return patch;
     }
+
+    // Se ITAD POST è bloccato nel browser via CORS:
+    // - conserva eventuali prezzi EUR già sincronizzati dalla GitHub Action
+    // - se il gioco ha ancora 0 offerte (N/D), usa il fallback immediato
+    const hasExistingEurDeals =
+      game.currency === "EUR" && Array.isArray(game.deals) && game.deals.length > 0;
+    if (!hasExistingEurDeals) {
+      const csFallback = await fetchCheapSharkDealsByTitle(game.title);
+      if (csFallback && csFallback.deals.length > 0) {
+        patch.deals = csFallback.deals;
+        patch.currency = "USD";
+        if (!patch.thumb && !game.thumb && csFallback.thumb) {
+          patch.thumb = csFallback.thumb;
+        }
+      }
+    }
+    return patch;
   }
 
   if (game.cheapsharkId) {
@@ -1054,6 +1076,7 @@ async function refreshSingleGame(game) {
       }
       return list;
     });
+    setTimeout(() => loadBacklog(true), 22000);
   } catch (err) {
     console.warn(`Errore aggiornamento ${game.title}:`, err);
   }
@@ -1092,7 +1115,7 @@ async function refreshAllPrices() {
       return list;
     });
 
-    setTimeout(() => loadBacklog(true), 20000);
+    setTimeout(() => loadBacklog(true), 22000);
   } catch (err) {
     console.error(err);
   } finally {
