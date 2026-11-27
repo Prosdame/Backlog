@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Backlog & Price Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>Game Backlog</h1>
+      <span id="syncStatus" class="badge badge-warn">Solo Lettura</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnRefreshAll" class="btn btn-secondary">Aggiorna Prezzi</button>
+      <button id="btnOpenConfig" class="btn btn-primary">Configura GitHub</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Sezione Aggiunta Gioco -->
+    <section class="add-panel">
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Cerca gioco per nome (Steam, Epic, GOG, Humble...)" autocomplete="off">
+        <select id="addTargetCategory">
+          <option value="wishlist">In: To be Owned</option>
+          <option value="owned">In: Owned</option>
+        </select>
+        <button id="btnSearch" class="btn btn-primary">Cerca</button>
+        <button id="btnToggleManual" class="btn btn-secondary">+ Manuale / TBA</button>
+      </div>
+
+      <!-- Risultati ricerca API -->
+      <div id="searchResults" class="search-results hidden"></div>
+
+      <!-- Form inserimento manuale per giochi non ancora usciti -->
+      <form id="manualForm" class="manual-form hidden">
+        <input type="text" id="manualTitle" placeholder="Titolo esatto (es. Atomic Heart 2)" required>
+        <input type="text" id="manualNote" placeholder="Nota stato (es. To Be Announced / Rilascio: 2027)" value="To Be Announced">
+        <select id="manualCategory">
+          <option value="wishlist">To be Owned</option>
+          <option value="owned">Owned</option>
+        </select>
+        <label class="checkbox-label">
+          <input type="checkbox" id="manualHype"> Hype
+        </label>
+        <button type="submit" class="btn btn-success">Aggiungi</button>
+      </form>
+    </section>
+
+    <!-- Navigazione Tab e Filtri -->
+    <section class="controls-bar">
+      <div class="tabs">
+        <button class="tab active" data-tab="wishlist">To be Owned (<span id="countWishlist">0</span>)</button>
+        <button class="tab" data-tab="owned">Owned (<span id="countOwned">0</span>)</button>
+      </div>
+
+      <div class="filters">
+        <input type="text" id="filterText" placeholder="Filtra lista...">
+        <label class="checkbox-label">
+          <input type="checkbox" id="filterHype"> Solo Hype
+        </label>
+        <select id="filterStatus" class="hidden">
+          <option value="ALL">Tutti gli stati</option>
+          <option value="Not Played">Not Played</option>
+          <option value="Playing">Playing</option>
+          <option value="Hold">Hold</option>
+          <option value="Dropped">Dropped</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Tabella To be Owned -->
+    <section id="sectionWishlist" class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>GAME</th>
+            <th class="center">HYPE</th>
+            <th>BEST PRICE (STATE)</th>
+            <th>BASE PRICE</th>
+            <th>% DISCOUNT</th>
+            <th>STORE</th>
+            <th class="right">AZIONI</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyWishlist"></tbody>
+      </table>
+    </section>
+
+    <!-- Tabella Owned -->
+    <section id="sectionOwned" class="table-wrapper hidden">
+      <table>
+        <thead>
+          <tr>
+            <th>GAME</th>
+            <th class="center">HYPE</th>
+            <th>FREE</th>
+            <th>STATUS</th>
+            <th class="right">AZIONI</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyOwned"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Modal Confronto Prezzi Multi-Store -->
+  <div id="dealsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="dealsModalTitle">Confronto Store</h2>
+        <button class="btn-close" data-close="dealsModal">&times;</button>
+      </div>
+      <div id="dealsModalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal Configurazione GitHub -->
+  <div id="configModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Sincronizzazione GitHub</h2>
+        <button class="btn-close" data-close="configModal">&times;</button>
+      </div>
+      <form id="configForm" class="modal-body">
+        <p class="hint">I dati vengono salvati solo nel browser di questo dispositivo.</p>
+        <label>Username GitHub
+          <input type="text" id="cfgOwner" required placeholder="es. tuousername">
+        </label>
+        <label>Nome Repository
+          <input type="text" id="cfgRepo" required placeholder="es. game-backlog">
+        </label>
+        <label>Personal Access Token (Contents: Read & Write)
+          <input type="password" id="cfgToken" required placeholder="github_pat_...">
+        </label>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Salva e Connetti</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
