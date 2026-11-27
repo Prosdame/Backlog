@@ -60,6 +60,12 @@ function bindEvents() {
   document.getElementById("filterHype").addEventListener("change", render);
   document.getElementById("filterStatus").addEventListener("change", render);
 
+  // Importazione CSV da Google Sheets
+  document.getElementById("btnImportCsv").addEventListener("click", () => {
+    document.getElementById("csvFileInput").click();
+  });
+  document.getElementById("csvFileInput").addEventListener("change", handleCsvImport);
+
   // Ricerca giochi
   document.getElementById("btnSearch").addEventListener("click", searchGames);
   document.getElementById("searchInput").addEventListener("keydown", (e) => {
@@ -104,6 +110,174 @@ function bindEvents() {
   });
 }
 
+// --- IMPORTAZIONE CSV GOOGLE SHEETS ---
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const next = text[i + 1];
+
+    if (inQuotes) {
+      if (ch === '"' && next === '"') {
+        field += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        field += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ",") {
+        row.push(field);
+        field = "";
+      } else if (ch === "\r" && next === "\n") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+        i++;
+      } else if (ch === "\n" || ch === "\r") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+      } else {
+        field += ch;
+      }
+    }
+  }
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+function parseEuroOrNumber(str) {
+  if (!str) return null;
+  const cleaned = str.replace(/[€$\s]/g, "").replace(",", ".");
+  const val = parseFloat(cleaned);
+  return Number.isFinite(val) ? val : null;
+}
+
+async function handleCsvImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const rows = parseCSV(text);
+    const imported = [];
+    const validStatuses = ["Not Played", "Playing", "Hold", "Dropped", "Completed"];
+    let uidCounter = Date.now();
+
+    rows.forEach((cols) => {
+      const colA = (cols[0] || "").trim();
+      const colH = (cols[7] || "").trim();
+
+      // Salta intestazioni
+      if (colA.toUpperCase() === "GAME" || colH.toUpperCase() === "GAME") return;
+      if (colA.toUpperCase() === "TO BE OWNED" || colH.toUpperCase() === "OWNED") return;
+
+      // Tabella sinistra: To be Owned (colonne A..F -> indici 0..5)
+      if (colA) {
+        const hype = (cols[2] || "").trim().toUpperCase() === "TRUE";
+        const stateRaw = (cols[3] || "").trim();
+        const priceRaw = (cols[4] || "").trim();
+        const discountRaw = (cols[5] || "").trim();
+
+        const salePrice = parseEuroOrNumber(stateRaw);
+        const retailPrice = parseEuroOrNumber(priceRaw);
+        const parsedDiscount = parseInt(discountRaw.replace("%", "").trim(), 10);
+
+        let releaseNote = "";
+        if (salePrice === null && stateRaw && stateRaw.toUpperCase() !== "ID NON VALIDO" && stateRaw.toUpperCase() !== "N/D") {
+          releaseNote = stateRaw;
+        }
+
+        imported.push({
+          id: (uidCounter++).toString(),
+          title: colA,
+          category: "wishlist",
+          hype,
+          cheapsharkId: null,
+          releaseNote,
+          salePrice,
+          retailPrice,
+          discount: Number.isFinite(parsedDiscount) ? parsedDiscount : 0,
+          bestStore: salePrice !== null ? "Importato" : "",
+          deals: [],
+          free: false,
+          status: "Not Played"
+        });
+      }
+
+      // Tabella destra: Owned (colonne H..K -> indici 7..10)
+      if (colH) {
+        const hype = (cols[8] || "").trim().toUpperCase() === "TRUE";
+        const freeRaw = (cols[9] || "").trim().toLowerCase();
+        const statusRaw = (cols[10] || "").trim();
+        const matchedStatus = validStatuses.find((s) => s.toLowerCase() === statusRaw.toLowerCase()) || "Not Played";
+
+        imported.push({
+          id: (uidCounter++).toString(),
+          title: colH,
+          category: "owned",
+          hype,
+          cheapsharkId: null,
+          releaseNote: "",
+          salePrice: null,
+          retailPrice: null,
+          discount: 0,
+          bestStore: "",
+          deals: [],
+          free: freeRaw === "yes" || freeRaw === "true" || freeRaw === "si" || freeRaw === "sì",
+          status: matchedStatus
+        });
+      }
+    });
+
+    if (!imported.length) {
+      alert("Nessun gioco valido trovato nel CSV. Assicurati di aver esportato il foglio principale da Google Sheets.");
+      return;
+    }
+
+    const wCount = imported.filter((g) => g.category === "wishlist").length;
+    const oCount = imported.filter((g) => g.category === "owned").length;
+
+    const replaceAll = confirm(
+      `Trovati ${wCount} giochi in "To be Owned" e ${oCount} giochi in "Owned".\n\n` +
+      `Premi OK per SOSTITUIRE completamente la lista attuale.\n` +
+      `Premi Annulla per UNIRE solo i titoli non ancora presenti.`
+    );
+
+    if (replaceAll) {
+      backlog = imported;
+    } else {
+      const existingTitles = new Set(backlog.map((g) => g.title.toLowerCase()));
+      imported.forEach((g) => {
+        if (!existingTitles.has(g.title.toLowerCase())) {
+          backlog.push(g);
+        }
+      });
+    }
+
+    await saveBacklog(`Import CSV (${wCount} wishlist, ${oCount} owned)`);
+    alert("Importazione completata! Esegui la GitHub Action 'Update Prices' per collegare automaticamente i giochi agli store.");
+  } catch (err) {
+    console.error(err);
+    alert("Errore durante la lettura del file CSV.");
+  } finally {
+    e.target.value = "";
+  }
+}
+
 // --- GITHUB STORAGE API ---
 async function loadBacklog() {
   const statusEl = document.getElementById("syncStatus");
@@ -123,7 +297,6 @@ async function loadBacklog() {
       statusEl.textContent = "Sincronizzato";
       statusEl.className = "badge badge-green";
     } else {
-      // Fallback in sola lettura dal file locale
       const res = await fetch(`./backlog.json?t=${Date.now()}`);
       backlog = await res.json();
       statusEl.textContent = "Solo Lettura (Configura Token)";
@@ -167,7 +340,6 @@ async function saveBacklog(commitMessage = "Update backlog") {
     });
 
     if (!res.ok) {
-      // In caso di conflitto SHA, ricarica SHA aggiornato e riprova una volta
       if (res.status === 409) {
         await loadBacklog();
         return;
@@ -322,7 +494,7 @@ async function refreshSingleGame(game, skipSave = false) {
 async function refreshAllPrices() {
   const targets = backlog.filter((g) => g.category === "wishlist" && g.cheapsharkId);
   if (!targets.length) {
-    alert("Nessun gioco collegato agli store nella Wishlist.");
+    alert("Nessun gioco collegato agli store nella Wishlist. Usa la GitHub Action o clicca sul titolo di un gioco per collegarlo.");
     return;
   }
 
@@ -332,7 +504,6 @@ async function refreshAllPrices() {
   for (let i = 0; i < targets.length; i++) {
     btn.textContent = `Aggiorno ${i + 1}/${targets.length}...`;
     await refreshSingleGame(targets[i], true);
-    // Pausa di 300ms per evitare rate-limit
     await new Promise((r) => setTimeout(r, 300));
   }
 
@@ -348,38 +519,93 @@ async function openDealsModal(game) {
 
   titleEl.textContent = `Confronto Store: ${game.title}`;
   modal.classList.remove("hidden");
-
-  if (!game.cheapsharkId) {
-    bodyEl.innerHTML = `<p class="hint">Gioco inserito manualmente (${game.releaseNote || "Nessuno store collegato"}).</p>`;
-    return;
-  }
-
-  bodyEl.innerHTML = "<p class='hint'>Caricamento prezzi da tutti gli storefront...</p>";
-  await refreshSingleGame(game, true);
-  render();
-
-  if (!game.deals || !game.deals.length) {
-    bodyEl.innerHTML = "<p class='hint'>Nessuna offerta attiva trovata sugli store.</p>";
-    return;
-  }
-
   bodyEl.innerHTML = "";
-  game.deals.forEach((d) => {
-    const storeName = storesMap[d.storeID] || `Store #${d.storeID}`;
-    const savings = Math.round(parseFloat(d.savings));
-    const row = document.createElement("div");
-    row.className = "deal-row";
-    row.innerHTML = `
-      <div>
-        <strong>${storeName}</strong>
-        <div class="hint">Base: $${d.retailPrice}</div>
-      </div>
-      <div style="display:flex; align-items:center; gap:0.6rem;">
-        <span class="badge ${savings > 0 ? "badge-green" : "badge-blue"}">$${d.price} (-${savings}%)</span>
-        <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Apri</a>
-      </div>
-    `;
-    bodyEl.appendChild(row);
+
+  if (game.cheapsharkId) {
+    const loadingP = document.createElement("p");
+    loadingP.className = "hint";
+    loadingP.textContent = "Caricamento prezzi da tutti gli storefront...";
+    bodyEl.appendChild(loadingP);
+
+    await refreshSingleGame(game, true);
+    render();
+    bodyEl.innerHTML = "";
+
+    if (game.deals && game.deals.length) {
+      game.deals.forEach((d) => {
+        const storeName = storesMap[d.storeID] || `Store #${d.storeID}`;
+        const savings = Math.round(parseFloat(d.savings));
+        const row = document.createElement("div");
+        row.className = "deal-row";
+        row.innerHTML = `
+          <div>
+            <strong>${storeName}</strong>
+            <div class="hint">Base: $${d.retailPrice}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span class="badge ${savings > 0 ? "badge-green" : "badge-blue"}">$${d.price} (-${savings}%)</span>
+            <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Apri</a>
+          </div>
+        `;
+        bodyEl.appendChild(row);
+      });
+    } else {
+      bodyEl.innerHTML = "<p class='hint'>Nessuna offerta attiva trovata sugli store.</p>";
+    }
+  } else {
+    bodyEl.innerHTML = `<p class="hint">Gioco non ancora collegato a uno store (${game.releaseNote || "Importato / Manuale"}).</p>`;
+  }
+
+  // Sezione per collegare o cambiare manualmente la corrispondenza store
+  const linkSection = document.createElement("div");
+  linkSection.style.marginTop = "1rem";
+  linkSection.style.paddingTop = "1rem";
+  linkSection.style.borderTop = "1px solid var(--border)";
+  linkSection.innerHTML = `
+    <p class="hint" style="margin-bottom:0.5rem;">Associa o cambia corrispondenza sugli store:</p>
+    <div class="search-row">
+      <input type="text" id="relinkInput" value="${game.title}">
+      <button type="button" id="btnRelinkSearch" class="btn btn-sm btn-secondary">Cerca</button>
+    </div>
+    <div id="relinkResults" class="search-results hidden"></div>
+  `;
+  bodyEl.appendChild(linkSection);
+
+  document.getElementById("btnRelinkSearch").addEventListener("click", async () => {
+    const q = document.getElementById("relinkInput").value.trim();
+    if (!q) return;
+    const resBox = document.getElementById("relinkResults");
+    resBox.classList.remove("hidden");
+    resBox.innerHTML = "<p class='hint'>Ricerca...</p>";
+
+    try {
+      const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(q)}&limit=6`);
+      const items = await res.json();
+      if (!items.length) {
+        resBox.innerHTML = "<p class='hint'>Nessun risultato trovato.</p>";
+        return;
+      }
+      resBox.innerHTML = "";
+      items.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "search-card";
+        card.innerHTML = `
+          <img src="${item.thumb}" alt="">
+          <div class="search-card-info">
+            <div class="search-card-title">${item.external}</div>
+            <div class="search-card-price">$${item.cheapest}</div>
+          </div>
+        `;
+        card.addEventListener("click", async () => {
+          game.cheapsharkId = item.gameID.toString();
+          await refreshSingleGame(game, false);
+          openDealsModal(game);
+        });
+        resBox.appendChild(card);
+      });
+    } catch {
+      resBox.innerHTML = "<p class='hint'>Errore API.</p>";
+    }
   });
 }
 
