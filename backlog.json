@@ -211,27 +211,5 @@
     "customDeals": [],
     "free": false,
     "status": "Not Played"
-  },
-  {
-    "id": "1795804925376",
-    "title": "Persona 6",
-    "category": "wishlist",
-    "hype": false,
-    "itadId": "019edb83-ee2e-7355-9a7f-cefbfee1f5c8",
-    "cheapsharkId": null,
-    "selectedStoreId": null,
-    "released": false,
-    "releaseDate": "TBA",
-    "releaseDateISO": null,
-    "releaseNote": "TBA",
-    "currency": "EUR",
-    "salePrice": null,
-    "retailPrice": null,
-    "discount": 0,
-    "bestStore": "",
-    "deals": [],
-    "customDeals": [],
-    "free": false,
-    "status": "Not Played"
   }
 ]
