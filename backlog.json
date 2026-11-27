@@ -23342,5 +23342,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813794637",
+    "title": "METAL GEAR SOLID V: THE PHANTOM PAIN",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-fa14-7020-9111-93ad90d49695/banner400.jpg?t=1788290408",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-fa14-7020-9111-93ad90d49695",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_15",
+    "released": true,
+    "releaseDate": "1 set 2015",
+    "releaseDateISO": "2015-09-01",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 15.89,
+    "retailPrice": 19.99,
+    "discount": 21,
+    "bestStore": "Fanatical",
+    "deals": [
+      {
+        "storeID": "15",
+        "dealID": "%2F3LJoxNCnF2mH9VqZc8EtuIAsvlpQItIB2MMWNyWk%2Bk%3D",
+        "price": "15.89",
+        "retailPrice": "19.99",
+        "savings": "20.510255"
+      },
+      {
+        "storeID": "27",
+        "dealID": "FsFH9%2Fkqq3t2omrRyRb6aeMAXadbbGwo2UpuSm9i76A%3D",
+        "price": "15.99",
+        "retailPrice": "19.99",
+        "savings": "20.010005"
+      },
+      {
+        "storeID": "1",
+        "dealID": "xPzU4j8t8kG16hMpYtQYdW7pQIZr6ojDKs8r0U%2BsYIc%3D",
+        "price": "17.99",
+        "retailPrice": "29.99",
+        "savings": "40.013338"
+      },
+      {
+        "storeID": "2",
+        "dealID": "3B3K0rcxoFY%2FmUhiZonrbJOSAgVnIGa%2B%2FXIYGTbJwrk%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "3",
+        "dealID": "JTINP3OLSqK3WWK6%2B4AcbJNBexifuUf%2Fs8opuS9ZIac%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "21",
+        "dealID": "hMBPWm6t9dJoFsns%2BD1VFwiMzNellAo%2F1iiHWFurh0M%3D",
+        "price": "23.89",
+        "retailPrice": "29.99",
+        "savings": "20.340113"
+      },
+      {
+        "storeID": "30",
+        "dealID": "BIvk6nOH9cPaEaORuBVn2JHn9zMHRa3Y68oMXMcpl18%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
