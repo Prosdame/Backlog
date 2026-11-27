@@ -23827,5 +23827,60 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814165708",
+    "title": "The Elder Scrolls IV: Oblivion Remastered",
+    "thumb": "https://assets.isthereanydeal.com/01965e12-dc2a-70bb-aa19-61b50e9d108e/banner400.jpg?t=1786680643",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01965e12-dc2a-70bb-aa19-61b50e9d108e",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_15",
+    "released": true,
+    "releaseDate": "22 apr 2025",
+    "releaseDateISO": "2025-04-22",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 25.99,
+    "retailPrice": 49.99,
+    "discount": 48,
+    "bestStore": "Fanatical",
+    "deals": [
+      {
+        "storeID": "15",
+        "dealID": "YOcUSY0%2FgQdiflb%2BEvYfj9fSrCtr9te0aubYVLFSGw0%3D",
+        "price": "25.99",
+        "retailPrice": "49.99",
+        "savings": "48.009602"
+      },
+      {
+        "storeID": "1",
+        "dealID": "T097VykGFff3lJnxVCmHr6joXI7wd8SDJhruIpGaSDE%3D",
+        "price": "29.99",
+        "retailPrice": "49.99",
+        "savings": "40.008002"
+      },
+      {
+        "storeID": "3",
+        "dealID": "FsAyxQ%2FOJXaCwVrcpgeBBqBz99JMoAs8v2%2FvbGOvRUE%3D",
+        "price": "29.99",
+        "retailPrice": "49.99",
+        "savings": "40.008002"
+      },
+      {
+        "storeID": "27",
+        "dealID": "a2FUvChVG32ANVaqVYCrehB%2BwEFNGQC4U4fZvmXo2yI%3D",
+        "price": "44.99",
+        "retailPrice": "49.99",
+        "savings": "10.002000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
