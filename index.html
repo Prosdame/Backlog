@@ -107,14 +107,46 @@
     </section>
   </main>
 
-  <!-- Modal Confronto Prezzi Multi-Store -->
+  <!-- Modal Confronto Prezzi Multi-Store & Keyshop -->
   <div id="dealsModal" class="modal hidden">
-    <div class="modal-content">
+    <div class="modal-content modal-lg">
       <div class="modal-header">
         <h2 id="dealsModalTitle">Confronto Store</h2>
         <button class="btn-close" data-close="dealsModal">&times;</button>
       </div>
-      <div id="dealsModalBody" class="modal-body"></div>
+      <div class="modal-body">
+        <!-- Link rapidi Keyshop -->
+        <div>
+          <div class="section-label">Ricerca rapida Keyshop & Aggregatori</div>
+          <div id="quickSearchLinks" class="quick-links"></div>
+        </div>
+
+        <!-- Form aggiunta prezzo Keyshop / Store custom -->
+        <form id="customDealForm" class="custom-deal-form">
+          <div class="section-label">Salva prezzo Keyshop nel menu a tendina</div>
+          <div class="custom-deal-grid">
+            <input type="text" id="customStoreName" list="keyshopPresets" placeholder="Store (es. Instant Gaming)" required>
+            <datalist id="keyshopPresets">
+              <option value="Instant Gaming">
+              <option value="CDKeys">
+              <option value="Eneba">
+              <option value="Kinguin">
+              <option value="G2A">
+              <option value="Epic Games">
+            </datalist>
+            <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo attuale (es. 14.50)" required>
+            <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Prezzo base (opzionale)">
+            <input type="url" id="customDealUrl" placeholder="Link offerta (opzionale)">
+          </div>
+          <button type="submit" class="btn btn-sm btn-success">+ Aggiungi Store al Gioco</button>
+        </form>
+
+        <!-- Lista offerte attive -->
+        <div>
+          <div class="section-label">Offerte salvate (ordinate per prezzo)</div>
+          <div id="dealsModalBody" class="deals-list"></div>
+        </div>
+      </div>
     </div>
   </div>
 
