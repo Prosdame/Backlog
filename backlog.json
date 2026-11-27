@@ -23404,5 +23404,46 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813837021",
+    "title": "Nier: Automata™ Game Of The Yorha Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-2ee8-7008-bda8-5bc6436d8ae3/banner400.jpg?t=1793892625",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-2ee8-7008-bda8-5bc6436d8ae3",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_3",
+    "released": true,
+    "releaseDate": "17 mar 2017",
+    "releaseDateISO": "2017-03-17",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 16,
+    "retailPrice": 39.99,
+    "discount": 60,
+    "bestStore": "GreenManGaming",
+    "deals": [
+      {
+        "storeID": "3",
+        "dealID": "aD1uVuSGmvsWkRg41xqs2cSc0H3uxZ1fRFObaztGumI%3D",
+        "price": "16.00",
+        "retailPrice": "39.99",
+        "savings": "59.989997"
+      },
+      {
+        "storeID": "23",
+        "dealID": "rSbRQUEybCK5y42WjAJTeSTeq39WTZ7Re1P7fUCdx3I%3D",
+        "price": "28.95",
+        "retailPrice": "39.99",
+        "savings": "27.606902"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
