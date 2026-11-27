@@ -22530,5 +22530,60 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813279336",
+    "title": "Assassin's Creed Origins",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-246a-7339-8ccc-7bddae738345/banner400.jpg?t=1793887812",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-246a-7339-8ccc-7bddae738345",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_27",
+    "released": true,
+    "releaseDate": "26 ott 2017",
+    "releaseDateISO": "2017-10-26",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 8.34,
+    "retailPrice": 59.99,
+    "discount": 86,
+    "bestStore": "Gamesplanet",
+    "deals": [
+      {
+        "storeID": "27",
+        "dealID": "3CpNNHXuDEyTaCBHpIQLUvhl5i4iOflHQjd4JUljIVw%3D",
+        "price": "8.34",
+        "retailPrice": "59.99",
+        "savings": "86.097683"
+      },
+      {
+        "storeID": "13",
+        "dealID": "cl5QmskEVTc3GEs%2BE%2BEGxS0a4voj6td%2FZsUD6s27Iio%3D",
+        "price": "9.00",
+        "retailPrice": "59.99",
+        "savings": "84.997500"
+      },
+      {
+        "storeID": "3",
+        "dealID": "Nn7pHzUGDaSPAnOGG%2B41wlXcWe8EQxVc32FTTAlbZvU%3D",
+        "price": "9.00",
+        "retailPrice": "59.99",
+        "savings": "84.997500"
+      },
+      {
+        "storeID": "1",
+        "dealID": "Xseq2XZs5sP%2BATR28J3Bpv2BPe%2BIWvMy3yCk03ABFgo%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
