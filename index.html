@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Game Backlog & Price Tracker</title>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <header class="topbar">
@@ -30,7 +30,7 @@
           <option value="owned">In: Owned</option>
         </select>
         <button id="btnSearch" class="btn btn-primary">Cerca</button>
-        <button id="btnToggleManual" class="btn btn-secondary">+ Manuale / TBA</button>
+        <button id="btnToggleManual" class="btn btn-secondary">+ Manuale / Altro Storefront</button>
       </div>
 
       <!-- Risultati ricerca -->
@@ -38,12 +38,12 @@
 
       <!-- Form inserimento manuale -->
       <form id="manualForm" class="manual-form hidden">
-        <input type="text" id="manualTitle" placeholder="Titolo gioco (es. Persona 6)" required />
+        <input type="text" id="manualTitle" placeholder="Titolo gioco (es. Ocarina of Time Remake)" required />
         <select id="manualReleaseState">
           <option value="unreleased">Non Rilasciato</option>
           <option value="released">Rilasciato</option>
         </select>
-        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, Q4 2026, 15 gen 2027)" />
+        <input type="text" id="manualNote" placeholder="Data / Piattaforma (es. Switch 2, TBA, 2027)" />
         <select id="manualCategory">
           <option value="wishlist">Wishlist</option>
           <option value="owned">Owned</option>
@@ -72,6 +72,7 @@
           <option value="DISCOUNTED">Solo in sconto</option>
           <option value="RELEASED">Solo Rilasciati</option>
           <option value="UNRELEASED">Solo Non Rilasciati / TBA</option>
+          <option value="NON_STOREFRONT">Solo Altro Storefront / Manuali</option>
         </select>
         <select id="sortWishlist">
           <option value="TITLE_ASC">Ordine: A &rarr; Z</option>
@@ -242,27 +243,28 @@
       </div>
 
       <div class="deals-modal-sections">
-        <!-- Sezione 1: Stato & Data di Rilascio -->
+        <!-- Sezione 1: Stato, Data di Rilascio & Steam ID -->
         <section class="modal-section-card">
           <div class="modal-section-header">
-            <h3>Stato & Data di Rilascio</h3>
-            <p class="hint">Modifica manualmente oppure lascia aggiornare in automatico da IsThereAnyDeal.</p>
+            <h3>Stato, Data di Rilascio & Collegamento Steam</h3>
+            <p class="hint">Compila data/piattaforma manualmente o inserisci lo Steam App ID se il gioco arriva su Steam.</p>
           </div>
           <form id="releaseEditorForm" class="release-editor-form">
             <select id="modalReleaseState">
               <option value="released">Rilasciato</option>
               <option value="unreleased">Non Rilasciato / TBA</option>
             </select>
-            <input type="text" id="modalReleaseDate" placeholder="Data rilascio (es. 15 gen 2027, Q4 2026, TBA)" />
-            <button type="submit" class="btn btn-primary">Salva Rilascio</button>
+            <input type="text" id="modalReleaseDate" placeholder="Data / Nota (es. 15 gen 2027, Switch 2, TBA)" />
+            <input type="text" id="modalSteamAppId" placeholder="Steam ID (opz.)" />
+            <button type="submit" class="btn btn-primary">Salva</button>
           </form>
         </section>
 
         <!-- Sezione 2: Keyshop & Prezzo Manuale -->
         <section class="modal-section-card">
           <div class="modal-section-header">
-            <h3>Cerca sui Keyshop & Store Esterni</h3>
-            <p class="hint">Apri la ricerca diretta in una nuova scheda e salva qui sotto l'eventuale offerta trovata.</p>
+            <h3>Cerca sui Keyshop & Store Esterni (Nintendo, PS5, Xbox, ecc.)</h3>
+            <p class="hint">Apri la ricerca diretta in una nuova scheda e salva qui sotto il prezzo o lo storefront manuale.</p>
           </div>
 
           <div id="quickSearchLinks" class="quick-links"></div>
@@ -271,12 +273,12 @@
 
           <form id="customDealForm" class="custom-deal-form">
             <div class="custom-deal-row-top">
-              <input type="text" id="customStoreName" placeholder="Nome Store (es. Instant Gaming)" required />
-              <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo € (es. 34.99)" required />
+              <input type="text" id="customStoreName" placeholder="Store / Piattaforma (es. Nintendo eShop, Instant Gaming)" required />
+              <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo € (es. 59.99)" required />
               <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Listino € (opz.)" />
             </div>
             <div class="custom-deal-row-bottom">
-              <input type="url" id="customDealUrl" placeholder="Link diretto all'offerta (opzionale)" />
+              <input type="url" id="customDealUrl" placeholder="Link diretto all'offerta o pagina store (opzionale)" />
               <button type="submit" class="btn btn-success">+ Aggiungi Store</button>
             </div>
           </form>
@@ -297,6 +299,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
