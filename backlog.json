@@ -22852,5 +22852,39 @@
     "free": false,
     "status": "Ongoing",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813445004",
+    "title": "Dying Light Enhanced Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-0193-73b9-b4fe-1e2c37e1dc83/banner400.jpg?t=1734048312",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-0193-73b9-b4fe-1e2c37e1dc83",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "9 feb 2016",
+    "releaseDateISO": "2016-02-09",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 84.97,
+    "retailPrice": 84.97,
+    "discount": 0,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "30",
+        "dealID": "JFb2SQUrvbLES3dQJqWte%2Bpal7neRH1rebX7yNPy%2FjU%3D",
+        "price": "84.97",
+        "retailPrice": "84.97",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
