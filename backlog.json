@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "1795804964508",
+    "title": "Persona 5 Royal",
+    "category": "wishlist",
+    "hype": false,
+    "itadId": "018d937f-4adb-73a6-a9e5-94ff62f6265b",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": true,
+    "releaseDate": "21 ott 2022",
+    "releaseDateISO": "2022-10-21",
+    "releaseNote": "",
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played"
+  }
+]
