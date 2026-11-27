@@ -24276,5 +24276,39 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795815473707",
+    "title": "Grand Theft Auto VI",
+    "thumb": "https://assets.isthereanydeal.com/019e3a88-379d-701c-9a03-5054b5450244/banner400.jpg?t=1795186513",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "019e3a88-379d-701c-9a03-5054b5450244",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "20 nov 2026",
+    "releaseDateISO": "2026-11-20",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 59.99,
+    "retailPrice": 59.99,
+    "discount": 0,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "xLNCQRggXWU2H7k8ZO0N2QjaRlA5K998zBNOTclmtmY%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
