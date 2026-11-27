@@ -24067,5 +24067,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814759984",
+    "title": "Yakuza Kiwami 3 and Dark Ties",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3937550/ac8c4e75acc1e5fbb3560e53af94772b1d99a3eb/capsule_231x87.jpg?t=1781257873",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": "308732",
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "",
+    "releaseDateISO": null,
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 23.99,
+    "retailPrice": 59.99,
+    "discount": 60,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "Y8WEf42rot9wc9ERHb5wjfoEYplgHAxgEjpUCzL4xLU%3D",
+        "price": "23.99",
+        "retailPrice": "59.99",
+        "savings": "60.010002"
+      },
+      {
+        "storeID": "23",
+        "dealID": "I2%2FPvEAZZrIjxKyijUv6qau%2BTDBvNQf0MTIX0SFKj%2Bk%3D",
+        "price": "30.55",
+        "retailPrice": "59.99",
+        "savings": "49.074846"
+      },
+      {
+        "storeID": "27",
+        "dealID": "DqR5iX9d8RL25YnvF8EyKh4XXa4uYZYWEophjL10cx4%3D",
+        "price": "33.99",
+        "retailPrice": "59.99",
+        "savings": "43.340557"
+      },
+      {
+        "storeID": "21",
+        "dealID": "XQRBzsTHFP1TiwdM9O0YpP6lRW0gP8j2O6rzqV5fo2Q%3D",
+        "price": "34.39",
+        "retailPrice": "59.99",
+        "savings": "42.673779"
+      },
+      {
+        "storeID": "3",
+        "dealID": "y0Zm3PdiGHVsa65S8d1qxw0ozQ93mNnRQ2LkCXLPLOY%3D",
+        "price": "35.99",
+        "retailPrice": "59.99",
+        "savings": "40.006668"
+      },
+      {
+        "storeID": "15",
+        "dealID": "JJkNDn7bspTUlOYBCf8D3OLBKydTah3cJSjBf6DazzM%3D",
+        "price": "52.79",
+        "retailPrice": "59.99",
+        "savings": "12.002000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
