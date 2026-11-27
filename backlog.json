@@ -23005,5 +23005,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813570572",
+    "title": "Grand Theft Auto V",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-03e2-7281-a961-037a2d279a92/banner400.jpg?t=1769719515",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-03e2-7281-a961-037a2d279a92",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "15 mar 2022",
+    "releaseDateISO": "2022-03-15",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 13.95,
+    "retailPrice": 29.98,
+    "discount": 53,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "s6Hgn14UvvkSdjj8qu3VBiRslMvHFZ1uLqawPJ9rMqU%3D",
+        "price": "13.95",
+        "retailPrice": "29.98",
+        "savings": "53.468979"
+      },
+      {
+        "storeID": "27",
+        "dealID": "X2AQSNHGF%2FI9lubl4czjjyOLf6v7jwLUXcGKbLkwUA8%3D",
+        "price": "13.99",
+        "retailPrice": "29.99",
+        "savings": "53.351117"
+      },
+      {
+        "storeID": "25",
+        "dealID": "mMpQDtPBTm5bE8iNFOXw54XeaqN99Wvtvno80BrI1vM%3D",
+        "price": "14.99",
+        "retailPrice": "29.99",
+        "savings": "50.016672"
+      },
+      {
+        "storeID": "2",
+        "dealID": "iKCcJOA74jfOob72DndCHqNGr6xPXoKW3xq%2B54Bnr6I%3D",
+        "price": "14.99",
+        "retailPrice": "29.99",
+        "savings": "50.016672"
+      },
+      {
+        "storeID": "3",
+        "dealID": "Ug9lX00BYejHM3ZjuMjVtB34Qc%2BL0Mv2X1DfLx7jUUQ%3D",
+        "price": "15.00",
+        "retailPrice": "29.99",
+        "savings": "49.983328"
+      },
+      {
+        "storeID": "1",
+        "dealID": "QJTZ8BroGigX4%2BcfWbtj2axWOSmzZlWOrSkvvXn%2FR1c%3D",
+        "price": "19.79",
+        "retailPrice": "44.99",
+        "savings": "56.012447"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
