@@ -7,6 +7,10 @@ let currentModalGameId = null;
 let searchDebounceTimer = null;
 let latestSearchSeq = 0;
 
+// Coda sequenziale per evitare race condition e conflitti HTTP 409 su GitHub
+let saveChain = Promise.resolve();
+let isSavingBacklog = false;
+
 const FALLBACK_GAME_THUMB =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -334,7 +338,6 @@ function bindEvents() {
     searchGames(false);
   });
 
-  // Chiude i suggerimenti cliccando fuori dal pannello di ricerca
   document.addEventListener("click", (e) => {
     const addPanel = document.querySelector(".add-panel");
     if (addPanel && !addPanel.contains(e.target)) {
@@ -351,26 +354,32 @@ function bindEvents() {
   // Salvataggio stato/data rilascio nel modal
   document.getElementById("releaseEditorForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const game = backlog.find((g) => g.id === currentModalGameId);
-    if (!game) return;
+    const targetId = currentModalGameId;
+    if (!targetId) return;
 
     const stateVal = document.getElementById("modalReleaseState").value;
     const dateVal = document.getElementById("modalReleaseDate").value.trim();
+    const gameTitle = backlog.find((g) => g.id === targetId)?.title || targetId;
 
-    game.released = stateVal === "released";
-    game.releaseDate = dateVal;
-    game.releaseNote = game.released ? "" : (dateVal || "TBA");
-    game.manualReleaseOverride = true;
+    await enqueueBacklogMutation(`Update release info for ${gameTitle}`, (list) => {
+      const game = list.find((g) => g.id === targetId);
+      if (!game) return list;
+      game.released = stateVal === "released";
+      game.releaseDate = dateVal;
+      game.releaseNote = game.released ? "" : (dateVal || "TBA");
+      game.manualReleaseOverride = true;
+      return list;
+    });
 
-    updateDealsModalHero(game);
-    await saveBacklog(`Update release info for ${game.title}`);
+    const updatedGame = backlog.find((g) => g.id === targetId);
+    if (updatedGame) updateDealsModalHero(updatedGame);
   });
 
   // Form aggiunta Keyshop / Store custom nel modal
   document.getElementById("customDealForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const game = backlog.find((g) => g.id === currentModalGameId);
-    if (!game) return;
+    const targetId = currentModalGameId;
+    if (!targetId) return;
 
     const storeName = document.getElementById("customStoreName").value.trim();
     const salePrice = parseFloat(document.getElementById("customSalePrice").value);
@@ -379,30 +388,37 @@ function bindEvents() {
 
     if (!storeName || isNaN(salePrice)) return;
 
-    if (!Array.isArray(game.customDeals)) {
-      game.customDeals = [];
-    }
-
     const newCustomId = `custom_${Date.now()}`;
-    game.customDeals.push({
-      id: newCustomId,
-      storeName,
-      price: salePrice,
-      retailPrice: retailRaw ? parseFloat(retailRaw) : null,
-      currency: "EUR",
-      url
+    const gameTitle = backlog.find((g) => g.id === targetId)?.title || targetId;
+    document.getElementById("customDealForm").reset();
+
+    await enqueueBacklogMutation(`Add ${storeName} price for ${gameTitle}`, (list) => {
+      const game = list.find((g) => g.id === targetId);
+      if (!game) return list;
+      if (!Array.isArray(game.customDeals)) {
+        game.customDeals = [];
+      }
+      game.customDeals.push({
+        id: newCustomId,
+        storeName,
+        price: salePrice,
+        retailPrice: retailRaw ? parseFloat(retailRaw) : null,
+        currency: "EUR",
+        url
+      });
+      const allDeals = getAllDeals(game);
+      const addedDeal = allDeals.find((d) => d.uid === newCustomId);
+      if (addedDeal) {
+        applyDealToGame(game, addedDeal);
+      }
+      return list;
     });
 
-    const allDeals = getAllDeals(game);
-    const addedDeal = allDeals.find((d) => d.uid === newCustomId);
-    if (addedDeal) {
-      applyDealToGame(game, addedDeal);
+    const updatedGame = backlog.find((g) => g.id === targetId);
+    if (updatedGame) {
+      updateDealsModalHero(updatedGame);
+      renderDealsModalContent(updatedGame);
     }
-
-    document.getElementById("customDealForm").reset();
-    updateDealsModalHero(game);
-    renderDealsModalContent(game);
-    await saveBacklog(`Add ${storeName} price for ${game.title}`);
   });
 
   // Ricarica e aggiornamento massivo
@@ -445,22 +461,32 @@ function bindEvents() {
   });
 }
 
-// --- GITHUB STORAGE API ---
-async function loadBacklog() {
+// --- GITHUB STORAGE API (CON CODA SEQUENZIALE E AUTO-RETRY SU 409) ---
+async function fetchRemoteBacklogFromGitHub() {
+  const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/backlog.json?t=${Date.now()}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${appConfig.token}`,
+      Accept: "application/vnd.github+json"
+    }
+  });
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+  const data = await res.json();
+  return {
+    sha: data.sha,
+    list: JSON.parse(decodeBase64UTF8(data.content))
+  };
+}
+
+async function loadBacklog(silent = false) {
+  if (isSavingBacklog && silent) return;
   const statusEl = document.getElementById("syncStatus");
   try {
     if (appConfig.owner && appConfig.repo && appConfig.token) {
-      const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/backlog.json?t=${Date.now()}`;
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${appConfig.token}`,
-          Accept: "application/vnd.github+json"
-        }
-      });
-      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-      const data = await res.json();
-      currentSha = data.sha;
-      backlog = JSON.parse(decodeBase64UTF8(data.content));
+      const remote = await fetchRemoteBacklogFromGitHub();
+      if (isSavingBacklog && silent) return;
+      currentSha = remote.sha;
+      backlog = remote.list;
       statusEl.textContent = "Sincronizzato";
       statusEl.className = "badge badge-green";
     } else {
@@ -471,59 +497,96 @@ async function loadBacklog() {
     }
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "Errore Sync";
-    statusEl.className = "badge badge-red";
+    if (!silent) {
+      statusEl.textContent = "Errore Sync";
+      statusEl.className = "badge badge-red";
+    }
   }
   render();
+  if (currentModalGameId) {
+    const activeModalGame = backlog.find((g) => g.id === currentModalGameId);
+    if (activeModalGame) {
+      updateDealsModalHero(activeModalGame);
+      renderDealsModalContent(activeModalGame);
+    }
+  }
 }
 
-async function saveBacklog(commitMessage = "Update backlog") {
+function enqueueBacklogMutation(commitMessage, mutatorFn) {
+  // 1. Applica subito la modifica in memoria e aggiorna la UI istantaneamente
+  const localCopy = JSON.parse(JSON.stringify(backlog));
+  backlog = mutatorFn(localCopy) || localCopy;
   render();
+
   if (!appConfig.owner || !appConfig.repo || !appConfig.token) {
     alert("Modifica salvata solo in memoria temporanea. Configura il Token GitHub per salvare in modo permanente.");
-    return;
+    return Promise.resolve();
   }
 
-  const statusEl = document.getElementById("syncStatus");
-  statusEl.textContent = "Salvataggio...";
-  statusEl.className = "badge badge-blue";
+  // 2. Accoda la scrittura su GitHub con auto-merge in caso di HTTP 409 (commit concorrente della Action)
+  saveChain = saveChain.then(async () => {
+    isSavingBacklog = true;
+    const statusEl = document.getElementById("syncStatus");
+    statusEl.textContent = "Salvataggio...";
+    statusEl.className = "badge badge-blue";
 
-  try {
-    const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/backlog.json`;
-    const body = {
-      message: commitMessage,
-      content: encodeBase64UTF8(JSON.stringify(backlog, null, 2)),
-      sha: currentSha
-    };
+    try {
+      let forceRefetch = !currentSha;
 
-    const res = await fetch(url, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${appConfig.token}`,
-        Accept: "application/vnd.github+json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
+      for (let attempt = 0; attempt < 4; attempt++) {
+        let targetList = backlog;
+        if (forceRefetch) {
+          const remote = await fetchRemoteBacklogFromGitHub();
+          currentSha = remote.sha;
+          targetList = mutatorFn(remote.list) || remote.list;
+          backlog = targetList;
+          render();
+        }
 
-    if (!res.ok) {
-      if (res.status === 409) {
-        await loadBacklog();
-        return;
+        const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/backlog.json`;
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${appConfig.token}`,
+            Accept: "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: commitMessage,
+            content: encodeBase64UTF8(JSON.stringify(targetList, null, 2)),
+            sha: currentSha
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          currentSha = data.content.sha;
+          statusEl.textContent = "Sincronizzato";
+          statusEl.className = "badge badge-green";
+          return;
+        }
+
+        if (res.status === 409) {
+          // Conflitto con la GitHub Action: riscarica il file aggiornato e riapplica la modifica
+          forceRefetch = true;
+          await new Promise((r) => setTimeout(r, 250));
+          continue;
+        }
+
+        throw new Error(`Errore salvataggio: ${res.status}`);
       }
-      throw new Error(`Errore salvataggio: ${res.status}`);
-    }
 
-    const data = await res.json();
-    currentSha = data.content.sha;
-    statusEl.textContent = "Sincronizzato";
-    statusEl.className = "badge badge-green";
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = "Errore Salvataggio";
-    statusEl.className = "badge badge-red";
-    alert("Impossibile salvare su GitHub. Controlla che il Token abbia permessi 'Contents: Read & Write'.");
-  }
+      throw new Error("Troppi conflitti simultanei su backlog.json");
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Errore Salvataggio";
+      statusEl.className = "badge badge-red";
+    } finally {
+      isSavingBacklog = false;
+    }
+  });
+
+  return saveChain;
 }
 
 // --- IS THERE ANY DEAL (ITAD) API ---
@@ -541,28 +604,50 @@ async function itadGetGameInfo(itadId) {
   return await res.json();
 }
 
+function extractItadPriceEntries(data) {
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.list)) return data.list;
+  return [];
+}
+
 async function itadFetchBulkPrices(itadIds) {
   if (!itadIds.length) return [];
-  const url = `https://api.isthereanydeal.com/games/prices/v3?key=${encodeURIComponent(appConfig.itadKey)}&country=IT`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(itadIds)
-  });
-  if (!res.ok) throw new Error(`ITAD prices HTTP ${res.status}`);
-  return await res.json();
+  const keyParam = encodeURIComponent(appConfig.itadKey);
+  const endpoints = [
+    `https://api.isthereanydeal.com/games/prices/v3?key=${keyParam}&country=IT`,
+    `https://api.isthereanydeal.com/games/prices/v2?key=${keyParam}&country=IT&nondeals=true`
+  ];
+
+  let lastErr = null;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(itadIds)
+      });
+      if (res.ok) {
+        const raw = await res.json();
+        return extractItadPriceEntries(raw);
+      }
+      lastErr = new Error(`ITAD prices HTTP ${res.status}`);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr || new Error("Endpoint prezzi ITAD non raggiungibile");
 }
 
 function normalizeItadDeals(rawDeals) {
   if (!Array.isArray(rawDeals)) return [];
   return rawDeals
-    .filter((d) => d && d.shop && d.price)
+    .filter((d) => d && d.shop && d.price && d.price.amount !== undefined)
     .map((d) => ({
       uid: `itad_${d.shop.id}`,
       shopId: d.shop.id,
       shopName: d.shop.name,
       price: d.price.amount,
-      retailPrice: d.regular ? d.regular.amount : d.price.amount,
+      retailPrice: d.regular && d.regular.amount !== undefined ? d.regular.amount : d.price.amount,
       savings: Math.round(d.cut || 0),
       currency: d.price.currency || "EUR",
       url: d.url || ""
@@ -712,7 +797,7 @@ async function searchGames(isLive = false) {
     const targetCategory = document.getElementById("addTargetCategory").value;
     document.getElementById("searchResults").classList.add("hidden");
     document.getElementById("searchInput").value = "";
-    backlog.push({
+    const newGame = {
       id: Date.now().toString(),
       title: query,
       thumb: null,
@@ -734,8 +819,8 @@ async function searchGames(isLive = false) {
       customDeals: [],
       free: false,
       status: "Not Played"
-    });
-    await saveBacklog(`Add ${query}`);
+    };
+    await enqueueBacklogMutation(`Add ${query}`, (list) => [...list, newGame]);
   });
   container.appendChild(tbaCard);
 }
@@ -745,7 +830,6 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
   document.getElementById("searchResults").classList.add("hidden");
   document.getElementById("searchInput").value = "";
 
-  // Tenta il recupero diretto nel browser, ma NON blocca mai l'aggiunta in caso di CORS
   const [infoRes, priceRes] = await Promise.allSettled([
     itadGetGameInfo(itadId),
     itadFetchBulkPrices([itadId])
@@ -759,7 +843,8 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
     : { released: false, releaseDate: "Sync EUR...", releaseDateISO: null };
 
   const priceEntry = Array.isArray(priceEntries) ? priceEntries.find((p) => p.id === itadId) : null;
-  const normalizedDeals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
+  const rawDeals = priceEntry ? (priceEntry.deals || priceEntry.offers || []) : [];
+  const normalizedDeals = normalizeItadDeals(rawDeals);
   const assetThumb = info.assets ? (info.assets.banner300 || info.assets.banner145 || info.assets.boxart) : null;
 
   const newGame = {
@@ -786,16 +871,40 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
     status: "Not Played"
   };
 
+  // Fallback istantaneo su CheapShark se i prezzi ITAD nel browser sono stati bloccati via CORS
+  if (normalizedDeals.length === 0) {
+    try {
+      const csSearch = await fetchCheapSharkSearch(newGame.title, 3);
+      const exactCs = csSearch.find(
+        (c) => normalizeTitleForMatch(c.external) === normalizeTitleForMatch(newGame.title)
+      ) || csSearch[0];
+      if (exactCs && exactCs.gameID) {
+        const csDetailRes = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${exactCs.gameID}`);
+        if (csDetailRes.ok) {
+          const csDetail = await csDetailRes.json();
+          if (Array.isArray(csDetail.deals) && csDetail.deals.length > 0) {
+            newGame.deals = csDetail.deals;
+            newGame.currency = "USD";
+            if (!newGame.thumb && csDetail.info?.thumb) {
+              newGame.thumb = csDetail.info.thumb;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      /* ignora fallback */
+    }
+  }
+
   const allDeals = getAllDeals(newGame);
   if (allDeals.length > 0) {
     applyDealToGame(newGame, allDeals[0]);
   }
 
-  backlog.push(newGame);
-  await saveBacklog(`Add ${newGame.title}`);
+  await enqueueBacklogMutation(`Add ${newGame.title}`, (list) => [...list, newGame]);
 
-  if (infoRes.status === "rejected" || priceRes.status === "rejected") {
-    setTimeout(() => loadBacklog(), 18000);
+  if (normalizedDeals.length === 0) {
+    setTimeout(() => loadBacklog(true), 20000);
   }
 }
 
@@ -837,9 +946,8 @@ async function addGameFromCheapShark(cheapsharkId) {
       applyDealToGame(newGame, allDeals[0]);
     }
 
-    backlog.push(newGame);
-    await saveBacklog(`Add ${newGame.title}`);
-    setTimeout(() => loadBacklog(), 18000);
+    await enqueueBacklogMutation(`Add ${newGame.title}`, (list) => [...list, newGame]);
+    setTimeout(() => loadBacklog(true), 20000);
   } catch (err) {
     alert("Errore nel recupero dettagli del gioco.");
   }
@@ -856,7 +964,7 @@ async function addManualGame(e) {
   if (!title) return;
 
   const isRel = releaseState === "released";
-  backlog.push({
+  const newGame = {
     id: Date.now().toString(),
     title,
     thumb: null,
@@ -879,69 +987,73 @@ async function addManualGame(e) {
     customDeals: [],
     free: false,
     status: "Not Played"
-  });
+  };
 
   document.getElementById("manualForm").reset();
   document.getElementById("manualForm").classList.add("hidden");
-  await saveBacklog(`Add manual ${title}`);
+  await enqueueBacklogMutation(`Add manual ${title}`, (list) => [...list, newGame]);
 }
 
 // --- AGGIORNAMENTO PREZZI E DATE ---
-async function refreshSingleGame(game, skipSave = false) {
-  try {
-    if (appConfig.itadKey && game.itadId) {
-      const [infoRes, priceRes] = await Promise.allSettled([
-        itadGetGameInfo(game.itadId),
-        itadFetchBulkPrices([game.itadId])
-      ]);
+async function fetchUpdatedFieldsForGame(game) {
+  const patch = {};
+  if (appConfig.itadKey && game.itadId) {
+    const [infoRes, priceRes] = await Promise.allSettled([
+      itadGetGameInfo(game.itadId),
+      itadFetchBulkPrices([game.itadId])
+    ]);
 
-      if (infoRes.status === "fulfilled") {
-        if (infoRes.value.assets) {
-          const assetThumb = infoRes.value.assets.banner300 || infoRes.value.assets.banner145 || infoRes.value.assets.boxart;
-          if (assetThumb) game.thumb = assetThumb;
-        }
-        if (!game.manualReleaseOverride) {
-          const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
-          game.released = rel.released;
-          game.releaseDate = rel.releaseDate;
-          game.releaseDateISO = rel.releaseDateISO;
-          game.releaseNote = rel.released ? "" : rel.releaseDate;
-        }
+    if (infoRes.status === "fulfilled") {
+      if (infoRes.value.assets) {
+        const assetThumb = infoRes.value.assets.banner300 || infoRes.value.assets.banner145 || infoRes.value.assets.boxart;
+        if (assetThumb) patch.thumb = assetThumb;
       }
-
-      if (priceRes.status === "fulfilled") {
-        const priceEntry = Array.isArray(priceRes.value)
-          ? priceRes.value.find((p) => p.id === game.itadId)
-          : null;
-        game.deals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
-        game.currency = "EUR";
-
-        const allDeals = getAllDeals(game);
-        const chosenDeal = findSelectedDeal(game, allDeals);
-        if (chosenDeal) {
-          applyDealToGame(game, chosenDeal);
-        }
-        if (!skipSave) await saveBacklog(`Refresh ${game.title}`);
-        return;
+      if (!game.manualReleaseOverride) {
+        const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
+        patch.released = rel.released;
+        patch.releaseDate = rel.releaseDate;
+        patch.releaseDateISO = rel.releaseDateISO;
+        patch.releaseNote = rel.released ? "" : rel.releaseDate;
       }
     }
 
-    if (game.cheapsharkId) {
-      const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
+    if (priceRes.status === "fulfilled") {
+      const priceEntry = Array.isArray(priceRes.value)
+        ? priceRes.value.find((p) => p.id === game.itadId)
+        : null;
+      const rawDeals = priceEntry ? (priceEntry.deals || priceEntry.offers || []) : [];
+      patch.deals = normalizeItadDeals(rawDeals);
+      patch.currency = "EUR";
+      return patch;
+    }
+  }
+
+  if (game.cheapsharkId) {
+    const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
+    if (res.ok) {
       const data = await res.json();
-      if (data.info && data.info.thumb) {
-        game.thumb = data.info.thumb;
-      }
-      game.deals = data.deals || [];
-      game.currency = "USD";
-
-      const allDeals = getAllDeals(game);
-      const chosenDeal = findSelectedDeal(game, allDeals);
-      if (chosenDeal) {
-        applyDealToGame(game, chosenDeal);
-      }
-      if (!skipSave) await saveBacklog(`Refresh ${game.title}`);
+      if (data.info && data.info.thumb) patch.thumb = data.info.thumb;
+      patch.deals = data.deals || [];
+      patch.currency = "USD";
     }
+  }
+  return patch;
+}
+
+async function refreshSingleGame(game) {
+  try {
+    const patch = await fetchUpdatedFieldsForGame(game);
+    await enqueueBacklogMutation(`Refresh ${game.title}`, (list) => {
+      const target = list.find((item) => item.id === game.id);
+      if (!target) return list;
+      Object.assign(target, patch);
+      const allDeals = getAllDeals(target);
+      const chosenDeal = findSelectedDeal(target, allDeals);
+      if (chosenDeal) {
+        applyDealToGame(target, chosenDeal);
+      }
+      return list;
+    });
   } catch (err) {
     console.warn(`Errore aggiornamento ${game.title}:`, err);
   }
@@ -955,13 +1067,32 @@ async function refreshAllPrices() {
   btn.disabled = true;
 
   try {
+    const patchesById = new Map();
     for (let i = 0; i < wishlistGames.length; i++) {
       btn.textContent = `Aggiorno ${i + 1}/${wishlistGames.length}...`;
-      await refreshSingleGame(wishlistGames[i], true);
-      await new Promise((r) => setTimeout(r, 250));
+      try {
+        const patch = await fetchUpdatedFieldsForGame(wishlistGames[i]);
+        patchesById.set(wishlistGames[i].id, patch);
+      } catch (e) { /* ignora singolo */ }
+      await new Promise((r) => setTimeout(r, 200));
     }
-    await saveBacklog("Refresh wishlist prices");
-    setTimeout(() => loadBacklog(), 18000);
+
+    await enqueueBacklogMutation("Refresh wishlist prices", (list) => {
+      list.forEach((item) => {
+        const patch = patchesById.get(item.id);
+        if (patch) {
+          Object.assign(item, patch);
+          const allDeals = getAllDeals(item);
+          const chosen = findSelectedDeal(item, allDeals);
+          if (chosen) {
+            applyDealToGame(item, chosen);
+          }
+        }
+      });
+      return list;
+    });
+
+    setTimeout(() => loadBacklog(true), 20000);
   } catch (err) {
     console.error(err);
   } finally {
@@ -1017,17 +1148,18 @@ async function resolveAndCacheMissingThumb(game) {
   if (game.thumb) return;
   try {
     const csResults = await fetchCheapSharkSearch(game.title, 8);
-    if (currentModalGameId !== game.id) return;
-
     const thumbMap = buildThumbnailLookup(csResults);
     const resolved = resolveSearchThumb({ title: game.title }, thumbMap);
     if (resolved && resolved !== FALLBACK_GAME_THUMB) {
-      game.thumb = resolved;
-      const coverEl = document.getElementById("dealsModalCover");
-      if (coverEl) {
-        coverEl.src = resolved;
+      if (currentModalGameId === game.id) {
+        const coverEl = document.getElementById("dealsModalCover");
+        if (coverEl) coverEl.src = resolved;
       }
-      await saveBacklog(`Cache cover art for ${game.title}`);
+      await enqueueBacklogMutation(`Cache cover art for ${game.title}`, (list) => {
+        const target = list.find((item) => item.id === game.id);
+        if (target) target.thumb = resolved;
+        return list;
+      });
     }
   } catch (err) {
     console.warn("Copertina non trovata per:", game.title, err);
@@ -1083,28 +1215,41 @@ function renderDealsModalContent(game) {
     `;
 
     row.querySelector('[data-action="select"]').addEventListener("click", async () => {
-      applyDealToGame(game, d);
-      updateDealsModalHero(game);
-      renderDealsModalContent(game);
-      await saveBacklog(`Select ${d.storeName} for ${game.title}`);
+      await enqueueBacklogMutation(`Select ${d.storeName} for ${game.title}`, (list) => {
+        const target = list.find((item) => item.id === game.id);
+        if (target) applyDealToGame(target, d);
+        return list;
+      });
+      const updated = backlog.find((item) => item.id === game.id);
+      if (updated) {
+        updateDealsModalHero(updated);
+        renderDealsModalContent(updated);
+      }
     });
 
     if (d.isCustom) {
       row.querySelector('[data-action="remove"]').addEventListener("click", async () => {
-        game.customDeals = (game.customDeals || []).filter((c) => c.id !== d.uid);
-        const remaining = getAllDeals(game);
-        if (remaining.length > 0) {
-          applyDealToGame(game, remaining[0]);
-        } else {
-          game.selectedStoreId = null;
-          game.salePrice = null;
-          game.retailPrice = null;
-          game.discount = 0;
-          game.bestStore = "";
+        await enqueueBacklogMutation(`Remove ${d.storeName} from ${game.title}`, (list) => {
+          const target = list.find((item) => item.id === game.id);
+          if (!target) return list;
+          target.customDeals = (target.customDeals || []).filter((c) => c.id !== d.uid);
+          const remaining = getAllDeals(target);
+          if (remaining.length > 0) {
+            applyDealToGame(target, remaining[0]);
+          } else {
+            target.selectedStoreId = null;
+            target.salePrice = null;
+            target.retailPrice = null;
+            target.discount = 0;
+            target.bestStore = "";
+          }
+          return list;
+        });
+        const updated = backlog.find((item) => item.id === game.id);
+        if (updated) {
+          updateDealsModalHero(updated);
+          renderDealsModalContent(updated);
         }
-        updateDealsModalHero(game);
-        renderDealsModalContent(game);
-        await saveBacklog(`Remove ${d.storeName} from ${game.title}`);
       });
     }
 
@@ -1288,8 +1433,12 @@ function render() {
     tr.querySelector('[data-action="deals"]').addEventListener("click", () => openDealsModal(g, false));
     tr.querySelector('[data-action="release"]').addEventListener("click", () => openDealsModal(g, true));
     tr.querySelector('[data-action="hype"]').addEventListener("change", (e) => {
-      g.hype = e.target.checked;
-      saveBacklog(`Toggle hype ${g.title}`);
+      const checked = e.target.checked;
+      enqueueBacklogMutation(`Toggle hype ${g.title}`, (list) => {
+        const target = list.find((item) => item.id === g.id);
+        if (target) target.hype = checked;
+        return list;
+      });
     });
 
     const storeSelect = tr.querySelector('[data-action="store"]');
@@ -1298,8 +1447,11 @@ function render() {
         const chosenUid = e.target.value;
         const chosenDeal = allDeals.find((d) => d.uid === chosenUid);
         if (chosenDeal) {
-          applyDealToGame(g, chosenDeal);
-          saveBacklog(`Select ${g.bestStore} for ${g.title}`);
+          enqueueBacklogMutation(`Select ${chosenDeal.storeName} for ${g.title}`, (list) => {
+            const target = list.find((item) => item.id === g.id);
+            if (target) applyDealToGame(target, chosenDeal);
+            return list;
+          });
         }
       });
     }
@@ -1308,14 +1460,18 @@ function render() {
       tr.querySelector('[data-action="refresh"]').addEventListener("click", () => refreshSingleGame(g));
     }
     tr.querySelector('[data-action="own"]').addEventListener("click", () => {
-      g.category = "owned";
-      g.status = "Not Played";
-      saveBacklog(`Move ${g.title} to Owned`);
+      enqueueBacklogMutation(`Move ${g.title} to Owned`, (list) => {
+        const target = list.find((item) => item.id === g.id);
+        if (target) {
+          target.category = "owned";
+          target.status = "Not Played";
+        }
+        return list;
+      });
     });
     tr.querySelector('[data-action="delete"]').addEventListener("click", () => {
       if (confirm(`Eliminare "${g.title}"?`)) {
-        backlog = backlog.filter((item) => item.id !== g.id);
-        saveBacklog(`Delete ${g.title}`);
+        enqueueBacklogMutation(`Delete ${g.title}`, (list) => list.filter((item) => item.id !== g.id));
       }
     });
 
@@ -1361,21 +1517,32 @@ function render() {
       `;
 
       tr.querySelector('[data-action="hype"]').addEventListener("change", (e) => {
-        g.hype = e.target.checked;
-        saveBacklog(`Toggle hype ${g.title}`);
+        const checked = e.target.checked;
+        enqueueBacklogMutation(`Toggle hype ${g.title}`, (list) => {
+          const target = list.find((item) => item.id === g.id);
+          if (target) target.hype = checked;
+          return list;
+        });
       });
       tr.querySelector('[data-action="free"]').addEventListener("change", (e) => {
-        g.free = e.target.value === "true";
-        saveBacklog(`Update free status ${g.title}`);
+        const isFree = e.target.value === "true";
+        enqueueBacklogMutation(`Update free status ${g.title}`, (list) => {
+          const target = list.find((item) => item.id === g.id);
+          if (target) target.free = isFree;
+          return list;
+        });
       });
       tr.querySelector('[data-action="status"]').addEventListener("change", (e) => {
-        g.status = e.target.value;
-        saveBacklog(`Update status ${g.title} to ${g.status}`);
+        const nextStatus = e.target.value;
+        enqueueBacklogMutation(`Update status ${g.title} to ${nextStatus}`, (list) => {
+          const target = list.find((item) => item.id === g.id);
+          if (target) target.status = nextStatus;
+          return list;
+        });
       });
       tr.querySelector('[data-action="delete"]').addEventListener("click", () => {
         if (confirm(`Eliminare "${g.title}"?`)) {
-          backlog = backlog.filter((item) => item.id !== g.id);
-          saveBacklog(`Delete ${g.title}`);
+          enqueueBacklogMutation(`Delete ${g.title}`, (list) => list.filter((item) => item.id !== g.id));
         }
       });
 
