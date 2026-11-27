@@ -18562,7 +18562,7 @@
     "bestStore": "",
     "deals": [],
     "customDeals": [],
-    "free": true,
+    "free": false,
     "status": "Hold",
     "schemaVersion": 2
   },
