@@ -35,6 +35,42 @@ function decodeBase64UTF8(base64) {
   return new TextDecoder().decode(bytes);
 }
 
+// --- HELPER STATO RILASCIO ---
+function isGameReleased(game) {
+  if (typeof game.released === "boolean") {
+    return game.released;
+  }
+  if (game.releaseNote && game.releaseNote.trim() !== "") {
+    return false;
+  }
+  return game.salePrice !== null && game.salePrice !== undefined;
+}
+
+function getReleaseDateText(game) {
+  if (typeof game.releaseDate === "string") {
+    return game.releaseDate.trim();
+  }
+  if (typeof game.releaseNote === "string") {
+    return game.releaseNote.replace(/^Rilascio:\s*/i, "").trim();
+  }
+  return "";
+}
+
+function getReleaseBadgeInfo(game) {
+  const released = isGameReleased(game);
+  const dateText = getReleaseDateText(game);
+  if (released) {
+    return {
+      text: dateText ? `Rilasciato (${dateText})` : "Rilasciato",
+      badgeClass: "badge-blue"
+    };
+  }
+  return {
+    text: dateText ? `Non Rilasciato · ${dateText}` : "Non Rilasciato · TBA",
+    badgeClass: "badge-warn"
+  };
+}
+
 // --- UNIFICAZIONE E ORDINAMENTO OFFERTE (UFFICIALI + KEYSHOP) ---
 function getAllDeals(game) {
   const officialDeals = (Array.isArray(game.deals) ? game.deals : []).map((d) => ({
@@ -98,7 +134,6 @@ function applyDealToGame(game, deal) {
   game.retailPrice = deal.retailPrice;
   game.discount = deal.savings;
   game.bestStore = deal.storeName;
-  game.releaseNote = "";
 }
 
 function getKeyshopSearchLinks(title) {
@@ -110,7 +145,7 @@ function getKeyshopSearchLinks(title) {
     { name: "Kinguin", url: `https://www.kinguin.net/listing?phrase=${q}`, highlight: false },
     { name: "G2A", url: `https://www.g2a.com/search?query=${q}`, highlight: false },
     { name: "GG.deals", url: `https://gg.deals/games/?title=${q}`, highlight: false },
-    { name: "AllKeyShop", url: `https://www.allkeyshop.com/blog/catalogue/search-${q}/`, highlight: false }
+    { name: "Steam Store", url: `https://store.steampowered.com/search/?term=${q}`, highlight: false }
   ];
 }
 
@@ -151,6 +186,22 @@ function bindEvents() {
     document.getElementById("manualForm").classList.toggle("hidden");
   });
   document.getElementById("manualForm").addEventListener("submit", addManualGame);
+
+  // Salvataggio stato/data rilascio nel modal
+  document.getElementById("releaseEditorForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const game = backlog.find((g) => g.id === currentModalGameId);
+    if (!game) return;
+
+    const stateVal = document.getElementById("modalReleaseState").value;
+    const dateVal = document.getElementById("modalReleaseDate").value.trim();
+
+    game.released = stateVal === "released";
+    game.releaseDate = dateVal;
+    game.releaseNote = game.released ? "" : (dateVal || "TBA");
+
+    await saveBacklog(`Update release info for ${game.title}`);
+  });
 
   // Form aggiunta Keyshop / Store custom nel modal
   document.getElementById("customDealForm").addEventListener("submit", async (e) => {
@@ -243,7 +294,6 @@ async function loadBacklog() {
       statusEl.textContent = "Sincronizzato";
       statusEl.className = "badge badge-green";
     } else {
-      // Fallback in sola lettura dal file locale
       const res = await fetch(`./backlog.json?t=${Date.now()}`);
       backlog = await res.json();
       statusEl.textContent = "Solo Lettura (Configura Token)";
@@ -328,13 +378,8 @@ async function searchGames() {
   container.innerHTML = "<p class='hint'>Ricerca su Steam, Epic, GOG e altri store...</p>";
 
   try {
-    const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=8`);
+    const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=7`);
     const results = await res.json();
-
-    if (!results.length) {
-      container.innerHTML = "<p class='hint'>Nessun risultato trovato. Usa '+ Manuale / TBA' per giochi non ancora annunciati.</p>";
-      return;
-    }
 
     container.innerHTML = "";
     results.forEach((item) => {
@@ -350,6 +395,42 @@ async function searchGames() {
       card.addEventListener("click", () => addGameFromApi(item.gameID));
       container.appendChild(card);
     });
+
+    // Card rapida per titoli non ancora prezzati sugli store (es. Persona 6 / TBA)
+    const tbaCard = document.createElement("div");
+    tbaCard.className = "search-card search-card-tba";
+    tbaCard.innerHTML = `
+      <div class="search-card-info">
+        <div class="search-card-title">+ Aggiungi "${query}" (Non Rilasciato / TBA)</div>
+        <div class="search-card-price" style="color: var(--amber-text);">Salva subito senza prezzo store</div>
+      </div>
+    `;
+    tbaCard.addEventListener("click", async () => {
+      const targetCategory = document.getElementById("addTargetCategory").value;
+      document.getElementById("searchResults").classList.add("hidden");
+      document.getElementById("searchInput").value = "";
+      backlog.push({
+        id: Date.now().toString(),
+        title: query,
+        category: targetCategory,
+        hype: false,
+        cheapsharkId: null,
+        selectedStoreId: null,
+        released: false,
+        releaseDate: "TBA",
+        releaseNote: "TBA",
+        salePrice: null,
+        retailPrice: null,
+        discount: 0,
+        bestStore: "",
+        deals: [],
+        customDeals: [],
+        free: false,
+        status: "Not Played"
+      });
+      await saveBacklog(`Add TBA ${query}`);
+    });
+    container.appendChild(tbaCard);
   } catch (err) {
     container.innerHTML = "<p class='hint'>Errore durante la ricerca API.</p>";
   }
@@ -371,6 +452,8 @@ async function addGameFromApi(cheapsharkId) {
       hype: false,
       cheapsharkId: cheapsharkId.toString(),
       selectedStoreId: null,
+      released: true,
+      releaseDate: "",
       releaseNote: "",
       salePrice: null,
       retailPrice: null,
@@ -397,12 +480,14 @@ async function addGameFromApi(cheapsharkId) {
 async function addManualGame(e) {
   e.preventDefault();
   const title = document.getElementById("manualTitle").value.trim();
-  const releaseNote = document.getElementById("manualNote").value.trim();
+  const releaseState = document.getElementById("manualReleaseState").value;
+  const releaseDate = document.getElementById("manualNote").value.trim();
   const category = document.getElementById("manualCategory").value;
   const hype = document.getElementById("manualHype").checked;
 
   if (!title) return;
 
+  const isRel = releaseState === "released";
   backlog.push({
     id: Date.now().toString(),
     title,
@@ -410,7 +495,9 @@ async function addManualGame(e) {
     hype,
     cheapsharkId: null,
     selectedStoreId: null,
-    releaseNote: releaseNote || "To Be Announced",
+    released: isRel,
+    releaseDate: releaseDate || (isRel ? "" : "TBA"),
+    releaseNote: isRel ? "" : (releaseDate || "TBA"),
     salePrice: null,
     retailPrice: null,
     discount: 0,
@@ -457,7 +544,6 @@ async function refreshAllPrices() {
   for (let i = 0; i < targets.length; i++) {
     btn.textContent = `Aggiorno ${i + 1}/${targets.length}...`;
     await refreshSingleGame(targets[i], true);
-    // Pausa di 300ms per evitare rate-limit
     await new Promise((r) => setTimeout(r, 300));
   }
 
@@ -522,7 +608,6 @@ function renderDealsModalContent(game) {
           game.retailPrice = null;
           game.discount = 0;
           game.bestStore = "";
-          game.releaseNote = "To Be Announced";
         }
         renderDealsModalContent(game);
         await saveBacklog(`Remove ${d.storeName} from ${game.title}`);
@@ -533,17 +618,21 @@ function renderDealsModalContent(game) {
   });
 }
 
-async function openDealsModal(game) {
+async function openDealsModal(game, focusRelease = false) {
   currentModalGameId = game.id;
   const modal = document.getElementById("dealsModal");
   const titleEl = document.getElementById("dealsModalTitle");
   const linksEl = document.getElementById("quickSearchLinks");
   const bodyEl = document.getElementById("dealsModalBody");
 
-  titleEl.textContent = `Confronto Store: ${game.title}`;
+  titleEl.textContent = `Dettagli & Store: ${game.title}`;
   document.getElementById("customDealForm").reset();
 
-  // Popola link rapidi di ricerca Keyshop
+  // Popola editor stato/data di rilascio
+  document.getElementById("modalReleaseState").value = isGameReleased(game) ? "released" : "unreleased";
+  document.getElementById("modalReleaseDate").value = getReleaseDateText(game);
+
+  // Popola link rapidi di ricerca Keyshop & Steam
   linksEl.innerHTML = "";
   getKeyshopSearchLinks(game.title).forEach((site) => {
     const a = document.createElement("a");
@@ -557,6 +646,10 @@ async function openDealsModal(game) {
 
   modal.classList.remove("hidden");
 
+  if (focusRelease) {
+    document.getElementById("modalReleaseDate").focus();
+  }
+
   if (game.cheapsharkId) {
     bodyEl.innerHTML = "<p class='hint'>Aggiornamento prezzi ufficiali in corso...</p>";
     await refreshSingleGame(game, true);
@@ -564,6 +657,24 @@ async function openDealsModal(game) {
   }
 
   renderDealsModalContent(game);
+}
+
+// --- HELPER COLOR CODING OWNED ---
+function getOwnedStatusSelectClass(status) {
+  switch (status) {
+    case "Ongoing":
+    case "Playing":
+      return "select-blue";
+    case "Hold":
+      return "select-amber";
+    case "Dropped":
+      return "select-red";
+    case "Completed":
+      return "select-green";
+    case "Not Played":
+    default:
+      return "select-grey";
+  }
 }
 
 // --- RENDERING TABELLE ---
@@ -591,23 +702,36 @@ function render() {
       const allDeals = getAllDeals(g);
       const activeDeal = findSelectedDeal(g, allDeals);
 
+      const released = isGameReleased(g);
+      const releaseInfo = getReleaseBadgeInfo(g);
+
       const retailVal = activeDeal ? activeDeal.retailPrice : g.retailPrice;
       const saleVal = activeDeal ? activeDeal.price : g.salePrice;
       const discountVal = activeDeal ? activeDeal.savings : g.discount;
 
-      const basePriceText = retailVal !== null ? `$${retailVal.toFixed(2)}` : "N/D";
+      // BASE PRICE: sempre solo prezzo base o N/D (mai sovrascritto dallo stato rilascio)
+      const basePriceHtml = retailVal !== null && retailVal !== undefined
+        ? `<span class="badge badge-blue">$${retailVal.toFixed(2)}</span>`
+        : `<span class="badge badge-red">N/D</span>`;
 
+      // PRICE: Verde se scontato, Ambra se non rilasciato (preorder), Azzurro se rilasciato a prezzo pieno, Rosso se N/D
       let priceHtml = "";
-      if (saleVal !== null) {
-        const badgeClass = discountVal > 0 ? "badge-green" : "badge-blue";
-        priceHtml = `<span class="badge ${badgeClass}">$${saleVal.toFixed(2)}</span>`;
+      if (saleVal !== null && saleVal !== undefined) {
+        let priceBadgeClass = "badge-blue";
+        if (discountVal > 0) {
+          priceBadgeClass = "badge-green";
+        } else if (!released) {
+          priceBadgeClass = "badge-warn";
+        }
+        priceHtml = `<span class="badge ${priceBadgeClass}">$${saleVal.toFixed(2)}</span>`;
       } else {
-        priceHtml = `<span class="badge badge-warn">${g.releaseNote || "N/D"}</span>`;
+        priceHtml = `<span class="badge badge-red">N/D</span>`;
       }
 
-      const discountHtml = retailVal !== null
+      // % DISCOUNT: Verde se > 0%, Azzurro se 0%, Rosso se N/D
+      const discountHtml = retailVal !== null && retailVal !== undefined
         ? `<span class="badge ${discountVal > 0 ? "badge-green" : "badge-blue"}">${discountVal}%</span>`
-        : "N/D";
+        : `<span class="badge badge-red">N/D</span>`;
 
       let storeHtml = g.bestStore || "-";
       if (allDeals.length > 0) {
@@ -621,7 +745,8 @@ function render() {
       tr.innerHTML = `
         <td><a class="game-link" data-action="deals">${g.title}</a></td>
         <td class="center"><input type="checkbox" ${g.hype ? "checked" : ""} data-action="hype"></td>
-        <td>${basePriceText}</td>
+        <td><span class="badge badge-clickable ${releaseInfo.badgeClass}" data-action="release" title="Clicca per modificare stato/data di rilascio">${releaseInfo.text}</span></td>
+        <td>${basePriceHtml}</td>
         <td>${priceHtml}</td>
         <td>${discountHtml}</td>
         <td>${storeHtml}</td>
@@ -634,7 +759,8 @@ function render() {
         </td>
       `;
 
-      tr.querySelector('[data-action="deals"]').addEventListener("click", () => openDealsModal(g));
+      tr.querySelector('[data-action="deals"]').addEventListener("click", () => openDealsModal(g, false));
+      tr.querySelector('[data-action="release"]').addEventListener("click", () => openDealsModal(g, true));
       tr.querySelector('[data-action="hype"]').addEventListener("change", (e) => {
         g.hype = e.target.checked;
         saveBacklog(`Toggle hype ${g.title}`);
@@ -679,20 +805,23 @@ function render() {
     .filter((g) => (statusFilter === "ALL" ? true : g.status === statusFilter))
     .forEach((g) => {
       const tr = document.createElement("tr");
-      const statuses = ["Not Played", "Playing", "Hold", "Dropped", "Completed"];
+      const currentStatus = g.status === "Playing" ? "Ongoing" : (g.status || "Not Played");
+      const statuses = ["Not Played", "Ongoing", "Hold", "Dropped", "Completed"];
+      const statusClass = getOwnedStatusSelectClass(currentStatus);
+      const freeClass = g.free ? "select-green" : "select-red";
 
       tr.innerHTML = `
         <td><strong>${g.title}</strong></td>
         <td class="center"><input type="checkbox" ${g.hype ? "checked" : ""} data-action="hype"></td>
         <td>
-          <select data-action="free">
+          <select class="status-select ${freeClass}" data-action="free">
             <option value="false" ${!g.free ? "selected" : ""}>No</option>
             <option value="true" ${g.free ? "selected" : ""}>Yes</option>
           </select>
         </td>
         <td>
-          <select data-action="status">
-            ${statuses.map((s) => `<option value="${s}" ${g.status === s ? "selected" : ""}>${s}</option>`).join("")}
+          <select class="status-select ${statusClass}" data-action="status">
+            ${statuses.map((s) => `<option value="${s}" ${currentStatus === s ? "selected" : ""}>${s}</option>`).join("")}
           </select>
         </td>
         <td class="actions-cell">
