@@ -23731,5 +23731,67 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814153998",
+    "title": "The Elder Scrolls III: Morrowind® Game of the Year Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f4b1-72a4-8b98-1b65a43ec5bb/banner400.jpg?t=1786642518",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f4b1-72a4-8b98-1b65a43ec5bb",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_15",
+    "released": true,
+    "releaseDate": "29 apr 2002",
+    "releaseDateISO": "2002-04-29",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 3.29,
+    "retailPrice": 14.99,
+    "discount": 78,
+    "bestStore": "Fanatical",
+    "deals": [
+      {
+        "storeID": "15",
+        "dealID": "SNZsXANRclXOEsw83kLLj18m%2FqHobTXCjrWodRp5P9c%3D",
+        "price": "3.29",
+        "retailPrice": "14.99",
+        "savings": "78.052035"
+      },
+      {
+        "storeID": "1",
+        "dealID": "3A409IiM3fTKAy2BTKG8mR0DjOcZlrPLA3dOcx%2BaNZQ%3D",
+        "price": "3.74",
+        "retailPrice": "14.99",
+        "savings": "75.050033"
+      },
+      {
+        "storeID": "7",
+        "dealID": "2wpn%2FeIZ2hP6Rem0f0OWbK6JEkdlj5xI2W%2BqWd4Lfwk%3D",
+        "price": "3.75",
+        "retailPrice": "14.99",
+        "savings": "74.983322"
+      },
+      {
+        "storeID": "27",
+        "dealID": "2L0ZLEzQZamiYDfABM7zTVx6kwByvG5WrSE%2BZjq4UGs%3D",
+        "price": "13.49",
+        "retailPrice": "14.99",
+        "savings": "10.006671"
+      },
+      {
+        "storeID": "25",
+        "dealID": "vbzcNz4KDdWpNGyUD8tydigYzqz5qiK%2FnY95SgoOweY%3D",
+        "price": "14.99",
+        "retailPrice": "14.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
