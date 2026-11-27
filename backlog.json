@@ -23554,5 +23554,60 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813912248",
+    "title": "Resident Evil 0 HD Remaster",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f85f-70cb-9323-8554024f67c2/banner400.jpg?t=1788951915",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f85f-70cb-9323-8554024f67c2",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "19 gen 2016",
+    "releaseDateISO": "2016-01-19",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 4.99,
+    "retailPrice": 19.99,
+    "discount": 75,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "21",
+        "dealID": "pEHyf%2BTLojJNIt3fV6XG2NPuKmlv6uu4EIvAv1Q1NWQ%3D",
+        "price": "4.99",
+        "retailPrice": "19.99",
+        "savings": "75.037519"
+      },
+      {
+        "storeID": "30",
+        "dealID": "hWPpR6uisoAbYjMrgBByUJglc4pQnQyXqBZbM6ww7QQ%3D",
+        "price": "4.99",
+        "retailPrice": "19.99",
+        "savings": "75.037519"
+      },
+      {
+        "storeID": "2",
+        "dealID": "8Gi1COanqW8U1awOxXuUuStPBKwCyH3esRKG6UJmgDA%3D",
+        "price": "5.00",
+        "retailPrice": "19.99",
+        "savings": "74.987494"
+      },
+      {
+        "storeID": "27",
+        "dealID": "CStnYdNwPkqTGF19roPzQF2p43W0zrzFlZerAbed36I%3D",
+        "price": "17.99",
+        "retailPrice": "19.99",
+        "savings": "10.005003"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
