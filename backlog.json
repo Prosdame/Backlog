@@ -18302,7 +18302,7 @@
     "bestStore": "",
     "deals": [],
     "customDeals": [],
-    "free": true,
+    "free": false,
     "status": "Not Played",
     "schemaVersion": 2
   },
