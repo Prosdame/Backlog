@@ -34,6 +34,31 @@ function decodeBase64UTF8(base64) {
   return new TextDecoder().decode(bytes);
 }
 
+// --- ORDINAMENTO E SELEZIONE OFFERTE ---
+function getSortedDeals(deals) {
+  if (!Array.isArray(deals)) return [];
+  return [...deals].sort((a, b) => {
+    const priceA = parseFloat(a.price);
+    const priceB = parseFloat(b.price);
+    if (Math.abs(priceA - priceB) > 0.001) {
+      return priceA - priceB;
+    }
+    const nameA = storesMap[a.storeID] || `Store #${a.storeID}`;
+    const nameB = storesMap[b.storeID] || `Store #${b.storeID}`;
+    return nameA.localeCompare(nameB);
+  });
+}
+
+function applyDealToGame(game, deal) {
+  if (!deal) return;
+  game.selectedStoreId = deal.storeID.toString();
+  game.salePrice = parseFloat(deal.price);
+  game.retailPrice = parseFloat(deal.retailPrice);
+  game.discount = Math.round(parseFloat(deal.savings));
+  game.bestStore = storesMap[deal.storeID] || `Store #${deal.storeID}`;
+  game.releaseNote = "";
+}
+
 // --- INIZIALIZZAZIONE ---
 document.addEventListener("DOMContentLoaded", async () => {
   bindEvents();
@@ -167,7 +192,6 @@ async function saveBacklog(commitMessage = "Update backlog") {
     });
 
     if (!res.ok) {
-      // In caso di conflitto SHA, ricarica SHA aggiornato e riprova una volta
       if (res.status === 409) {
         await loadBacklog();
         return;
@@ -244,7 +268,8 @@ async function addGameFromApi(cheapsharkId) {
   try {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${cheapsharkId}`);
     const data = await res.json();
-    const bestDeal = data.deals && data.deals.length ? data.deals[0] : null;
+    const sortedDeals = getSortedDeals(data.deals || []);
+    const bestDeal = sortedDeals.length ? sortedDeals[0] : null;
 
     const newGame = {
       id: Date.now().toString(),
@@ -252,12 +277,13 @@ async function addGameFromApi(cheapsharkId) {
       category: targetCategory,
       hype: false,
       cheapsharkId: cheapsharkId.toString(),
+      selectedStoreId: bestDeal ? bestDeal.storeID.toString() : null,
       releaseNote: "",
       salePrice: bestDeal ? parseFloat(bestDeal.price) : null,
       retailPrice: bestDeal ? parseFloat(bestDeal.retailPrice) : null,
       discount: bestDeal ? Math.round(parseFloat(bestDeal.savings)) : 0,
       bestStore: bestDeal ? (storesMap[bestDeal.storeID] || "Store") : "",
-      deals: data.deals || [],
+      deals: sortedDeals,
       free: false,
       status: "Not Played"
     };
@@ -284,6 +310,7 @@ async function addManualGame(e) {
     category,
     hype,
     cheapsharkId: null,
+    selectedStoreId: null,
     releaseNote: releaseNote || "To Be Announced",
     salePrice: null,
     retailPrice: null,
@@ -304,14 +331,14 @@ async function refreshSingleGame(game, skipSave = false) {
   try {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
     const data = await res.json();
-    const bestDeal = data.deals && data.deals.length ? data.deals[0] : null;
-    if (bestDeal) {
-      game.salePrice = parseFloat(bestDeal.price);
-      game.retailPrice = parseFloat(bestDeal.retailPrice);
-      game.discount = Math.round(parseFloat(bestDeal.savings));
-      game.bestStore = storesMap[bestDeal.storeID] || "Store";
-      game.deals = data.deals;
-      game.releaseNote = "";
+    const sortedDeals = getSortedDeals(data.deals || []);
+    game.deals = sortedDeals;
+
+    if (sortedDeals.length > 0) {
+      const preferredDeal = game.selectedStoreId
+        ? sortedDeals.find((d) => d.storeID.toString() === game.selectedStoreId.toString())
+        : null;
+      applyDealToGame(game, preferredDeal || sortedDeals[0]);
     }
     if (!skipSave) await saveBacklog(`Refresh ${game.title}`);
   } catch (err) {
@@ -358,13 +385,14 @@ async function openDealsModal(game) {
   await refreshSingleGame(game, true);
   render();
 
-  if (!game.deals || !game.deals.length) {
+  const sortedDeals = getSortedDeals(game.deals);
+  if (!sortedDeals.length) {
     bodyEl.innerHTML = "<p class='hint'>Nessuna offerta attiva trovata sugli store.</p>";
     return;
   }
 
   bodyEl.innerHTML = "";
-  game.deals.forEach((d) => {
+  sortedDeals.forEach((d) => {
     const storeName = storesMap[d.storeID] || `Store #${d.storeID}`;
     const savings = Math.round(parseFloat(d.savings));
     const row = document.createElement("div");
@@ -372,10 +400,10 @@ async function openDealsModal(game) {
     row.innerHTML = `
       <div>
         <strong>${storeName}</strong>
-        <div class="hint">Base: $${d.retailPrice}</div>
+        <div class="hint">Base: $${parseFloat(d.retailPrice).toFixed(2)}</div>
       </div>
       <div style="display:flex; align-items:center; gap:0.6rem;">
-        <span class="badge ${savings > 0 ? "badge-green" : "badge-blue"}">$${d.price} (-${savings}%)</span>
+        <span class="badge ${savings > 0 ? "badge-green" : "badge-blue"}">$${parseFloat(d.price).toFixed(2)} (-${savings}%)</span>
         <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Apri</a>
       </div>
     `;
@@ -405,31 +433,58 @@ function render() {
     .filter((g) => (!onlyHype ? true : g.hype))
     .forEach((g) => {
       const tr = document.createElement("tr");
+      const sortedDeals = getSortedDeals(g.deals);
 
-      let stateHtml = "";
-      if (g.salePrice !== null) {
-        const badgeClass = g.discount > 0 ? "badge-green" : "badge-blue";
-        stateHtml = `<span class="badge ${badgeClass}">$${g.salePrice.toFixed(2)}</span>`;
-      } else {
-        stateHtml = `<span class="badge badge-warn">${g.releaseNote || "N/D"}</span>`;
+      // Se ci sono offerte salvate, usa lo store selezionato (o il più economico)
+      let activeDeal = null;
+      if (sortedDeals.length > 0) {
+        activeDeal = g.selectedStoreId
+          ? sortedDeals.find((d) => d.storeID.toString() === g.selectedStoreId.toString())
+          : null;
+        if (!activeDeal) activeDeal = sortedDeals[0];
       }
 
-      const basePriceText = g.retailPrice !== null ? `$${g.retailPrice.toFixed(2)}` : "N/D";
-      const discountHtml = g.retailPrice !== null
-        ? `<span class="badge ${g.discount > 0 ? "badge-green" : "badge-blue"}">${g.discount}%</span>`
+      const retailVal = activeDeal ? parseFloat(activeDeal.retailPrice) : g.retailPrice;
+      const saleVal = activeDeal ? parseFloat(activeDeal.price) : g.salePrice;
+      const discountVal = activeDeal ? Math.round(parseFloat(activeDeal.savings)) : g.discount;
+
+      const basePriceText = retailVal !== null ? `$${retailVal.toFixed(2)}` : "N/D";
+
+      let priceHtml = "";
+      if (saleVal !== null) {
+        const badgeClass = discountVal > 0 ? "badge-green" : "badge-blue";
+        priceHtml = `<span class="badge ${badgeClass}">$${saleVal.toFixed(2)}</span>`;
+      } else {
+        priceHtml = `<span class="badge badge-warn">${g.releaseNote || "N/D"}</span>`;
+      }
+
+      const discountHtml = retailVal !== null
+        ? `<span class="badge ${discountVal > 0 ? "badge-green" : "badge-blue"}">${discountVal}%</span>`
         : "N/D";
+
+      let storeHtml = g.bestStore || "-";
+      if (sortedDeals.length > 0) {
+        const optionsHtml = sortedDeals.map((d) => {
+          const sName = storesMap[d.storeID] || `Store #${d.storeID}`;
+          const isSelected = d.storeID.toString() === activeDeal.storeID.toString();
+          return `<option value="${d.storeID}" ${isSelected ? "selected" : ""}>${sName} ($${parseFloat(d.price).toFixed(2)})</option>`;
+        }).join("");
+        storeHtml = `<select class="store-select" data-action="store">${optionsHtml}</select>`;
+      }
 
       tr.innerHTML = `
         <td><a class="game-link" data-action="deals">${g.title}</a></td>
         <td class="center"><input type="checkbox" ${g.hype ? "checked" : ""} data-action="hype"></td>
-        <td>${stateHtml}</td>
         <td>${basePriceText}</td>
+        <td>${priceHtml}</td>
         <td>${discountHtml}</td>
-        <td>${g.bestStore || "-"}</td>
+        <td>${storeHtml}</td>
         <td class="actions-cell">
-          ${g.cheapsharkId ? `<button class="btn btn-sm btn-secondary" data-action="refresh" title="Aggiorna prezzo">&#8635;</button>` : ""}
-          <button class="btn btn-sm btn-success" data-action="own">Acquistato</button>
-          <button class="btn btn-sm btn-danger" data-action="delete">&times;</button>
+          <div class="actions-group">
+            ${g.cheapsharkId ? `<button class="btn btn-sm btn-secondary" data-action="refresh" title="Aggiorna prezzo">&#8635;</button>` : ""}
+            <button class="btn btn-sm btn-success" data-action="own">Acquistato</button>
+            <button class="btn btn-sm btn-danger" data-action="delete">&times;</button>
+          </div>
         </td>
       `;
 
@@ -438,6 +493,19 @@ function render() {
         g.hype = e.target.checked;
         saveBacklog(`Toggle hype ${g.title}`);
       });
+
+      const storeSelect = tr.querySelector('[data-action="store"]');
+      if (storeSelect) {
+        storeSelect.addEventListener("change", (e) => {
+          const chosenId = e.target.value;
+          const chosenDeal = sortedDeals.find((d) => d.storeID.toString() === chosenId);
+          if (chosenDeal) {
+            applyDealToGame(g, chosenDeal);
+            saveBacklog(`Select ${g.bestStore} for ${g.title}`);
+          }
+        });
+      }
+
       if (g.cheapsharkId) {
         tr.querySelector('[data-action="refresh"]').addEventListener("click", () => refreshSingleGame(g));
       }
@@ -482,7 +550,9 @@ function render() {
           </select>
         </td>
         <td class="actions-cell">
-          <button class="btn btn-sm btn-danger" data-action="delete">&times;</button>
+          <div class="actions-group">
+            <button class="btn btn-sm btn-danger" data-action="delete">&times;</button>
+          </div>
         </td>
       `;
 
