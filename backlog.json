@@ -23882,5 +23882,67 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814173386",
+    "title": "The Elder Scrolls V: Skyrim Special Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-0481-72c2-9f37-97120a68525b/banner400.jpg?t=1786659942",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-0481-72c2-9f37-97120a68525b",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_7",
+    "released": true,
+    "releaseDate": "27 ott 2016",
+    "releaseDateISO": "2016-10-27",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 7.99,
+    "retailPrice": 39.99,
+    "discount": 80,
+    "bestStore": "GOG",
+    "deals": [
+      {
+        "storeID": "7",
+        "dealID": "wQsDg3EBc2Xy9GJgd%2F0vs8SQkQ6jfLlkhXweWVTqpIo%3D",
+        "price": "7.99",
+        "retailPrice": "39.99",
+        "savings": "80.020005"
+      },
+      {
+        "storeID": "1",
+        "dealID": "eFgvdTEs%2FBpSwSI0gdUw60kqw5i5cSIEV4DJuJaDN%2BU%3D",
+        "price": "16.49",
+        "retailPrice": "49.99",
+        "savings": "67.013403"
+      },
+      {
+        "storeID": "15",
+        "dealID": "%2B8jF6GxyW0C3tJY00dwTPgAcCrDTB3OLk08g3m1IHOw%3D",
+        "price": "33.59",
+        "retailPrice": "39.99",
+        "savings": "16.004001"
+      },
+      {
+        "storeID": "27",
+        "dealID": "aqKDSrFTVXo9LN4w6JC9mWyMwa7tbF24OGa6aheVEgc%3D",
+        "price": "35.99",
+        "retailPrice": "39.99",
+        "savings": "10.002501"
+      },
+      {
+        "storeID": "3",
+        "dealID": "fNGljhuOtZqYaGb%2FtQWWmluGDSsQw5MMoeWI48lW8PM%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
