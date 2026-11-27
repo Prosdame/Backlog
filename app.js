@@ -71,6 +71,11 @@ function normalizeTitleForMatch(title) {
     .trim();
 }
 
+// Identifica i giochi non collegati a storefront digitali PC (es. console/annunci/manuali)
+function isNonStorefrontGame(game) {
+  return !game.itadId && !game.cheapsharkId;
+}
+
 // --- MIGRAZIONE SCHEMA & DEDUPLICAZIONE ---
 function normalizeBacklogItem(raw, index = 0) {
   const item = raw && typeof raw === "object" ? { ...raw } : {};
@@ -449,7 +454,7 @@ function bindEvents() {
   });
   document.getElementById("manualForm").addEventListener("submit", addManualGame);
 
-  // Salvataggio stato/data rilascio nel modal
+  // Salvataggio stato/data rilascio & Steam ID nel modal
   document.getElementById("releaseEditorForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const targetId = currentModalGameId;
@@ -457,6 +462,7 @@ function bindEvents() {
 
     const stateVal = document.getElementById("modalReleaseState").value;
     const dateVal = document.getElementById("modalReleaseDate").value.trim();
+    const steamVal = document.getElementById("modalSteamAppId").value.trim().replace(/\D/g, "");
     const gameTitle = backlog.find((g) => g.id === targetId)?.title || targetId;
 
     await enqueueBacklogMutation(`Update release info for ${gameTitle}`, (list) => {
@@ -466,11 +472,17 @@ function bindEvents() {
       game.releaseDate = dateVal;
       game.releaseNote = game.released ? "" : (dateVal || "TBA");
       game.manualReleaseOverride = true;
+      game.steamAppId = steamVal || null;
       return list;
     });
 
     const updatedGame = backlog.find((g) => g.id === targetId);
-    if (updatedGame) updateDealsModalHero(updatedGame);
+    if (updatedGame) {
+      updateDealsModalHero(updatedGame);
+      if (steamVal && !updatedGame.itadId) {
+        await refreshSingleGame(updatedGame);
+      }
+    }
   });
 
   // Form aggiunta Keyshop / Store custom nel modal
@@ -933,14 +945,14 @@ async function searchGames(isLive = false) {
 
   if (seq !== latestSearchSeq) return;
 
-  // Opzione diretta per giochi non ancora rilasciati / TBA
+  // Opzione diretta per giochi non su storefront PC / manuali / TBA
   const tbaCard = document.createElement("div");
   tbaCard.className = "search-card search-card-tba";
   tbaCard.innerHTML = `
     <img src="${FALLBACK_GAME_THUMB}" alt="">
     <div class="search-card-info">
-      <div class="search-card-title">+ Aggiungi "${query}" (Non Rilasciato / TBA)</div>
-      <div class="search-card-price" style="color: var(--amber-text);">Salva subito e aggiorna via ITAD</div>
+      <div class="search-card-title">+ Aggiungi "${query}" (Altro Storefront / Manuale)</div>
+      <div class="search-card-price" style="color: var(--amber-text);">Non su store PC: compilabile a mano</div>
     </div>
   `;
   tbaCard.addEventListener("click", async () => {
@@ -1234,7 +1246,7 @@ async function refreshSingleGame(game) {
 }
 
 async function refreshAllPrices() {
-  const wishlistGames = backlog.filter((g) => g.category === "wishlist");
+  const wishlistGames = backlog.filter((g) => g.category === "wishlist" && !isNonStorefrontGame(g));
   if (!wishlistGames.length) return;
 
   const btn = document.getElementById("btnRefreshAll");
@@ -1304,24 +1316,28 @@ function updateDealsModalHero(game) {
   }
 
   const hypeBadgeHtml = game.hype ? `<span class="badge badge-purple">★ In Hype</span>` : "";
-  const steamBadgeHtml = game.steamAppId ? `<span class="badge badge-blue">Steam ID: ${game.steamAppId}</span>` : "";
+  const sourceBadgeHtml = isNonStorefrontGame(game)
+    ? `<span class="badge badge-non-storefront">Altro Storefront · Compilabile a mano</span>`
+    : (game.steamAppId ? `<span class="badge badge-blue">Steam ID: ${game.steamAppId}</span>` : "");
 
   badgesEl.innerHTML = `
     <span class="badge ${releaseInfo.badgeClass}">${releaseInfo.text}</span>
     ${priceBadgeHtml}
     ${hypeBadgeHtml}
-    ${steamBadgeHtml}
+    ${sourceBadgeHtml}
   `;
 
   if (activeDeal) {
     subtitleEl.textContent = `Store attivo: ${activeDeal.storeName} · Listino: ${formatMoney(activeDeal.retailPrice, currency)}`;
+  } else if (isNonStorefrontGame(game)) {
+    subtitleEl.textContent = "Non collegato a storefront digitali PC (esclusiva console, annuncio o titolo manuale). Puoi inserire prezzo e piattaforma qui sotto.";
   } else {
     subtitleEl.textContent = "Nessuna offerta ufficiale rilevata al momento.";
   }
 }
 
 async function resolveAndCacheMissingThumb(game) {
-  if (game.thumb) return;
+  if (game.thumb || isNonStorefrontGame(game)) return;
   try {
     const csResults = await fetchCheapSharkSearch(game.title, 8);
     const thumbMap = buildThumbnailLookup(csResults);
@@ -1353,7 +1369,10 @@ function renderDealsModalContent(game) {
   }
 
   if (!allDeals.length) {
-    bodyEl.innerHTML = "<p class='hint'>Nessun prezzo ufficiale ancora disponibile (gioco TBA o sincronizzazione ITAD in corso). Usa i pulsanti qui sopra per cercare sui keyshop o inserirne uno manualmente.</p>";
+    const msg = isNonStorefrontGame(game)
+      ? "Questo gioco non proviene da uno storefront digitale PC automatico (es. esclusiva console o progetto annunciato). Usa il modulo qui sopra per compilare manualmente piattaforma/store e prezzo."
+      : "Nessun prezzo ufficiale ancora disponibile (gioco TBA o sincronizzazione ITAD in corso). Usa i pulsanti qui sopra per cercare sui keyshop o inserirne uno manualmente.";
+    bodyEl.innerHTML = `<p class='hint'>${msg}</p>`;
     return;
   }
 
@@ -1367,7 +1386,7 @@ function renderDealsModalContent(game) {
     row.className = `deal-row ${isActive ? "deal-row-active" : ""}`;
 
     const typeBadge = d.isCustom
-      ? `<span class="badge badge-purple">Keyshop / Custom</span>`
+      ? `<span class="badge badge-purple">Manuale / Custom</span>`
       : isPreferred
         ? `<span class="badge badge-green">Preferito</span>`
         : `<span class="badge badge-blue">Ufficiale</span>`;
@@ -1441,6 +1460,7 @@ async function openDealsModal(game, focusRelease = false) {
   document.getElementById("customDealForm").reset();
   document.getElementById("modalReleaseState").value = isGameReleased(game) ? "released" : "unreleased";
   document.getElementById("modalReleaseDate").value = getReleaseDateText(game);
+  document.getElementById("modalSteamAppId").value = game.steamAppId || "";
 
   linksEl.innerHTML = "";
   getKeyshopSearchLinks(game.title).forEach((site) => {
@@ -1668,11 +1688,9 @@ function renderStats() {
   const allOwned = backlog.filter((g) => g.category === "owned");
   const totalGames = backlog.length;
 
-  // --- Calcoli economici Wishlist ---
   let wishRetailTotal = 0;
   let wishSaleTotal = 0;
   let wishReleasedSaleTotal = 0;
-  let wishUnreleasedRetailTotal = 0;
   let wishPricedCount = 0;
   let wishDiscountedCount = 0;
   let wishDiscountSum = 0;
@@ -1726,8 +1744,6 @@ function renderStats() {
 
       if (released) {
         wishReleasedSaleTotal += fin.saleEur;
-      } else {
-        wishUnreleasedRetailTotal += retail;
       }
 
       if (fin.saleEur > mostExpensivePrice) {
@@ -1754,7 +1770,6 @@ function renderStats() {
   const wishPotentialSavings = Math.max(0, wishRetailTotal - wishSaleTotal);
   const avgDiscountActive = wishDiscountedCount > 0 ? Math.round(wishDiscountSum / wishDiscountedCount) : 0;
 
-  // --- Calcoli economici & stato Owned ---
   let ownedRetailValue = 0;
   let ownedFreeValue = 0;
   let ownedFreeCount = 0;
@@ -1798,7 +1813,6 @@ function renderStats() {
     ? Math.round((statusCounts.Completed / activeOwnedDenominator) * 100)
     : (allOwned.length > 0 ? Math.round((statusCounts.Completed / allOwned.length) * 100) : 0);
 
-  // --- Calcoli Hype ---
   const hypeWishlist = allWishlist.filter((g) => g.hype);
   const hypeOwned = allOwned.filter((g) => g.hype);
   const hypeWishCost = hypeWishlist.reduce((sum, g) => {
@@ -1808,7 +1822,6 @@ function renderStats() {
   const hypeOwnedCompleted = hypeOwned.filter((g) => g.status === "Completed").length;
   const hypeOwnedUnplayed = hypeOwned.filter((g) => !g.status || g.status === "Not Played").length;
 
-  // --- Render KPI Grid ---
   const bestDealCardHtml = bestDiscountGame
     ? `
       <article id="kpiBestDealCard" class="kpi-card kpi-card-clickable" title="Clicca per aprire i dettagli">
@@ -1898,7 +1911,6 @@ function renderStats() {
     });
   }
 
-  // --- Render Grafici & Distribuzioni ---
   const donutSegments = [
     { label: "Completed", count: statusCounts.Completed, color: "#22c55e" },
     { label: "Ongoing", count: statusCounts.Ongoing, color: "#3b82f6" },
@@ -1922,7 +1934,6 @@ function renderStats() {
     })
     .join("");
 
-  // Distribuzione Store Wishlist
   const storeDistItems = [...storeCounts.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 6)
@@ -1932,7 +1943,6 @@ function renderStats() {
       color: getPreferredStoreRank(store) < 3 ? "var(--green-solid)" : "var(--blue-solid)"
     }));
 
-  // Distribuzione Fasce di Prezzo Wishlist
   const priceBuckets = [
     { label: "Sotto i 5€ (Affari lampo)", count: 0, color: "#22c55e" },
     { label: "5€ – 15€", count: 0, color: "#3b82f6" },
@@ -1959,7 +1969,6 @@ function renderStats() {
     }
   });
 
-  // Distribuzione Fasce di Sconto Wishlist
   const discountBuckets = [
     { label: "Prezzo pieno (0%)", count: 0, color: "#64748b" },
     { label: "Sconto lieve (1% – 25%)", count: 0, color: "#3b82f6" },
@@ -1977,7 +1986,6 @@ function renderStats() {
     else discountBuckets[4].count++;
   });
 
-  // Distribuzione per Anno di Uscita (tutto il backlog)
   const yearMap = new Map();
   let tbaYearCount = 0;
   backlog.forEach((g) => {
@@ -2075,7 +2083,6 @@ function renderStats() {
     </article>
   `;
 
-  // --- Render Fun Facts Cards ---
   const extremesHtml = mostExpensiveWish && cheapestWish
     ? `
       <div class="fun-card-metric">${formatMoney(mostExpensivePrice, "EUR")} vs ${formatMoney(cheapestPrice, "EUR")}</div>
@@ -2132,6 +2139,40 @@ function renderStats() {
 }
 
 // --- RENDERING TABELLE ---
+function buildRowHighlightClass(game) {
+  const isManualSource = isNonStorefrontGame(game);
+  if (game.hype && isManualSource) return "row-hype-non-storefront";
+  if (game.hype) return "row-hype";
+  if (isManualSource) return "row-non-storefront";
+  return "";
+}
+
+function buildHypeToggleHtml(game) {
+  return `
+    <button
+      type="button"
+      class="hype-toggle-btn ${game.hype ? "is-hyped" : ""}"
+      data-action="hype"
+      aria-pressed="${game.hype ? "true" : "false"}"
+      title="${game.hype ? "Rimuovi da Hype" : "Segna come Hype"}"
+    >
+      ${game.hype ? "★ HYPE" : "☆"}
+    </button>
+  `;
+}
+
+function buildGameTitleCellHtml(game) {
+  const nonStoreBadge = isNonStorefrontGame(game)
+    ? `<span class="badge badge-non-storefront" title="Non collegato a storefront digitali PC (Steam/ITAD): compilabile manualmente nei dettagli">Altro Storefront</span>`
+    : "";
+  return `
+    <div class="game-title-cell">
+      <a class="game-link" data-action="deals">${game.title}</a>
+      ${nonStoreBadge}
+    </div>
+  `;
+}
+
 function render() {
   const textFilter = document.getElementById("filterText").value.toLowerCase();
   const onlyHype = document.getElementById("filterHype").checked;
@@ -2158,6 +2199,7 @@ function render() {
       if (wishlistStateFilter === "DISCOUNTED") return discountVal > 0;
       if (wishlistStateFilter === "RELEASED") return released;
       if (wishlistStateFilter === "UNRELEASED") return !released;
+      if (wishlistStateFilter === "NON_STOREFRONT") return isNonStorefrontGame(g);
       return true;
     })
     .sort((a, b) => {
@@ -2184,6 +2226,9 @@ function render() {
   tbodyW.innerHTML = "";
   filteredWishlist.forEach((g) => {
     const tr = document.createElement("tr");
+    const rowClass = buildRowHighlightClass(g);
+    if (rowClass) tr.className = rowClass;
+
     const allDeals = getAllDeals(g);
     const activeDeal = findSelectedDeal(g, allDeals);
     const currency = activeDeal ? activeDeal.currency : (g.currency || (g.itadId ? "EUR" : "USD"));
@@ -2234,11 +2279,13 @@ function render() {
       optionsHtml += otherDeals.map(renderOption).join("");
 
       storeHtml = `<select class="store-select" data-action="store">${optionsHtml}</select>`;
+    } else if (isNonStorefrontGame(g)) {
+      storeHtml = `<button type="button" class="btn btn-sm btn-secondary" data-action="deals" title="Inserisci manualmente store/console e prezzo">+ Compila Store</button>`;
     }
 
     tr.innerHTML = `
-      <td><a class="game-link" data-action="deals">${g.title}</a></td>
-      <td class="center"><input type="checkbox" ${g.hype ? "checked" : ""} data-action="hype"></td>
+      <td>${buildGameTitleCellHtml(g)}</td>
+      <td class="center">${buildHypeToggleHtml(g)}</td>
       <td><span class="badge badge-clickable ${releaseInfo.badgeClass}" data-action="release" title="Clicca per modificare stato/data di rilascio">${releaseInfo.text}</span></td>
       <td>${basePriceHtml}</td>
       <td>${priceHtml}</td>
@@ -2253,13 +2300,15 @@ function render() {
       </td>
     `;
 
-    tr.querySelector('[data-action="deals"]').addEventListener("click", () => openDealsModal(g, false));
+    tr.querySelectorAll('[data-action="deals"]').forEach((el) => {
+      el.addEventListener("click", () => openDealsModal(g, false));
+    });
     tr.querySelector('[data-action="release"]').addEventListener("click", () => openDealsModal(g, true));
-    tr.querySelector('[data-action="hype"]').addEventListener("change", (e) => {
-      const checked = e.target.checked;
+    tr.querySelector('[data-action="hype"]').addEventListener("click", () => {
+      const nextHype = !g.hype;
       enqueueBacklogMutation(`Toggle hype ${g.title}`, (list) => {
         const target = list.find((item) => item.id === g.id);
-        if (target) target.hype = checked;
+        if (target) target.hype = nextHype;
         return list;
       });
     });
@@ -2313,14 +2362,17 @@ function render() {
     })
     .forEach((g) => {
       const tr = document.createElement("tr");
+      const rowClass = buildRowHighlightClass(g);
+      if (rowClass) tr.className = rowClass;
+
       const currentStatus = g.status === "Playing" ? "Ongoing" : (g.status || "Not Played");
       const statuses = ["Not Played", "Ongoing", "Hold", "Dropped", "Completed"];
       const statusClass = getOwnedStatusSelectClass(currentStatus);
       const freeClass = g.free ? "select-green" : "select-red";
 
       tr.innerHTML = `
-        <td><a class="game-link" data-action="deals">${g.title}</a></td>
-        <td class="center"><input type="checkbox" ${g.hype ? "checked" : ""} data-action="hype"></td>
+        <td>${buildGameTitleCellHtml(g)}</td>
+        <td class="center">${buildHypeToggleHtml(g)}</td>
         <td>
           <select class="status-select ${freeClass}" data-action="free">
             <option value="false" ${!g.free ? "selected" : ""}>No</option>
@@ -2340,11 +2392,11 @@ function render() {
       `;
 
       tr.querySelector('[data-action="deals"]').addEventListener("click", () => openDealsModal(g, false));
-      tr.querySelector('[data-action="hype"]').addEventListener("change", (e) => {
-        const checked = e.target.checked;
+      tr.querySelector('[data-action="hype"]').addEventListener("click", () => {
+        const nextHype = !g.hype;
         enqueueBacklogMutation(`Toggle hype ${g.title}`, (list) => {
           const target = list.find((item) => item.id === g.id);
-          if (target) target.hype = checked;
+          if (target) target.hype = nextHype;
           return list;
         });
       });
