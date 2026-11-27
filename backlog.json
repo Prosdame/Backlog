@@ -23119,5 +23119,31 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813744460",
+    "title": "LEGO® Batman: The Videogame",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f4bc-7266-b884-e9ca22dbadf7/banner400.jpg?t=1794612013",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f4bc-7266-b884-e9ca22dbadf7",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": true,
+    "releaseDate": "28 set 2008",
+    "releaseDateISO": "2008-09-28",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
