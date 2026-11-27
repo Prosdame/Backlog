@@ -22397,5 +22397,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813246796",
+    "title": "Ace Attorney Investigations Collection",
+    "thumb": "https://assets.isthereanydeal.com/01902bed-47f8-72ae-a48b-bcc22fb3335c/banner400.jpg?t=1788821442",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01902bed-47f8-72ae-a48b-bcc22fb3335c",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "6 set 2024",
+    "releaseDateISO": "2024-09-06",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 20.35,
+    "retailPrice": 39.99,
+    "discount": 49,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "9pGgGx%2Btm4Tg%2F2Z4giVsGWHWJc7891xpl63COA%2FZWOE%3D",
+        "price": "20.35",
+        "retailPrice": "39.99",
+        "savings": "49.112278"
+      },
+      {
+        "storeID": "15",
+        "dealID": "HG2bdF4xmO5xQhZ%2FhD2UAjPgIWCiG4iVbkBKB7JieMU%3D",
+        "price": "20.59",
+        "retailPrice": "39.99",
+        "savings": "48.512128"
+      },
+      {
+        "storeID": "27",
+        "dealID": "kYjvdm6Jr%2F3IagJ0cNdMxCfd9zZcXToHQQzjvAj56Wk%3D",
+        "price": "21.86",
+        "retailPrice": "39.99",
+        "savings": "45.336334"
+      },
+      {
+        "storeID": "21",
+        "dealID": "UgHGfJTvCPUhYHJ6KDiPrp6e7JBjx6pmvHCh%2Bv84eSo%3D",
+        "price": "22.49",
+        "retailPrice": "39.99",
+        "savings": "43.760940"
+      },
+      {
+        "storeID": "2",
+        "dealID": "zIrJAQ6YKEe8nV%2FkG69as%2B%2BCfQssZKb6wnyvp8azIPg%3D",
+        "price": "23.99",
+        "retailPrice": "39.99",
+        "savings": "40.010003"
+      },
+      {
+        "storeID": "30",
+        "dealID": "Yw0dsbCM99w4g7bkMgUwgTZA8H4kCAiUrZKDHclBna8%3D",
+        "price": "23.99",
+        "retailPrice": "39.99",
+        "savings": "40.010003"
+      },
+      {
+        "storeID": "1",
+        "dealID": "U6Gevto1O3OV%2FLEqtHvAsrk7HTWCQA9IpTZadHDXVos%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
