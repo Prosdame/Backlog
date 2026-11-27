@@ -22697,5 +22697,95 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813365709",
+    "title": "Warhammer 40,000: Boltgun",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6cc5-7079-b8f4-39ed8a06f1b4/banner400.jpg?t=1795035633",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6cc5-7079-b8f4-39ed8a06f1b4",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "20 apr 2023",
+    "releaseDateISO": "2023-04-20",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 6.56,
+    "retailPrice": 21.99,
+    "discount": 70,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "exq%2FEtZSLewZbM8nUUcWwKPTgRn%2BTiz%2BxOgRiHLTgV4%3D",
+        "price": "6.56",
+        "retailPrice": "21.99",
+        "savings": "70.168258"
+      },
+      {
+        "storeID": "1",
+        "dealID": "8mezfeM7Wq9ok3e%2BVRZGJi0fG9GVS92IhxsVXv7ZSYA%3D",
+        "price": "6.59",
+        "retailPrice": "21.99",
+        "savings": "70.031833"
+      },
+      {
+        "storeID": "7",
+        "dealID": "nTXnMFWYs%2FN8Awyte2T4arcVofbg3uNHchEOrl9YrRg%3D",
+        "price": "6.59",
+        "retailPrice": "21.99",
+        "savings": "70.031833"
+      },
+      {
+        "storeID": "27",
+        "dealID": "VXk1Ftj7iJxlzHa7xQXXHdSw9y88WG7HMYzrpxikg%2Bw%3D",
+        "price": "6.73",
+        "retailPrice": "21.99",
+        "savings": "69.395180"
+      },
+      {
+        "storeID": "21",
+        "dealID": "k2o36xZRO6gHdmkeHFM%2FW%2Bsjz6ZBT6bm%2B53yA5BesD4%3D",
+        "price": "7.69",
+        "retailPrice": "21.99",
+        "savings": "65.029559"
+      },
+      {
+        "storeID": "3",
+        "dealID": "MrsRrovp7q50EIDD%2Babghtd7bqYxPFudXPje8K%2BaQP0%3D",
+        "price": "7.70",
+        "retailPrice": "21.99",
+        "savings": "64.984084"
+      },
+      {
+        "storeID": "2",
+        "dealID": "3qG8bfDTMB1ef22C8RYYhwCUlBeHkrUiNnvDf3y6GFI%3D",
+        "price": "7.70",
+        "retailPrice": "21.99",
+        "savings": "64.984084"
+      },
+      {
+        "storeID": "15",
+        "dealID": "fcR4ivu%2BMOVOen8G7cjemybIzzCNth9YDpT7BIQ0AFk%3D",
+        "price": "19.79",
+        "retailPrice": "21.99",
+        "savings": "10.004548"
+      },
+      {
+        "storeID": "25",
+        "dealID": "jNF3RQY3uBUhH6oZ16XByuLnX0TSg%2BHmtXcRR%2F%2FDO8w%3D",
+        "price": "21.99",
+        "retailPrice": "21.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
