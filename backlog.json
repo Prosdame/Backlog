@@ -164,60 +164,6 @@
     "thumb": "https://assets.isthereanydeal.com/018d937f-4adb-73a6-a9e5-94ff62f6265b/banner300.jpg?t=1786395642"
   },
   {
-    "id": "1795805021080",
-    "title": "Hades II",
-    "category": "wishlist",
-    "hype": false,
-    "itadId": "018d937f-6ee3-738a-b578-ddd7e9a0d24d",
-    "cheapsharkId": null,
-    "selectedStoreId": "itad_61",
-    "released": true,
-    "releaseDate": "6 mag 2024",
-    "releaseDateISO": "2024-05-06",
-    "releaseNote": "",
-    "currency": "EUR",
-    "salePrice": 20.29,
-    "retailPrice": 28.99,
-    "discount": 30,
-    "bestStore": "Steam",
-    "deals": [
-      {
-        "uid": "itad_61",
-        "shopId": 61,
-        "shopName": "Steam",
-        "price": 20.29,
-        "retailPrice": 28.99,
-        "savings": 30,
-        "currency": "EUR",
-        "url": "https://itad.link/018f4ed9-4868-701f-a1c9-ff248439e1c8/?app=1lmbp4"
-      },
-      {
-        "uid": "itad_16",
-        "shopId": 16,
-        "shopName": "Epic Game Store",
-        "price": 28.99,
-        "retailPrice": 28.99,
-        "savings": 0,
-        "currency": "EUR",
-        "url": "https://itad.link/018d9591-4f72-72a0-b0c5-80e096ae077f/?app=1lmbp4"
-      },
-      {
-        "uid": "itad_48",
-        "shopId": 48,
-        "shopName": "Microsoft Store",
-        "price": 29.99,
-        "retailPrice": 29.99,
-        "savings": 0,
-        "currency": "EUR",
-        "url": "https://itad.link/019d2b85-57ba-71cc-bd87-c4489883dd35/?app=1lmbp4"
-      }
-    ],
-    "customDeals": [],
-    "free": false,
-    "status": "Not Played",
-    "thumb": "https://assets.isthereanydeal.com/018d937f-6ee3-738a-b578-ddd7e9a0d24d/banner300.jpg?t=1790364922"
-  },
-  {
     "id": "1795809809288",
     "title": "Silver Palace",
     "thumb": "https://assets.isthereanydeal.com/01a03b9f-10c4-7209-ba57-e6634e40a818/banner300.jpg?t=1793858124",
