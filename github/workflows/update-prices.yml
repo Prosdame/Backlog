@@ -1,0 +1,41 @@
+name: Update ITAD EUR Prices & Release Dates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backlog.json"
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch ITAD EUR prices and release dates
+        env:
+          ITAD_API_KEY: ${{ secrets.ITAD_API_KEY }}
+        run: node scripts/update_prices.mjs
+
+      - name: Commit updated backlog.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backlog.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update ITAD EUR prices & release dates [skip ci]"
+            git push
+          fi
