@@ -23221,5 +23221,31 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813758855",
+    "title": "LEGO® Batman 3: Beyond Gotham",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f8c5-7010-a344-8bec5a532421/banner400.jpg?t=1786408231",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f8c5-7010-a344-8bec5a532421",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": true,
+    "releaseDate": "11 nov 2014",
+    "releaseDateISO": "2014-11-11",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
