@@ -23340,5 +23340,95 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813822783",
+    "title": "MIO: Memories in Orbit",
+    "thumb": "https://assets.isthereanydeal.com/01902bea-bbc4-7016-9189-7fcd22cf9f68/banner400.jpg?t=1788268818",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01902bea-bbc4-7016-9189-7fcd22cf9f68",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "4 dic 2025",
+    "releaseDateISO": "2025-12-04",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 11.95,
+    "retailPrice": 19.99,
+    "discount": 40,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "IxHbTTkJbr9ZJyLn4De4C0hMQIgOHkZ6uajGxuYu7rs%3D",
+        "price": "11.95",
+        "retailPrice": "19.99",
+        "savings": "40.220110"
+      },
+      {
+        "storeID": "27",
+        "dealID": "K3UuhLWrZHe8XohOc5nCgSNbI3pWYptNvc5UwEghiOE%3D",
+        "price": "11.99",
+        "retailPrice": "19.99",
+        "savings": "40.020010"
+      },
+      {
+        "storeID": "21",
+        "dealID": "t8IkCY%2B2%2BDymn%2BTZHarUtDuhP2GQvtekvfJd60PsdaI%3D",
+        "price": "13.79",
+        "retailPrice": "19.99",
+        "savings": "31.015508"
+      },
+      {
+        "storeID": "2",
+        "dealID": "kIjajGvbvZabnsRXK1UduD36A2W3uDGVsu3L%2BUK%2F8pM%3D",
+        "price": "13.99",
+        "retailPrice": "19.99",
+        "savings": "30.015008"
+      },
+      {
+        "storeID": "7",
+        "dealID": "TH8og7FFq86lL%2BnQjFWH44VTnlP5BdOWwKM3DIhDwh8%3D",
+        "price": "13.99",
+        "retailPrice": "19.99",
+        "savings": "30.015008"
+      },
+      {
+        "storeID": "1",
+        "dealID": "No%2BPe904Viv4vOkgBu%2BmMm1VgsCCgJeLx0s5Ls0WDxg%3D",
+        "price": "13.99",
+        "retailPrice": "19.99",
+        "savings": "30.015008"
+      },
+      {
+        "storeID": "3",
+        "dealID": "2H1cxn3LEJ9BxaCFpDEPewyVGkx9PAtBbELC05mNd40%3D",
+        "price": "13.99",
+        "retailPrice": "19.99",
+        "savings": "30.015008"
+      },
+      {
+        "storeID": "15",
+        "dealID": "y3RZUUnTuf9ZnhIseZbxukG%2BiNrpWW%2FLa0xQYIl84aw%3D",
+        "price": "17.59",
+        "retailPrice": "19.99",
+        "savings": "12.006003"
+      },
+      {
+        "storeID": "25",
+        "dealID": "%2Fp3rG0ZSyo215JitJJ3Jj0I6Y1Lqcybyg5%2FpkE74Wco%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
