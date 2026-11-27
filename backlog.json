@@ -23998,5 +23998,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814748009",
+    "title": "Judgment",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2058180/capsule_231x87.jpg?t=1781263750",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": "250960",
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "",
+    "releaseDateISO": null,
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 8.46,
+    "retailPrice": 39.99,
+    "discount": 79,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "JXqc%2FHRcp5Em%2Bez0VXuH5K0sZbq5Xx8jbQy9YYD1tjk%3D",
+        "price": "8.46",
+        "retailPrice": "39.99",
+        "savings": "78.844711"
+      },
+      {
+        "storeID": "15",
+        "dealID": "kNYHu4Unts2LmQQl4pxNHEU0huQ8mwa2fwQw9LaoLcw%3D",
+        "price": "9.39",
+        "retailPrice": "39.99",
+        "savings": "76.519130"
+      },
+      {
+        "storeID": "27",
+        "dealID": "AmPKwFxQQHRtRWRmElkZlTDnRXgsdtKoHK38Sy2Dt%2BE%3D",
+        "price": "9.65",
+        "retailPrice": "39.99",
+        "savings": "75.868967"
+      },
+      {
+        "storeID": "1",
+        "dealID": "v7ixBb5ODVS6y2qlznH4PYy5JhtNNn0xwIrYSQ3%2BxVE%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "21",
+        "dealID": "noJuNpzuUCKDHEJZ46ahd6NWmNL%2FMt0nyaMPMA2I6k4%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "3",
+        "dealID": "IPW4fp%2B9I4pVmrIidWnKY2b%2B3w8ToIHBCWOWhRLPLBw%3D",
+        "price": "10.00",
+        "retailPrice": "39.99",
+        "savings": "74.993748"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
