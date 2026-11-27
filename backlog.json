@@ -23048,5 +23048,102 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813711783",
+    "title": "Kerbal Space Program",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/220200/capsule_231x87.jpg?t=1738037585",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": "96256",
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "",
+    "releaseDateISO": null,
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 9.88,
+    "retailPrice": 39.99,
+    "discount": 75,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "30",
+        "dealID": "1j1S0ODeDBVfGl1F13kNnIPZHCbM3PLcWXNBGJou680%3D",
+        "price": "9.88",
+        "retailPrice": "39.99",
+        "savings": "75.293823"
+      },
+      {
+        "storeID": "1",
+        "dealID": "7E%2BHosTsAjJoLf%2BRqHz13tbMvjXTcnLRyWIFlkKv8SE%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "7",
+        "dealID": "MXiM%2BTFOb3kn1uzTgI%2FM%2BuLpkayZVQVoU8aE6YTHKhE%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "3",
+        "dealID": "UtAW%2F1IC1nE86hSFpyzcRAg4CQPCxIVmV%2FFM797iQbM%3D",
+        "price": "10.00",
+        "retailPrice": "39.99",
+        "savings": "74.993748"
+      },
+      {
+        "storeID": "15",
+        "dealID": "ndCq0Gci0gIKpnVxCwJAU35cldvtO0LaYXvAZr3rxAk%3D",
+        "price": "11.19",
+        "retailPrice": "39.99",
+        "savings": "72.018005"
+      },
+      {
+        "storeID": "27",
+        "dealID": "GM%2BbpjJcJ50mNuaEPEG9BUXmws7KE%2BuUErrwO6IReTo%3D",
+        "price": "11.45",
+        "retailPrice": "39.99",
+        "savings": "71.367842"
+      },
+      {
+        "storeID": "2",
+        "dealID": "AI1Lb9b%2FDEycIZRIINL7guzWXKyt6kgogBMYLoMeuv8%3D",
+        "price": "12.00",
+        "retailPrice": "39.99",
+        "savings": "69.992498"
+      },
+      {
+        "storeID": "23",
+        "dealID": "WZ1vEtGYFEoftOBrFLl4JnVzQP7hBrt9akphR0i2S%2Fw%3D",
+        "price": "34.79",
+        "retailPrice": "39.99",
+        "savings": "13.003251"
+      },
+      {
+        "storeID": "25",
+        "dealID": "9nxoTfPJicUszxZ9RmhJTMHnqMz%2BaOvSb%2FG1EMioqfA%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "21",
+        "dealID": "6VHh%2BK21YGyd%2B0d%2F6bj3FFoBk3EYShhNvrUp4Dm%2BiaE%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
