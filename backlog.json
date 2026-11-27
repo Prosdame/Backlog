@@ -24250,5 +24250,31 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795815603216",
+    "title": "deadpool VR",
+    "thumb": null,
+    "category": "wishlist",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": false,
+    "releaseDate": "TBA",
+    "releaseDateISO": null,
+    "releaseNote": "TBA",
+    "manualReleaseOverride": false,
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
