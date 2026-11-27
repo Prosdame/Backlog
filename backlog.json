@@ -22787,5 +22787,39 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813379512",
+    "title": "Cave Crave VR",
+    "thumb": "https://assets.isthereanydeal.com/0198cba4-d037-7197-8fe6-ca633842a4b1/banner400.jpg?t=1789142708",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "0198cba4-d037-7197-8fe6-ca633842a4b1",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "12 dic 2025",
+    "releaseDateISO": "2025-12-12",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 14.99,
+    "retailPrice": 14.99,
+    "discount": 0,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "V1KJZ9SYVcT1CKUzT520zsjynSN%2FEPrpDj1hR2wl9LY%3D",
+        "price": "14.99",
+        "retailPrice": "14.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
