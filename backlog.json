@@ -23485,5 +23485,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813907537",
+    "title": "Resident Evil HD Remaster",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-1e98-7204-9325-3e3295ce44c9/banner400.jpg?t=1790566519",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-1e98-7204-9325-3e3295ce44c9",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "20 gen 2015",
+    "releaseDateISO": "2015-01-20",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 4.25,
+    "retailPrice": 19.99,
+    "discount": 79,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "tstHrl4hBcLIHGK6ASGZYwpgvyBK5rbzszhJH%2BWERSE%3D",
+        "price": "4.25",
+        "retailPrice": "19.99",
+        "savings": "78.739370"
+      },
+      {
+        "storeID": "15",
+        "dealID": "RNyGjzEzdFp%2BHdYDZA4BGDF9yGMKNuuJ6r3e7m%2BoSuM%3D",
+        "price": "4.29",
+        "retailPrice": "19.99",
+        "savings": "78.539270"
+      },
+      {
+        "storeID": "7",
+        "dealID": "6QL3KqID2GbjqM5qxgvn5AS2e%2FpZ3ySw0k9SGMhPHlc%3D",
+        "price": "4.99",
+        "retailPrice": "19.99",
+        "savings": "75.037519"
+      },
+      {
+        "storeID": "2",
+        "dealID": "01stLQv989AtGt%2Fo7Fi6FjjA2AheBAmOZZzLz9qCDvE%3D",
+        "price": "5.00",
+        "retailPrice": "19.99",
+        "savings": "74.987494"
+      },
+      {
+        "storeID": "3",
+        "dealID": "5Znmnoc7ziOmZzlzWANtezsrCA8DoYqxc0jVNQqoLUA%3D",
+        "price": "5.00",
+        "retailPrice": "19.99",
+        "savings": "74.987494"
+      },
+      {
+        "storeID": "27",
+        "dealID": "jk5ZGhf2xEHP6DBwfHFrIHGpzb1rHlbYpwYKD9iBRpk%3D",
+        "price": "17.99",
+        "retailPrice": "19.99",
+        "savings": "10.005003"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
