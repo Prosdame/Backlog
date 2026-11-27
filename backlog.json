@@ -216,5 +216,28 @@
     "free": false,
     "status": "Not Played",
     "thumb": "https://assets.isthereanydeal.com/018d937f-6ee3-738a-b578-ddd7e9a0d24d/banner300.jpg?t=1790364922"
+  },
+  {
+    "id": "1795809809288",
+    "title": "Silver Palace",
+    "thumb": "https://assets.isthereanydeal.com/01a03b9f-10c4-7209-ba57-e6634e40a818/banner300.jpg?t=1793858124",
+    "category": "wishlist",
+    "hype": false,
+    "itadId": "01a03b9f-10c4-7209-ba57-e6634e40a818",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": false,
+    "releaseDate": "14 dic 2026",
+    "releaseDateISO": "2026-12-14",
+    "releaseNote": "14 dic 2026",
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played"
   }
 ]
