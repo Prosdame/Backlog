@@ -70,6 +70,12 @@ input[type="text"], input[type="password"], select {
 }
 input:focus, select:focus { outline: none; border-color: var(--primary); }
 
+.store-select {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.82rem;
+  max-width: 210px;
+}
+
 .add-panel {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -149,7 +155,12 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
 }
 
 table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-th, td { padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--border); text-align: left; }
+th, td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
 th { background: #13161c; color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.04em; }
 tr:hover td { background: var(--surface-hover); }
 
@@ -176,7 +187,17 @@ tr:hover td { background: var(--surface-hover); }
 }
 .game-link:hover { color: var(--primary); text-decoration: underline; }
 
-.actions-cell { display: flex; gap: 0.35rem; justify-content: flex-end; }
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+.actions-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
 .hidden { display: none !important; }
 
 /* Modals */
