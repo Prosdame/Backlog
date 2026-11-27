@@ -24136,5 +24136,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814775018",
+    "title": "Like a Dragon Infinite Wealth",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2072450/capsule_231x87.jpg?t=1781262996",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": "273488",
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "",
+    "releaseDateISO": null,
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 13.95,
+    "retailPrice": 69.99,
+    "discount": 80,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "X4Gwl8ypBu5eecZtgNNsPzTWJF0zsTuQ7afc4F4hvjY%3D",
+        "price": "13.95",
+        "retailPrice": "69.99",
+        "savings": "80.068581"
+      },
+      {
+        "storeID": "1",
+        "dealID": "Y2p9e1B%2ByPF2duPi4yXypN7V%2FPAFX12MDn4b1CI%2F%2F7w%3D",
+        "price": "13.99",
+        "retailPrice": "69.99",
+        "savings": "80.011430"
+      },
+      {
+        "storeID": "15",
+        "dealID": "EoSDoAiwO4GJORrKtZ63JDYC9qlNH%2F1A1aPdDfJWU08%3D",
+        "price": "16.44",
+        "retailPrice": "69.99",
+        "savings": "76.510930"
+      },
+      {
+        "storeID": "27",
+        "dealID": "2uEj2Rn60Hryz6J%2FhnmB22IOyVrKxxaQ423z2ETwpAI%3D",
+        "price": "16.72",
+        "retailPrice": "69.99",
+        "savings": "76.110873"
+      },
+      {
+        "storeID": "21",
+        "dealID": "g3WJDfRRKwaXRjQIEzV2D6whQD%2Bj%2FHJY77ePdigddQ0%3D",
+        "price": "16.99",
+        "retailPrice": "69.99",
+        "savings": "75.725104"
+      },
+      {
+        "storeID": "3",
+        "dealID": "IMGUhiEvOioLpxrrRUnkkHMjnHbpY0HjJ3hYZ1ZypBw%3D",
+        "price": "17.50",
+        "retailPrice": "69.99",
+        "savings": "74.996428"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
