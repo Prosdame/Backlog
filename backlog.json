@@ -23470,5 +23470,46 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813879193",
+    "title": "OCTOPATH TRAVELER 0",
+    "thumb": "https://assets.isthereanydeal.com/01986144-5de5-70ec-b6d8-615eb55d9da8/banner400.jpg?t=1793268005",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01986144-5de5-70ec-b6d8-615eb55d9da8",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "4 dic 2025",
+    "releaseDateISO": "2025-12-04",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 24.99,
+    "retailPrice": 49.99,
+    "discount": 50,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "SO2gwDQrPYUHTxiLlhJ51CT5WssTjGiJXS2mZ42W9aQ%3D",
+        "price": "24.99",
+        "retailPrice": "49.99",
+        "savings": "50.010002"
+      },
+      {
+        "storeID": "3",
+        "dealID": "e8qCmeITTDOi4MiRQmMdVS8heAlJPyu5QDj5j8ZJ5UA%3D",
+        "price": "25.00",
+        "retailPrice": "49.99",
+        "savings": "49.989998"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
