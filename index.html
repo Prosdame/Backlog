@@ -11,10 +11,11 @@
     <div class="topbar-left">
       <h1>Game Backlog</h1>
       <span id="syncStatus" class="badge badge-warn">Solo Lettura</span>
+      <span id="apiEngineBadge" class="badge badge-grey">Store: Base</span>
     </div>
     <div class="topbar-actions">
       <button id="btnRefreshAll" class="btn btn-secondary">Aggiorna Prezzi</button>
-      <button id="btnOpenConfig" class="btn btn-primary">Configura GitHub</button>
+      <button id="btnOpenConfig" class="btn btn-primary">Configura</button>
     </div>
   </header>
 
@@ -22,7 +23,7 @@
     <!-- Sezione Aggiunta Gioco -->
     <section class="add-panel">
       <div class="search-row">
-        <input type="text" id="searchInput" placeholder="Cerca gioco per nome (Steam, Epic, GOG, Humble...)" autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Cerca qualsiasi gioco (es. Persona 6, Stranger Than Heaven, Hades II...)" autocomplete="off">
         <select id="addTargetCategory">
           <option value="wishlist">In: Wishlist</option>
           <option value="owned">In: Owned</option>
@@ -34,14 +35,14 @@
       <!-- Risultati ricerca API -->
       <div id="searchResults" class="search-results hidden"></div>
 
-      <!-- Form inserimento manuale per giochi non ancora usciti -->
+      <!-- Form inserimento manuale -->
       <form id="manualForm" class="manual-form hidden">
-        <input type="text" id="manualTitle" placeholder="Titolo esatto (es. Persona 6)" required>
+        <input type="text" id="manualTitle" placeholder="Titolo esatto" required>
         <select id="manualReleaseState">
           <option value="unreleased">Non Rilasciato</option>
           <option value="released">Rilasciato</option>
         </select>
-        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, 2027, 15 Ott 2026)" value="TBA">
+        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, 15 gen 2027)" value="TBA">
         <select id="manualCategory">
           <option value="wishlist">Wishlist</option>
           <option value="owned">Owned</option>
@@ -61,10 +62,22 @@
       </div>
 
       <div class="filters">
-        <input type="text" id="filterText" placeholder="Filtra lista...">
+        <input type="text" id="filterText" placeholder="Filtra per titolo...">
         <label class="checkbox-label">
           <input type="checkbox" id="filterHype"> Solo Hype
         </label>
+        <select id="filterWishlistState">
+          <option value="ALL">Tutti i giochi</option>
+          <option value="DISCOUNTED">Solo Scontati</option>
+          <option value="RELEASED">Solo Rilasciati</option>
+          <option value="UNRELEASED">Non Rilasciati / TBA</option>
+        </select>
+        <select id="sortWishlist">
+          <option value="TITLE_ASC">Ordine: A → Z</option>
+          <option value="HYPE_FIRST">Ordine: Hype prima</option>
+          <option value="PRICE_ASC">Ordine: Prezzo crescente</option>
+          <option value="DISCOUNT_DESC">Ordine: % Sconto</option>
+        </select>
         <select id="filterStatus" class="hidden">
           <option value="ALL">Tutti gli stati</option>
           <option value="Not Played">Not Played</option>
@@ -128,7 +141,7 @@
               <option value="released">Rilasciato</option>
               <option value="unreleased">Non Rilasciato / Preorder</option>
             </select>
-            <input type="text" id="modalReleaseDate" placeholder="Data o finestra (es. 2027, Q4 2026, TBA)">
+            <input type="text" id="modalReleaseDate" placeholder="Data o finestra (es. 15 gen 2027, TBA)">
             <button type="submit" class="btn btn-sm btn-primary">Salva Rilascio</button>
           </div>
         </form>
@@ -152,8 +165,8 @@
               <option value="G2A">
               <option value="Epic Games">
             </datalist>
-            <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo attuale (es. 14.50)" required>
-            <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Prezzo base (opzionale)">
+            <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo attuale € (es. 14.50)" required>
+            <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Prezzo base € (opzionale)">
             <input type="url" id="customDealUrl" placeholder="Link offerta (opzionale)">
           </div>
           <button type="submit" class="btn btn-sm btn-success">+ Aggiungi Store al Gioco</button>
@@ -168,23 +181,26 @@
     </div>
   </div>
 
-  <!-- Modal Configurazione GitHub -->
+  <!-- Modal Configurazione GitHub & IsThereAnyDeal -->
   <div id="configModal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Sincronizzazione GitHub</h2>
+        <h2>Configurazione Sync & Store API</h2>
         <button class="btn-close" data-close="configModal">&times;</button>
       </div>
       <form id="configForm" class="modal-body">
-        <p class="hint">I dati vengono salvati solo nel browser di questo dispositivo.</p>
+        <p class="hint">Le chiavi vengono salvate esclusivamente nella memoria locale di questo browser.</p>
         <label>Username GitHub
           <input type="text" id="cfgOwner" required placeholder="es. tuousername">
         </label>
         <label>Nome Repository
           <input type="text" id="cfgRepo" required placeholder="es. game-backlog">
         </label>
-        <label>Personal Access Token (Contents: Read & Write)
+        <label>GitHub Personal Access Token (Contents: Read & Write)
           <input type="password" id="cfgToken" required placeholder="github_pat_...">
+        </label>
+        <label>IsThereAnyDeal API Key (Prezzi EUR €, giochi TBA & date uscita)
+          <input type="password" id="cfgItadKey" placeholder="Incolla API Key da isthereanydeal.com/dev/app/">
         </label>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Salva e Connetti</button>
