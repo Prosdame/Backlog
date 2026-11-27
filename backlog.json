@@ -22576,5 +22576,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813325227",
+    "title": "Batman Arkham City Game of the Year Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-2077-7336-b125-3cd96189f579/banner400.jpg?t=1794605711",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-2077-7336-b125-3cd96189f579",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "6 set 2012",
+    "releaseDateISO": "2012-09-06",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.95,
+    "retailPrice": 19.99,
+    "discount": 85,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "KTTMUe1iXtTLFVlvb4LjeumTpp5oHZM9uxltmiMIAwQ%3D",
+        "price": "2.95",
+        "retailPrice": "19.99",
+        "savings": "85.242621"
+      },
+      {
+        "storeID": "21",
+        "dealID": "rdslx2fwWStfStElmDsnsty2NUp3koHnelpa9zLgEM8%3D",
+        "price": "2.99",
+        "retailPrice": "19.99",
+        "savings": "85.042521"
+      },
+      {
+        "storeID": "30",
+        "dealID": "7q9bR5G1rjNg3iz0JjMLcPfi2uLaA1lQr3tZ8qXD%2FjU%3D",
+        "price": "3.39",
+        "retailPrice": "19.99",
+        "savings": "83.041521"
+      },
+      {
+        "storeID": "1",
+        "dealID": "RPqJV%2BI3Cw5NOoq%2B89MzssePMS%2BQgv2M1OnDzsdR0Jo%3D",
+        "price": "3.99",
+        "retailPrice": "19.99",
+        "savings": "80.040020"
+      },
+      {
+        "storeID": "7",
+        "dealID": "%2B4o9%2FB9iNt824OhS2gi37aB6fP80duB37FxfXBpqfm8%3D",
+        "price": "3.99",
+        "retailPrice": "19.99",
+        "savings": "80.040020"
+      },
+      {
+        "storeID": "2",
+        "dealID": "y3w9%2FXoNbqlXZhscyDbLZCe5ZwIbGswmKyUa7fnI2nc%3D",
+        "price": "4.00",
+        "retailPrice": "19.99",
+        "savings": "79.989995"
+      },
+      {
+        "storeID": "15",
+        "dealID": "rIYxhdpFe8%2BeO7wLxw2LUnGNwahew3syV%2ByGcE95KHk%3D",
+        "price": "18.99",
+        "retailPrice": "19.99",
+        "savings": "5.002501"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
