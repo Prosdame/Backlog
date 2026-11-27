@@ -214,8 +214,8 @@ function updateEngineBadge() {
     el.textContent = "Store: ITAD (EUR €)";
     el.className = "badge badge-blue";
   } else {
-    el.textContent = "Store: Base (Imposta ITAD Key)";
-    el.className = "badge badge-warn";
+    el.textContent = "Store: ITAD Auto-Sync (EUR €)";
+    el.className = "badge badge-blue";
   }
 }
 
@@ -309,7 +309,8 @@ function bindEvents() {
     await saveBacklog(`Add ${storeName} price for ${game.title}`);
   });
 
-  // Aggiornamento massivo
+  // Ricarica e aggiornamento massivo
+  document.getElementById("btnReloadBacklog").addEventListener("click", loadBacklog);
   document.getElementById("btnRefreshAll").addEventListener("click", refreshAllPrices);
 
   // Modals
@@ -446,37 +447,14 @@ async function itadGetGameInfo(itadId) {
 
 async function itadFetchBulkPrices(itadIds) {
   if (!itadIds.length) return [];
-  const keyParam = encodeURIComponent(appConfig.itadKey);
-  const payload = JSON.stringify(itadIds);
-
-  // Prova sia con header JSON sia senza header custom (evita blocco CORS preflight OPTIONS)
-  const attempts = [
-    { url: `https://api.isthereanydeal.com/games/prices/v3?key=${keyParam}&country=IT`, headers: { "Content-Type": "application/json" } },
-    { url: `https://api.isthereanydeal.com/games/prices/v3?key=${keyParam}&country=IT`, headers: {} },
-    { url: `https://api.isthereanydeal.com/games/prices/v2?key=${keyParam}&country=IT&nondeals=true`, headers: { "Content-Type": "application/json" } },
-    { url: `https://api.isthereanydeal.com/games/prices/v2?key=${keyParam}&country=IT&nondeals=true`, headers: {} }
-  ];
-
-  let lastError = null;
-  for (const attempt of attempts) {
-    try {
-      const res = await fetch(attempt.url, {
-        method: "POST",
-        headers: attempt.headers,
-        body: payload
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) return data;
-        if (data && Array.isArray(data.list)) return data.list;
-        return [];
-      }
-      lastError = new Error(`HTTP ${res.status}`);
-    } catch (e) {
-      lastError = e;
-    }
-  }
-  throw lastError || new Error("Endpoint prezzi ITAD non raggiungibile");
+  const url = `https://api.isthereanydeal.com/games/prices/v3?key=${encodeURIComponent(appConfig.itadKey)}&country=IT`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(itadIds)
+  });
+  if (!res.ok) throw new Error(`ITAD prices HTTP ${res.status}`);
+  return await res.json();
 }
 
 function normalizeItadDeals(rawDeals) {
@@ -517,10 +495,13 @@ async function searchGames() {
   container.classList.remove("hidden");
   container.innerHTML = "<p class='hint'>Ricerca in corso...</p>";
 
-  try {
-    if (appConfig.itadKey) {
+  let renderedPrimary = false;
+
+  if (appConfig.itadKey) {
+    try {
       const results = await itadSearchGames(query);
       container.innerHTML = "";
+      renderedPrimary = true;
 
       results.forEach((item) => {
         const card = document.createElement("div");
@@ -529,13 +510,19 @@ async function searchGames() {
         card.innerHTML = `
           <div class="search-card-info">
             <div class="search-card-title" title="${item.title}">${item.title}${typeLabel}</div>
-            <div class="search-card-price" style="color: var(--blue-text);">Clicca per importare prezzi EUR € e data rilascio</div>
+            <div class="search-card-price" style="color: var(--blue-text);">Aggiungi (ITAD EUR € + data rilascio)</div>
           </div>
         `;
         card.addEventListener("click", () => addGameFromItad(item.id, item.title));
         container.appendChild(card);
       });
-    } else {
+    } catch (err) {
+      console.warn("Ricerca diretta ITAD non disponibile nel browser, uso fallback:", err);
+    }
+  }
+
+  if (!renderedPrimary) {
+    try {
       const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=7`);
       const results = await res.json();
       container.innerHTML = "";
@@ -547,56 +534,55 @@ async function searchGames() {
           <img src="${item.thumb}" alt="">
           <div class="search-card-info">
             <div class="search-card-title" title="${item.external}">${item.external}</div>
-            <div class="search-card-price">Miglior prezzo: $${item.cheapest} (Imposta ITAD Key per EUR € e TBA)</div>
+            <div class="search-card-price">Aggiungi (verrà convertito in EUR € via GitHub Action)</div>
           </div>
         `;
         card.addEventListener("click", () => addGameFromCheapShark(item.gameID));
         container.appendChild(card);
       });
+    } catch (err) {
+      container.innerHTML = "";
     }
-
-    // Opzione manuale sempre disponibile in coda
-    const tbaCard = document.createElement("div");
-    tbaCard.className = "search-card search-card-tba";
-    tbaCard.innerHTML = `
-      <div class="search-card-info">
-        <div class="search-card-title">+ Aggiungi "${query}" manualmente</div>
-        <div class="search-card-price" style="color: var(--amber-text);">Salva senza collegamento store</div>
-      </div>
-    `;
-    tbaCard.addEventListener("click", async () => {
-      const targetCategory = document.getElementById("addTargetCategory").value;
-      document.getElementById("searchResults").classList.add("hidden");
-      document.getElementById("searchInput").value = "";
-      backlog.push({
-        id: Date.now().toString(),
-        title: query,
-        category: targetCategory,
-        hype: false,
-        itadId: null,
-        cheapsharkId: null,
-        selectedStoreId: null,
-        released: false,
-        releaseDate: "TBA",
-        releaseDateISO: null,
-        releaseNote: "TBA",
-        currency: "EUR",
-        salePrice: null,
-        retailPrice: null,
-        discount: 0,
-        bestStore: "",
-        deals: [],
-        customDeals: [],
-        free: false,
-        status: "Not Played"
-      });
-      await saveBacklog(`Add manual ${query}`);
-    });
-    container.appendChild(tbaCard);
-  } catch (err) {
-    console.error(err);
-    container.innerHTML = `<p class='hint'>Errore durante la ricerca (${err.message}). Verifica la API Key in Configura.</p>`;
   }
+
+  // Opzione diretta per giochi non ancora rilasciati / TBA
+  const tbaCard = document.createElement("div");
+  tbaCard.className = "search-card search-card-tba";
+  tbaCard.innerHTML = `
+    <div class="search-card-info">
+      <div class="search-card-title">+ Aggiungi "${query}" (Non Rilasciato / TBA)</div>
+      <div class="search-card-price" style="color: var(--amber-text);">Salva subito e aggiorna via ITAD</div>
+    </div>
+  `;
+  tbaCard.addEventListener("click", async () => {
+    const targetCategory = document.getElementById("addTargetCategory").value;
+    document.getElementById("searchResults").classList.add("hidden");
+    document.getElementById("searchInput").value = "";
+    backlog.push({
+      id: Date.now().toString(),
+      title: query,
+      category: targetCategory,
+      hype: false,
+      itadId: null,
+      cheapsharkId: null,
+      selectedStoreId: null,
+      released: false,
+      releaseDate: "TBA",
+      releaseDateISO: null,
+      releaseNote: "TBA",
+      currency: "EUR",
+      salePrice: null,
+      retailPrice: null,
+      discount: 0,
+      bestStore: "",
+      deals: [],
+      customDeals: [],
+      free: false,
+      status: "Not Played"
+    });
+    await saveBacklog(`Add ${query}`);
+  });
+  container.appendChild(tbaCard);
 }
 
 async function addGameFromItad(itadId, fallbackTitle) {
@@ -604,22 +590,19 @@ async function addGameFromItad(itadId, fallbackTitle) {
   document.getElementById("searchResults").classList.add("hidden");
   document.getElementById("searchInput").value = "";
 
-  // Esegue separatamente scheda gioco e prezzi: se un titolo TBA non ha prezzi, viene comunque aggiunto
+  // Tenta il recupero diretto nel browser, ma NON blocca mai l'aggiunta in caso di CORS
   const [infoRes, priceRes] = await Promise.allSettled([
     itadGetGameInfo(itadId),
     itadFetchBulkPrices([itadId])
   ]);
 
-  if (infoRes.status === "rejected" && priceRes.status === "rejected") {
-    console.error("Errore ITAD info:", infoRes.reason, "Errore ITAD prices:", priceRes.reason);
-    alert(`Impossibile importare "${fallbackTitle}" da IsThereAnyDeal.\nDettaglio tecnico: ${infoRes.reason?.message || priceRes.reason?.message}`);
-    return;
-  }
-
   const info = infoRes.status === "fulfilled" ? infoRes.value : { title: fallbackTitle, releaseDate: null };
   const priceEntries = priceRes.status === "fulfilled" ? priceRes.value : [];
 
-  const releaseInfo = parseReleaseStatusFromISO(info.releaseDate);
+  const releaseInfo = infoRes.status === "fulfilled"
+    ? parseReleaseStatusFromISO(info.releaseDate)
+    : { released: false, releaseDate: "Sync EUR...", releaseDateISO: null };
+
   const priceEntry = Array.isArray(priceEntries) ? priceEntries.find((p) => p.id === itadId) : null;
   const normalizedDeals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
 
@@ -653,6 +636,11 @@ async function addGameFromItad(itadId, fallbackTitle) {
 
   backlog.push(newGame);
   await saveBacklog(`Add ${newGame.title}`);
+
+  // Se il browser ha bloccato prezzi/info via CORS, GitHub Action aggiorna backlog.json in ~15s: ricarichiamo automaticamente
+  if (infoRes.status === "rejected" || priceRes.status === "rejected") {
+    setTimeout(() => loadBacklog(), 18000);
+  }
 }
 
 async function addGameFromCheapShark(cheapsharkId) {
@@ -694,6 +682,7 @@ async function addGameFromCheapShark(cheapsharkId) {
 
     backlog.push(newGame);
     await saveBacklog(`Add ${newGame.title}`);
+    setTimeout(() => loadBacklog(), 18000);
   } catch (err) {
     alert("Errore nel recupero dettagli del gioco.");
   }
@@ -742,46 +731,37 @@ async function addManualGame(e) {
 // --- AGGIORNAMENTO PREZZI E DATE ---
 async function refreshSingleGame(game, skipSave = false) {
   try {
-    if (appConfig.itadKey) {
-      if (!game.itadId) {
-        const matches = await itadSearchGames(game.title);
-        const exact = matches.find((m) => m.title.toLowerCase() === game.title.toLowerCase()) || matches[0];
-        if (exact) game.itadId = exact.id;
+    if (appConfig.itadKey && game.itadId) {
+      const [infoRes, priceRes] = await Promise.allSettled([
+        itadGetGameInfo(game.itadId),
+        itadFetchBulkPrices([game.itadId])
+      ]);
+
+      if (infoRes.status === "fulfilled" && !game.manualReleaseOverride) {
+        const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
+        game.released = rel.released;
+        game.releaseDate = rel.releaseDate;
+        game.releaseDateISO = rel.releaseDateISO;
+        game.releaseNote = rel.released ? "" : rel.releaseDate;
       }
 
-      if (game.itadId) {
-        const [infoRes, priceRes] = await Promise.allSettled([
-          itadGetGameInfo(game.itadId),
-          itadFetchBulkPrices([game.itadId])
-        ]);
+      if (priceRes.status === "fulfilled") {
+        const priceEntry = Array.isArray(priceRes.value)
+          ? priceRes.value.find((p) => p.id === game.itadId)
+          : null;
+        game.deals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
+        game.currency = "EUR";
 
-        if (infoRes.status === "fulfilled" && !game.manualReleaseOverride) {
-          const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
-          game.released = rel.released;
-          game.releaseDate = rel.releaseDate;
-          game.releaseDateISO = rel.releaseDateISO;
-          game.releaseNote = rel.released ? "" : rel.releaseDate;
-        }
-
-        if (priceRes.status === "fulfilled") {
-          const priceEntry = Array.isArray(priceRes.value)
-            ? priceRes.value.find((p) => p.id === game.itadId)
-            : null;
-          game.deals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
-          game.currency = "EUR";
-
-          const allDeals = getAllDeals(game);
-          const chosenDeal = findSelectedDeal(game, allDeals);
-          if (chosenDeal) {
-            applyDealToGame(game, chosenDeal);
-          }
+        const allDeals = getAllDeals(game);
+        const chosenDeal = findSelectedDeal(game, allDeals);
+        if (chosenDeal) {
+          applyDealToGame(game, chosenDeal);
         }
         if (!skipSave) await saveBacklog(`Refresh ${game.title}`);
         return;
       }
     }
 
-    // Fallback CheapShark
     if (game.cheapsharkId) {
       const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
       const data = await res.json();
@@ -808,63 +788,15 @@ async function refreshAllPrices() {
   btn.disabled = true;
 
   try {
-    if (appConfig.itadKey) {
-      btn.textContent = "Aggiorno via ITAD...";
-
-      for (const g of wishlistGames) {
-        if (!g.itadId && !g.manualReleaseOverride) {
-          try {
-            const matches = await itadSearchGames(g.title);
-            const exact = matches.find((m) => m.title.toLowerCase() === g.title.toLowerCase()) || matches[0];
-            if (exact) g.itadId = exact.id;
-          } catch (e) { /* ignora singolo */ }
-        }
-      }
-
-      const itadGames = wishlistGames.filter((g) => g.itadId);
-      if (itadGames.length > 0) {
-        for (const g of itadGames) {
-          if (!g.manualReleaseOverride && (!g.releaseDateISO || !isGameReleased(g))) {
-            try {
-              const info = await itadGetGameInfo(g.itadId);
-              const rel = parseReleaseStatusFromISO(info.releaseDate);
-              g.released = rel.released;
-              g.releaseDate = rel.releaseDate;
-              g.releaseDateISO = rel.releaseDateISO;
-              g.releaseNote = rel.released ? "" : rel.releaseDate;
-            } catch (e) { /* ignora singolo */ }
-          }
-        }
-
-        const ids = itadGames.map((g) => g.itadId);
-        const priceEntries = await itadFetchBulkPrices(ids);
-        const priceMap = new Map(priceEntries.map((p) => [p.id, p.deals]));
-
-        itadGames.forEach((g) => {
-          const rawDeals = priceMap.get(g.itadId) || [];
-          g.deals = normalizeItadDeals(rawDeals);
-          g.currency = "EUR";
-
-          const allDeals = getAllDeals(g);
-          const chosen = findSelectedDeal(g, allDeals);
-          if (chosen) {
-            applyDealToGame(g, chosen);
-          }
-        });
-      }
-    } else {
-      const targets = wishlistGames.filter((g) => g.cheapsharkId);
-      for (let i = 0; i < targets.length; i++) {
-        btn.textContent = `Aggiorno ${i + 1}/${targets.length}...`;
-        await refreshSingleGame(targets[i], true);
-        await new Promise((r) => setTimeout(r, 300));
-      }
+    for (let i = 0; i < wishlistGames.length; i++) {
+      btn.textContent = `Aggiorno ${i + 1}/${wishlistGames.length}...`;
+      await refreshSingleGame(wishlistGames[i], true);
+      await new Promise((r) => setTimeout(r, 250));
     }
-
-    await saveBacklog("Batch update wishlist prices");
+    await saveBacklog("Refresh wishlist prices");
+    setTimeout(() => loadBacklog(), 18000);
   } catch (err) {
     console.error(err);
-    alert(`Errore durante l'aggiornamento prezzi (${err.message}).`);
   } finally {
     btn.textContent = "Aggiorna Prezzi";
     btn.disabled = false;
@@ -878,7 +810,7 @@ function renderDealsModalContent(game) {
   const activeDeal = findSelectedDeal(game, allDeals);
 
   if (!allDeals.length) {
-    bodyEl.innerHTML = "<p class='hint'>Nessun prezzo ufficiale ancora disponibile (gioco TBA / non prezzato). Puoi usare i pulsanti sopra per cercare sui keyshop o inserirne uno manualmente.</p>";
+    bodyEl.innerHTML = "<p class='hint'>Nessun prezzo ufficiale ancora disponibile (gioco TBA o sincronizzazione ITAD in corso). Puoi usare i pulsanti sopra per cercare sui keyshop o inserirne uno manualmente.</p>";
     return;
   }
 
@@ -943,7 +875,6 @@ async function openDealsModal(game, focusRelease = false) {
   const modal = document.getElementById("dealsModal");
   const titleEl = document.getElementById("dealsModalTitle");
   const linksEl = document.getElementById("quickSearchLinks");
-  const bodyEl = document.getElementById("dealsModalBody");
 
   titleEl.textContent = `Dettagli & Store: ${game.title}`;
   document.getElementById("customDealForm").reset();
@@ -963,18 +894,11 @@ async function openDealsModal(game, focusRelease = false) {
   });
 
   modal.classList.remove("hidden");
+  renderDealsModalContent(game);
 
   if (focusRelease) {
     document.getElementById("modalReleaseDate").focus();
   }
-
-  if (game.itadId || game.cheapsharkId) {
-    bodyEl.innerHTML = "<p class='hint'>Aggiornamento prezzi ufficiali in corso...</p>";
-    await refreshSingleGame(game, true);
-    render();
-  }
-
-  renderDealsModalContent(game);
 }
 
 // --- HELPER COLOR CODING OWNED ---
