@@ -21,10 +21,10 @@
     "hype": false,
     "cheapsharkId": "329795",
     "releaseNote": "",
-    "salePrice": 29.29,
+    "salePrice": 26.35,
     "retailPrice": 29.99,
-    "discount": 2,
-    "bestStore": "WinGameStore",
+    "discount": 12,
+    "bestStore": "GameBillet",
     "deals": [
       {
         "storeID": "23",
@@ -78,7 +78,7 @@
     ],
     "free": false,
     "status": "Not Played",
-    "selectedStoreId": "21"
+    "selectedStoreId": "23"
   },
   {
     "id": "1795799241738",
