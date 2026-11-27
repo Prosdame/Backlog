@@ -22968,5 +22968,53 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813520661",
+    "title": "FINAL FANTASY VII REBIRTH",
+    "thumb": "https://assets.isthereanydeal.com/0190378e-1a64-720e-8971-4595157e24f3/banner400.jpg?t=1793776507",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "0190378e-1a64-720e-8971-4595157e24f3",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "23 gen 2025",
+    "releaseDateISO": "2025-01-23",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 7.49,
+    "retailPrice": 49.99,
+    "discount": 85,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "gJ60np9%2FzPD6n03wLQcUNEplVIDm%2B1%2B4ndLniZZ8PqQ%3D",
+        "price": "7.49",
+        "retailPrice": "49.99",
+        "savings": "85.017003"
+      },
+      {
+        "storeID": "3",
+        "dealID": "4nISvW6CdcGhIWqmlMNyWGfMemSHeBQhZjbWKHrb0Dg%3D",
+        "price": "7.50",
+        "retailPrice": "49.99",
+        "savings": "84.996999"
+      },
+      {
+        "storeID": "25",
+        "dealID": "Q%2FG36SByFK5fUA9fKhyVMEJr%2B0XuKuvs%2B7hBNciv%2Fmg%3D",
+        "price": "49.99",
+        "retailPrice": "49.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
