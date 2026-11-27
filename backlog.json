@@ -23793,5 +23793,39 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814160944",
+    "title": "The Elder Scrolls IV: Oblivion® Game of the Year Edition (2009)",
+    "thumb": "https://assets.isthereanydeal.com/01965e11-4451-728c-9e90-89e3d49f5868/banner400.jpg?t=1786646197",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01965e11-4451-728c-9e90-89e3d49f5868",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "11 set 2007",
+    "releaseDateISO": "2007-09-11",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.99,
+    "retailPrice": 14.99,
+    "discount": 80,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "zPoUV8OR3hRLkXNgAcNiVem%2BNOchwCEaJUj6WZGrWAA%3D",
+        "price": "2.99",
+        "retailPrice": "14.99",
+        "savings": "80.053369"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
