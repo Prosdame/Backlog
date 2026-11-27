@@ -30,16 +30,22 @@ function parseReleaseStatusFromISO(isoDate) {
   };
 }
 
+function extractItadPriceEntries(data) {
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.list)) return data.list;
+  return [];
+}
+
 function normalizeItadDeals(rawDeals) {
   if (!Array.isArray(rawDeals)) return [];
   return rawDeals
-    .filter((d) => d && d.shop && d.price)
+    .filter((d) => d && d.shop && d.price && d.price.amount !== undefined)
     .map((d) => ({
       uid: `itad_${d.shop.id}`,
       shopId: d.shop.id,
       shopName: d.shop.name,
       price: d.price.amount,
-      retailPrice: d.regular ? d.regular.amount : d.price.amount,
+      retailPrice: d.regular && d.regular.amount !== undefined ? d.regular.amount : d.price.amount,
       savings: Math.round(d.cut || 0),
       currency: d.price.currency || "EUR",
       url: d.url || ""
@@ -91,16 +97,36 @@ async function itadGetInfo(id) {
 
 async function itadGetPrices(ids) {
   if (!ids.length) return [];
-  const url = `https://api.isthereanydeal.com/games/prices/v3?key=${encodeURIComponent(ITAD_KEY)}&country=IT`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(ids)
-  });
-  if (!res.ok) {
-    throw new Error(`ITAD prices HTTP ${res.status}: ${await res.text()}`);
+  const keyParam = encodeURIComponent(ITAD_KEY);
+  const endpoints = [
+    `https://api.isthereanydeal.com/games/prices/v3?key=${keyParam}&country=IT`,
+    `https://api.isthereanydeal.com/games/prices/v2?key=${keyParam}&country=IT&nondeals=true`
+  ];
+
+  let lastErr = null;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ids)
+      });
+      if (!res.ok) {
+        const errBody = await res.text();
+        lastErr = new Error(`ITAD ${url.split("?")[0]} HTTP ${res.status}: ${errBody}`);
+        console.warn(lastErr.message);
+        continue;
+      }
+      const raw = await res.json();
+      const entries = extractItadPriceEntries(raw);
+      console.log(`Endpoint ${url.split("?")[0]} ha restituito ${entries.length} voci.`);
+      return entries;
+    } catch (err) {
+      lastErr = err;
+      console.warn(err.message);
+    }
   }
-  return await res.json();
+  throw lastErr || new Error("Nessun endpoint prezzi ITAD disponibile");
 }
 
 async function main() {
@@ -108,7 +134,6 @@ async function main() {
   const backlog = JSON.parse(raw);
   const wishlist = backlog.filter((g) => g.category === "wishlist");
 
-  // 1. Associa itadId ai giochi che ne sono ancora sprovvisti (es. vecchi giochi CheapShark)
   for (const game of wishlist) {
     if (!game.itadId) {
       const matches = await itadSearch(game.title);
@@ -120,30 +145,40 @@ async function main() {
     }
   }
 
-  // 2. Aggiorna data e stato di rilascio
   for (const game of wishlist) {
-    if (!game.itadId || game.manualReleaseOverride) continue;
+    if (!game.itadId) continue;
     const info = await itadGetInfo(game.itadId);
     if (info) {
-      if (info.title && (!game.title || game.title === game.title.toUpperCase())) {
-        game.title = info.title;
+      if (info.assets) {
+        const assetThumb = info.assets.banner300 || info.assets.banner145 || info.assets.boxart;
+        if (assetThumb) {
+          game.thumb = assetThumb;
+        }
       }
-      const rel = parseReleaseStatusFromISO(info.releaseDate);
-      game.released = rel.released;
-      game.releaseDate = rel.releaseDate;
-      game.releaseDateISO = rel.releaseDateISO;
-      game.releaseNote = rel.released ? "" : rel.releaseDate;
+      if (!game.manualReleaseOverride) {
+        if (info.title && (!game.title || game.title === game.title.toUpperCase())) {
+          game.title = info.title;
+        }
+        const rel = parseReleaseStatusFromISO(info.releaseDate);
+        game.released = rel.released;
+        game.releaseDate = rel.releaseDate;
+        game.releaseDateISO = rel.releaseDateISO;
+        game.releaseNote = rel.released ? "" : rel.releaseDate;
+      }
     }
   }
 
-  // 3. Scarica tutti i prezzi in EUR per l'Italia in un'unica chiamata
   const itadGames = wishlist.filter((g) => g.itadId);
   if (itadGames.length > 0) {
     const priceEntries = await itadGetPrices(itadGames.map((g) => g.itadId));
-    const priceMap = new Map(priceEntries.map((entry) => [entry.id, entry.deals || []]));
+    const priceMap = new Map(
+      priceEntries.map((entry) => [entry.id, entry.deals || entry.offers || []])
+    );
 
     for (const game of itadGames) {
-      const deals = normalizeItadDeals(priceMap.get(game.itadId) || []);
+      const rawDeals = priceMap.get(game.itadId) || [];
+      const deals = normalizeItadDeals(rawDeals);
+      console.log(`[${game.title}] -> ${deals.length} offerte ufficiali trovate`);
       game.deals = deals;
       game.currency = "EUR";
 
@@ -174,7 +209,7 @@ async function main() {
   const updated = `${JSON.stringify(backlog, null, 2)}\n`;
   if (updated !== raw) {
     fs.writeFileSync(BACKLOG_PATH, updated, "utf8");
-    console.log("backlog.json aggiornato con prezzi in EUR e date di rilascio.");
+    console.log("backlog.json aggiornato con prezzi in EUR, copertine e date di rilascio.");
   } else {
     console.log("Nessuna variazione rilevata.");
   }
