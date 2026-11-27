@@ -23864,5 +23864,60 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814327565",
+    "title": "The Outer Worlds: Spacer's Choice Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6b76-7138-b864-49b402ec7d7b/banner400.jpg?t=1794367215",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6b76-7138-b864-49b402ec7d7b",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_7",
+    "released": true,
+    "releaseDate": "7 mar 2023",
+    "releaseDateISO": "2023-03-07",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 9.99,
+    "retailPrice": 39.99,
+    "discount": 75,
+    "bestStore": "GOG",
+    "deals": [
+      {
+        "storeID": "7",
+        "dealID": "asZKOHOWDaFWTbnTZXfPQ2i29OIAMGD5bz6CrXvO0vU%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "1",
+        "dealID": "TAc%2FHwLOuwMPxxlf65zhNHI5zmzFjqpFTxZrxIzHVUs%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "15",
+        "dealID": "wOQLeP9rblX5FqtmV1R5rxeiDF2HHb18ley%2Fbq6xxWw%3D",
+        "price": "13.79",
+        "retailPrice": "39.99",
+        "savings": "65.516379"
+      },
+      {
+        "storeID": "25",
+        "dealID": "XXy25LNEYtc9FT276ey9mF%2Fcn%2FkxXC8RIK8le%2FjQlQc%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
