@@ -100,12 +100,12 @@
     "category": "wishlist",
     "hype": false,
     "cheapsharkId": "324081",
-    "selectedStoreId": "cs_23",
+    "selectedStoreId": "cs_1",
     "releaseNote": "",
-    "salePrice": 60.87,
+    "salePrice": 69.99,
     "retailPrice": 69.99,
-    "discount": 13,
-    "bestStore": "GameBillet",
+    "discount": 0,
+    "bestStore": "Store #1",
     "deals": [
       {
         "storeID": "23",
@@ -152,6 +152,7 @@
     ],
     "customDeals": [],
     "free": false,
-    "status": "Not Played"
+    "status": "Not Played",
+    "currency": "USD"
   }
 ]
