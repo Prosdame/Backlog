@@ -20,27 +20,5 @@
     "customDeals": [],
     "free": false,
     "status": "Not Played"
-  },
-  {
-    "id": "1795805009110",
-    "title": "Zenless Zone Zero",
-    "category": "wishlist",
-    "hype": false,
-    "itadId": "018d9591-b18f-7139-b3e0-9a1ac5e1217e",
-    "cheapsharkId": null,
-    "selectedStoreId": null,
-    "released": true,
-    "releaseDate": "2 lug 2024",
-    "releaseDateISO": "2024-07-02",
-    "releaseNote": "",
-    "currency": "EUR",
-    "salePrice": null,
-    "retailPrice": null,
-    "discount": 0,
-    "bestStore": "",
-    "deals": [],
-    "customDeals": [],
-    "free": false,
-    "status": "Not Played"
   }
 ]
