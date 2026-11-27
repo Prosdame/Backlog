@@ -159,5 +159,65 @@
     ],
     "free": false,
     "status": "Not Played"
+  },
+  {
+    "id": "1795800173491",
+    "title": "STRANGER THAN HEAVEN",
+    "category": "wishlist",
+    "hype": false,
+    "cheapsharkId": "324081",
+    "selectedStoreId": "cs_23",
+    "releaseNote": "",
+    "salePrice": 60.87,
+    "retailPrice": 69.99,
+    "discount": 13,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "0cztqpzZswue%2BAEfEUVwfz5c32M7Re9EUU%2Fmqv3%2FzcM%3D",
+        "price": "60.87",
+        "retailPrice": "69.99",
+        "savings": "13.030433"
+      },
+      {
+        "storeID": "15",
+        "dealID": "KU2iYzSB3oYT%2B9qV0KPVgpEz9BPdOFXsgmpU%2B5V7pvw%3D",
+        "price": "60.89",
+        "retailPrice": "69.99",
+        "savings": "13.001857"
+      },
+      {
+        "storeID": "3",
+        "dealID": "RVRyxQz%2B7SosNi5XnZoXgcDkl80TUhJ9hWdBm%2FV%2FdFY%3D",
+        "price": "60.89",
+        "retailPrice": "69.99",
+        "savings": "13.001857"
+      },
+      {
+        "storeID": "27",
+        "dealID": "u7G2rFxR8QU3mRJM8g7qAaJBoP3PVIbsl1Txpc0Y2r0%3D",
+        "price": "62.99",
+        "retailPrice": "69.99",
+        "savings": "10.001429"
+      },
+      {
+        "storeID": "1",
+        "dealID": "KJvsjKDDMeG5v6gRuWTAGJIDsiY4MNpR7fulzHxhe2w%3D",
+        "price": "69.99",
+        "retailPrice": "69.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "21",
+        "dealID": "I%2BVd39Eh8YyYZtKmrLD4C%2Bl16vylelRiSsdTGxOvmz0%3D",
+        "price": "69.99",
+        "retailPrice": "69.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played"
   }
 ]
