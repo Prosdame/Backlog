@@ -46,11 +46,11 @@ body {
   gap: 0.75rem;
 }
 
-.topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+.topbar-left { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
 .topbar-left h1 { font-size: 1.25rem; }
 .topbar-actions { display: flex; gap: 0.5rem; }
 
-.container { max-width: 1280px; margin: 1.5rem auto; padding: 0 1rem; }
+.container { max-width: 1320px; margin: 1.5rem auto; padding: 0 1rem; }
 
 .btn {
   padding: 0.5rem 0.9rem;
@@ -87,7 +87,7 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
 .store-select {
   padding: 0.3rem 0.5rem;
   font-size: 0.82rem;
-  max-width: 215px;
+  max-width: 220px;
 }
 
 /* Select color-coded per tabella Owned */
@@ -141,7 +141,7 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
 
 .search-results {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 0.75rem;
   margin-top: 1rem;
   padding-top: 1rem;
@@ -154,7 +154,7 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
   gap: 0.75rem;
   background: var(--bg);
   border: 1px solid var(--border);
-  padding: 0.5rem;
+  padding: 0.55rem 0.65rem;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -165,8 +165,8 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
 }
 .search-card img { width: 64px; height: 30px; object-fit: cover; border-radius: 4px; }
 .search-card-info { flex: 1; overflow: hidden; }
-.search-card-title { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.search-card-price { font-size: 0.75rem; color: var(--green-text); }
+.search-card-title { font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-card-price { font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem; }
 
 .manual-form {
   display: flex;
@@ -200,7 +200,7 @@ input:focus, select:focus { outline: none; border-color: var(--primary); }
 }
 .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-.filters { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.filters { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
 .checkbox-label { display: flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; cursor: pointer; }
 
 .table-wrapper {
@@ -282,7 +282,7 @@ tr:hover td { background: var(--surface-hover); }
   max-height: 88vh;
   overflow-y: auto;
 }
-.modal-lg { max-width: 650px; }
+.modal-lg { max-width: 660px; }
 .modal-header {
   display: flex;
   justify-content: space-between;
