@@ -23922,5 +23922,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814725114",
+    "title": "Yakuza 5 Remastered",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-4b50-734d-925d-554aa3cfd7d3/banner400.jpg?t=1786669526",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-4b50-734d-925d-554aa3cfd7d3",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "28 gen 2021",
+    "releaseDateISO": "2021-01-28",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 8.46,
+    "retailPrice": 19.99,
+    "discount": 58,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "FtwFH2bLoK4w4OIhr24FKg2lK6RyXBfvhBHwNorDNqg%3D",
+        "price": "8.46",
+        "retailPrice": "19.99",
+        "savings": "57.678839"
+      },
+      {
+        "storeID": "15",
+        "dealID": "jXk06PExBob%2BJjjax8OfjnJY79a9VZdD40FqneBPXpk%3D",
+        "price": "9.39",
+        "retailPrice": "19.99",
+        "savings": "53.026513"
+      },
+      {
+        "storeID": "27",
+        "dealID": "T9I%2FbmqBG3yNd9BbYb23xzw7gBI9TNGdMAoQtvS05XQ%3D",
+        "price": "9.64",
+        "retailPrice": "19.99",
+        "savings": "51.775888"
+      },
+      {
+        "storeID": "21",
+        "dealID": "F%2F7SPqh3DwA31mu%2BUL7B9greYxqjoiWgKkxLl%2BmwYFw%3D",
+        "price": "9.99",
+        "retailPrice": "19.99",
+        "savings": "50.025013"
+      },
+      {
+        "storeID": "7",
+        "dealID": "c9E2CZ2pE4m1etvcSD1UjuGreGMZL%2BlW6Sm636F%2F0NU%3D",
+        "price": "9.99",
+        "retailPrice": "19.99",
+        "savings": "50.025013"
+      },
+      {
+        "storeID": "1",
+        "dealID": "40BnIzo7cO7D5vpCJhkM2QoygcoSeE2AY%2B0T9Hw94g0%3D",
+        "price": "9.99",
+        "retailPrice": "19.99",
+        "savings": "50.025013"
+      },
+      {
+        "storeID": "3",
+        "dealID": "4HAbxh4l3jThSoEvp1WjXamDv3NkwUnxQ0Y2GX0jtoY%3D",
+        "price": "10.00",
+        "retailPrice": "19.99",
+        "savings": "49.974987"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
