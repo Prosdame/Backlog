@@ -22626,5 +22626,102 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813342529",
+    "title": "Blasphemous 2",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6ee2-70f6-940c-6212ac74369e/banner400.jpg?t=1790937943",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6ee2-70f6-940c-6212ac74369e",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "24 ago 2023",
+    "releaseDateISO": "2023-08-24",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 6.14,
+    "retailPrice": 29.99,
+    "discount": 80,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "oqPKGVGjyHE2%2FZbuPC7I5j3yWdXFpWRi5yHy1Qbil9Q%3D",
+        "price": "6.14",
+        "retailPrice": "29.99",
+        "savings": "79.526509"
+      },
+      {
+        "storeID": "1",
+        "dealID": "OOYXadypPhCR%2F6C1ng5MELuZ%2BWklLybMOCKtypKQ9iw%3D",
+        "price": "7.49",
+        "retailPrice": "29.99",
+        "savings": "75.025008"
+      },
+      {
+        "storeID": "15",
+        "dealID": "oCtS%2BW24Rw6%2B6tg5ZQM7PB9m4GLSQq8J6Y2lY7kSAEE%3D",
+        "price": "8.69",
+        "retailPrice": "29.99",
+        "savings": "71.023675"
+      },
+      {
+        "storeID": "30",
+        "dealID": "%2FiyxWKit2WmNnCu84gd7%2BlnDnOkYbNXt8W1sHzfe6Bc%3D",
+        "price": "10.19",
+        "retailPrice": "29.99",
+        "savings": "66.022007"
+      },
+      {
+        "storeID": "7",
+        "dealID": "yMMP5aUrd5vfFNMFBKr4QANkiqqgQxACgZRSuHk4Fj8%3D",
+        "price": "10.19",
+        "retailPrice": "29.99",
+        "savings": "66.022007"
+      },
+      {
+        "storeID": "2",
+        "dealID": "XAkipsHiBtaQVhTuEUZ%2FNDIdOX7kMhFgdQWySgUgjB0%3D",
+        "price": "10.20",
+        "retailPrice": "29.99",
+        "savings": "65.988663"
+      },
+      {
+        "storeID": "21",
+        "dealID": "decRQmG4VrIXjIWNNYyCNisf4gtM4%2Bf5oUOoDqTXObo%3D",
+        "price": "25.29",
+        "retailPrice": "29.99",
+        "savings": "15.671891"
+      },
+      {
+        "storeID": "27",
+        "dealID": "140ruXWQxFFNZHu%2F6ta7HIKfnYoAUM%2F1JJcxmXok%2Fl4%3D",
+        "price": "26.99",
+        "retailPrice": "29.99",
+        "savings": "10.003334"
+      },
+      {
+        "storeID": "3",
+        "dealID": "sAaO%2BIET7clWCWM1WYozQum5bZzb8SpUgMFIOid%2Fp2U%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "25",
+        "dealID": "i0M1DAso6grE2EtaUaFWo5kHDs62UcL6A8wIIY2SiDU%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
