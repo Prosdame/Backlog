@@ -71,9 +71,21 @@ function normalizeTitleForMatch(title) {
     .trim();
 }
 
+function extractSteamAppIdFromQuery(rawQuery) {
+  const trimmed = (rawQuery || "").trim();
+  if (/^\d{3,10}$/.test(trimmed)) {
+    return trimmed;
+  }
+  const urlMatch = trimmed.match(/store\.steampowered\.com\/app\/(\d+)/i);
+  if (urlMatch) {
+    return urlMatch[1];
+  }
+  return null;
+}
+
 // Identifica i giochi non collegati a storefront digitali PC (es. console/annunci/manuali)
 function isNonStorefrontGame(game) {
-  return !game.itadId && !game.cheapsharkId;
+  return !game.itadId && !game.cheapsharkId && !game.steamAppId;
 }
 
 // --- MIGRAZIONE SCHEMA & DEDUPLICAZIONE ---
@@ -402,7 +414,7 @@ function bindEvents() {
   document.getElementById("simAvgGameHours").addEventListener("input", updateBacklogSimulator);
   document.getElementById("btnSpinRoulette").addEventListener("click", spinDestinyRoulette);
 
-  // Ricerca giochi live (suggerimenti mentre si digita) + invio immediato
+  // Ricerca giochi live (debounce a 450ms per evitare rate-limit mentre si digita) + invio immediato
   const searchInputEl = document.getElementById("searchInput");
   const searchResultsEl = document.getElementById("searchResults");
 
@@ -417,7 +429,7 @@ function bindEvents() {
     }
     searchDebounceTimer = setTimeout(() => {
       searchGames(true);
-    }, 300);
+    }, 450);
   });
 
   searchInputEl.addEventListener("focus", () => {
@@ -623,7 +635,6 @@ async function loadBacklog(silent = false) {
 }
 
 function enqueueBacklogMutation(commitMessage, mutatorFn) {
-  // 1. Applica subito la modifica in memoria, normalizza lo schema e aggiorna la UI
   const localCopy = normalizeBacklogList(JSON.parse(JSON.stringify(backlog)));
   backlog = normalizeBacklogList(mutatorFn(localCopy) || localCopy);
   render();
@@ -633,7 +644,6 @@ function enqueueBacklogMutation(commitMessage, mutatorFn) {
     return Promise.resolve();
   }
 
-  // 2. Accoda la scrittura su GitHub con auto-merge in caso di HTTP 409
   saveChain = saveChain.then(async () => {
     isSavingBacklog = true;
     const statusEl = document.getElementById("syncStatus");
@@ -698,12 +708,26 @@ function enqueueBacklogMutation(commitMessage, mutatorFn) {
   return saveChain;
 }
 
-// --- IS THERE ANY DEAL (ITAD) API ---
+// --- IS THERE ANY DEAL (ITAD) API (CON RETRY AUTOMATICO) ---
 async function itadSearchGames(query) {
-  const url = `https://api.isthereanydeal.com/games/search/v1?key=${encodeURIComponent(appConfig.itadKey)}&title=${encodeURIComponent(query)}&results=8`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`ITAD search HTTP ${res.status}`);
-  return await res.json();
+  const url = `https://api.isthereanydeal.com/games/search/v1?key=${encodeURIComponent(appConfig.itadKey)}&title=${encodeURIComponent(query)}&results=20`;
+  let lastErr = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.status === 429 || res.status >= 500) {
+        lastErr = new Error(`ITAD search HTTP ${res.status}`);
+        await new Promise((r) => setTimeout(r, 350));
+        continue;
+      }
+      if (!res.ok) throw new Error(`ITAD search HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      lastErr = err;
+      if (attempt === 0) await new Promise((r) => setTimeout(r, 350));
+    }
+  }
+  throw lastErr || new Error("ITAD search fallita");
 }
 
 async function itadLookupBySteamAppId(steamAppId) {
@@ -790,6 +814,14 @@ async function fetchCheapSharkSearch(query, limit = 15) {
   return await res.json();
 }
 
+async function fetchCheapSharkBySteamAppId(steamAppId) {
+  const res = await fetch(`https://www.cheapshark.com/api/1.0/games?steamAppID=${encodeURIComponent(steamAppId)}&limit=5`);
+  if (!res.ok) return [];
+  const list = await res.json();
+  if (!Array.isArray(list)) return [];
+  return list.filter((item) => String(item.steamAppID) === String(steamAppId));
+}
+
 async function fetchCheapSharkDealsByTitle(title) {
   try {
     const csSearch = await fetchCheapSharkSearch(title, 5);
@@ -841,7 +873,7 @@ function resolveSearchThumb(item, thumbMap) {
   return FALLBACK_GAME_THUMB;
 }
 
-// --- RICERCA LIVE E AGGIUNTA GIOCHI (CON ANTI-DUPLICATI) ---
+// --- RICERCA LIVE E AGGIUNTA GIOCHI (TITOLO, STEAM APP ID O URL STEAM) ---
 async function searchGames(isLive = false) {
   const query = document.getElementById("searchInput").value.trim();
   const container = document.getElementById("searchResults");
@@ -858,21 +890,94 @@ async function searchGames(isLive = false) {
   }
 
   let renderedPrimary = false;
+  const steamAppIdQuery = extractSteamAppIdFromQuery(query);
 
-  if (appConfig.itadKey) {
+  // Caso 1: ricerca tramite Steam App ID (es. 774181) o link store.steampowered.com/app/...
+  if (steamAppIdQuery) {
+    const [itadLookupRes, csSteamRes] = await Promise.allSettled([
+      appConfig.itadKey ? itadLookupBySteamAppId(steamAppIdQuery) : Promise.resolve(null),
+      fetchCheapSharkBySteamAppId(steamAppIdQuery)
+    ]);
+
+    if (seq !== latestSearchSeq) return;
+
+    const itadFound = itadLookupRes.status === "fulfilled" ? itadLookupRes.value : null;
+    const csMatches = csSteamRes.status === "fulfilled" ? csSteamRes.value : [];
+    const steamHeaderThumb = `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${steamAppIdQuery}/header.jpg`;
+
+    if (itadFound) {
+      container.innerHTML = "";
+      renderedPrimary = true;
+      const thumbUrl = (csMatches[0] && csMatches[0].thumb) || steamHeaderThumb;
+      const existing = findDuplicateGame({ itadId: itadFound.id, steamAppId: steamAppIdQuery, title: itadFound.title });
+      const card = document.createElement("div");
+      card.className = "search-card";
+      card.innerHTML = `
+        <img src="${thumbUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'">
+        <div class="search-card-info">
+          <div class="search-card-title" title="${itadFound.title}">${itadFound.title} (Steam #${steamAppIdQuery})</div>
+          <div class="search-card-price" style="color: ${existing ? "var(--amber-text)" : "var(--blue-text)"}; font-weight: 600;">
+            ${existing ? `Già in ${existing.category === "owned" ? "Owned" : "Wishlist"} (clicca per aprire)` : "Aggiungi (ITAD EUR € + Steam ID)"}
+          </div>
+        </div>
+      `;
+      card.addEventListener("click", () => {
+        if (existing) {
+          document.getElementById("searchResults").classList.add("hidden");
+          openDealsModal(existing, false);
+          return;
+        }
+        addGameFromItad(itadFound.id, itadFound.title, thumbUrl, steamAppIdQuery);
+      });
+      container.appendChild(card);
+    } else if (csMatches.length > 0) {
+      container.innerHTML = "";
+      renderedPrimary = true;
+      csMatches.forEach((item) => {
+        const thumbUrl = item.thumb || steamHeaderThumb;
+        const existing = findDuplicateGame({ cheapsharkId: item.gameID, steamAppId: steamAppIdQuery, title: item.external });
+        const card = document.createElement("div");
+        card.className = "search-card";
+        card.innerHTML = `
+          <img src="${thumbUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'">
+          <div class="search-card-info">
+            <div class="search-card-title" title="${item.external}">${item.external} (Steam #${steamAppIdQuery})</div>
+            <div class="search-card-price" style="color: ${existing ? "var(--amber-text)" : "var(--blue-text)"}; font-weight: 600;">
+              ${existing ? `Già in ${existing.category === "owned" ? "Owned" : "Wishlist"} (clicca per aprire)` : "Aggiungi con Steam ID (sync EUR via GitHub Action)"}
+            </div>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          if (existing) {
+            document.getElementById("searchResults").classList.add("hidden");
+            openDealsModal(existing, false);
+            return;
+          }
+          addGameFromCheapShark(item.gameID, steamAppIdQuery);
+        });
+        container.appendChild(card);
+      });
+    }
+  }
+
+  // Caso 2: ricerca standard per titolo (ITAD + CheapShark in parallelo)
+  if (!renderedPrimary && !steamAppIdQuery) {
     const [itadRes, csRes] = await Promise.allSettled([
-      itadSearchGames(query),
+      appConfig.itadKey ? itadSearchGames(query) : Promise.resolve(null),
       fetchCheapSharkSearch(query, 15)
     ]);
 
     if (seq !== latestSearchSeq) return;
 
-    if (itadRes.status === "fulfilled" && Array.isArray(itadRes.value)) {
-      const thumbMap = csRes.status === "fulfilled" ? buildThumbnailLookup(csRes.value) : new Map();
+    const itadItems = itadRes.status === "fulfilled" && Array.isArray(itadRes.value) ? itadRes.value : [];
+    const csItems = csRes.status === "fulfilled" && Array.isArray(csRes.value) ? csRes.value : [];
+    const thumbMap = buildThumbnailLookup(csItems);
+
+    if (itadItems.length > 0) {
       container.innerHTML = "";
       renderedPrimary = true;
 
-      itadRes.value.forEach((item) => {
+      itadItems.forEach((item) => {
         const card = document.createElement("div");
         card.className = "search-card";
         const typeLabel = item.type && item.type !== "game" ? ` (${item.type.toUpperCase()})` : "";
@@ -901,20 +1006,15 @@ async function searchGames(isLive = false) {
         });
         container.appendChild(card);
       });
-    }
-  }
-
-  if (!renderedPrimary) {
-    try {
-      const results = await fetchCheapSharkSearch(query, 8);
-      if (seq !== latestSearchSeq) return;
+    } else if (csItems.length > 0) {
       container.innerHTML = "";
+      renderedPrimary = true;
 
-      results.forEach((item) => {
+      csItems.slice(0, 10).forEach((item) => {
         const card = document.createElement("div");
         card.className = "search-card";
         const thumbUrl = item.thumb || FALLBACK_GAME_THUMB;
-        const existing = findDuplicateGame({ cheapsharkId: item.gameID, title: item.external });
+        const existing = findDuplicateGame({ cheapsharkId: item.gameID, steamAppId: item.steamAppID, title: item.external });
 
         const subHtml = existing
           ? `<div class="search-card-price" style="color: var(--amber-text); font-weight: 600;">Già in ${existing.category === "owned" ? "Owned" : "Wishlist"} (clicca per aprire)</div>`
@@ -933,14 +1033,15 @@ async function searchGames(isLive = false) {
             openDealsModal(existing, false);
             return;
           }
-          addGameFromCheapShark(item.gameID);
+          addGameFromCheapShark(item.gameID, item.steamAppID || null);
         });
         container.appendChild(card);
       });
-    } catch (err) {
-      if (seq !== latestSearchSeq) return;
+    } else {
       container.innerHTML = "";
     }
+  } else if (!renderedPrimary && steamAppIdQuery) {
+    container.innerHTML = "";
   }
 
   if (seq !== latestSearchSeq) return;
@@ -972,6 +1073,7 @@ async function searchGames(isLive = false) {
       thumb: null,
       category: targetCategory,
       hype: false,
+      steamAppId: steamAppIdQuery,
       released: false,
       releaseDate: "TBA",
       releaseNote: "TBA",
@@ -985,8 +1087,8 @@ async function searchGames(isLive = false) {
   container.appendChild(tbaCard);
 }
 
-async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
-  const preCheck = findDuplicateGame({ itadId, title: fallbackTitle });
+async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null, steamAppId = null) {
+  const preCheck = findDuplicateGame({ itadId, steamAppId, title: fallbackTitle });
   if (preCheck) {
     document.getElementById("searchResults").classList.add("hidden");
     notifyAndOpenDuplicate(preCheck);
@@ -1005,7 +1107,7 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
   const info = infoRes.status === "fulfilled" ? infoRes.value : { title: fallbackTitle, releaseDate: null };
   const priceEntries = priceRes.status === "fulfilled" ? priceRes.value : [];
 
-  const postCheck = findDuplicateGame({ itadId, title: info.title || fallbackTitle });
+  const postCheck = findDuplicateGame({ itadId, steamAppId, title: info.title || fallbackTitle });
   if (postCheck) {
     notifyAndOpenDuplicate(postCheck);
     return;
@@ -1028,6 +1130,7 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
     thumb: assetThumb || preloadedThumb || null,
     category: targetCategory,
     hype: false,
+    steamAppId: steamAppId || null,
     itadId,
     released: releaseInfo.released,
     releaseDate: releaseInfo.releaseDate,
@@ -1063,8 +1166,8 @@ async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
   }
 }
 
-async function addGameFromCheapShark(cheapsharkId) {
-  const preCheck = findDuplicateGame({ cheapsharkId: String(cheapsharkId) });
+async function addGameFromCheapShark(cheapsharkId, steamAppId = null) {
+  const preCheck = findDuplicateGame({ cheapsharkId: String(cheapsharkId), steamAppId });
   if (preCheck) {
     document.getElementById("searchResults").classList.add("hidden");
     notifyAndOpenDuplicate(preCheck);
@@ -1079,7 +1182,8 @@ async function addGameFromCheapShark(cheapsharkId) {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${cheapsharkId}`);
     const data = await res.json();
 
-    const postCheck = findDuplicateGame({ cheapsharkId: String(cheapsharkId), title: data.info.title });
+    const resolvedSteamId = steamAppId || (data.info && data.info.steamAppID ? String(data.info.steamAppID) : null);
+    const postCheck = findDuplicateGame({ cheapsharkId: String(cheapsharkId), steamAppId: resolvedSteamId, title: data.info.title });
     if (postCheck) {
       notifyAndOpenDuplicate(postCheck);
       return;
@@ -1091,6 +1195,7 @@ async function addGameFromCheapShark(cheapsharkId) {
       thumb: data.info.thumb || null,
       category: targetCategory,
       hype: false,
+      steamAppId: resolvedSteamId,
       cheapsharkId: cheapsharkId.toString(),
       released: true,
       currency: "USD",
@@ -1213,6 +1318,22 @@ async function fetchUpdatedFieldsForGame(game) {
     return patch;
   }
 
+  if (!resolvedItadId && game.steamAppId) {
+    const csMatches = await fetchCheapSharkBySteamAppId(game.steamAppId);
+    if (csMatches.length > 0) {
+      const csId = csMatches[0].gameID;
+      patch.cheapsharkId = String(csId);
+      const detailRes = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${csId}`);
+      if (detailRes.ok) {
+        const data = await detailRes.json();
+        if (data.info && data.info.thumb) patch.thumb = data.info.thumb;
+        patch.deals = data.deals || [];
+        patch.currency = "USD";
+        return patch;
+      }
+    }
+  }
+
   if (game.cheapsharkId) {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
     if (res.ok) {
@@ -1239,6 +1360,11 @@ async function refreshSingleGame(game) {
       }
       return list;
     });
+    const updated = backlog.find((item) => item.id === game.id);
+    if (updated && currentModalGameId === game.id) {
+      updateDealsModalHero(updated);
+      renderDealsModalContent(updated);
+    }
     setTimeout(() => loadBacklog(true), 22000);
   } catch (err) {
     console.warn(`Errore aggiornamento ${game.title}:`, err);
