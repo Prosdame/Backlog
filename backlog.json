@@ -23755,5 +23755,88 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814674727",
+    "title": "Warhammer: Vermintide 2",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f85d-703b-aa5d-a38a1c1f5bc2/banner400.jpg?t=1787721025",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f85d-703b-aa5d-a38a1c1f5bc2",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "7 mar 2018",
+    "releaseDateISO": "2018-03-07",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.99,
+    "retailPrice": 29.99,
+    "discount": 90,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "WsGdr8u7VzKVcEhPy%2BuEqhvHQegMgCeyKlIthyE7rWI%3D",
+        "price": "2.99",
+        "retailPrice": "29.99",
+        "savings": "90.030010"
+      },
+      {
+        "storeID": "23",
+        "dealID": "W%2Bns%2F5D%2FT0n2ug4%2FvfAEPY1HzSSICruIkbvhRtLGv4Y%3D",
+        "price": "4.90",
+        "retailPrice": "29.99",
+        "savings": "83.661220"
+      },
+      {
+        "storeID": "15",
+        "dealID": "JGpINc61AfxQI66303EJkrVoFeH%2FQr87wFQJnIvEyVc%3D",
+        "price": "4.94",
+        "retailPrice": "29.99",
+        "savings": "83.527843"
+      },
+      {
+        "storeID": "21",
+        "dealID": "4tmyV8igzTbH8258TLPXD9u4Tm2%2FZNbh6mAtFlw%2FJJM%3D",
+        "price": "5.89",
+        "retailPrice": "29.99",
+        "savings": "80.360120"
+      },
+      {
+        "storeID": "3",
+        "dealID": "SLdDwD5HH5b9nCMcGrTEc72z9DHfN3tk4tajNcNbkho%3D",
+        "price": "6.00",
+        "retailPrice": "29.99",
+        "savings": "79.993331"
+      },
+      {
+        "storeID": "27",
+        "dealID": "y7O%2F1BJ5jLUqKasyp3XJ49abwHB28RHdNzgi0AB5IrE%3D",
+        "price": "25.79",
+        "retailPrice": "29.99",
+        "savings": "14.004668"
+      },
+      {
+        "storeID": "30",
+        "dealID": "%2BcuNmP3zJQGxLWEtj9GA51ZBnSfGzlX566zEEiGDKYM%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "2",
+        "dealID": "cefzCdccqU80CT5s97kRJit9n5KkmTKUEF7%2FIss6ad0%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
