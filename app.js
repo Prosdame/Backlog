@@ -4,6 +4,21 @@ let csStoresMap = {};
 let currentTab = "wishlist";
 let currentSha = null;
 let currentModalGameId = null;
+let searchDebounceTimer = null;
+let latestSearchSeq = 0;
+
+const FALLBACK_GAME_THUMB =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="45" viewBox="0 0 120 45">
+      <rect width="120" height="45" rx="6" fill="#1e293b"/>
+      <rect x="1" y="1" width="118" height="43" rx="5" fill="none" stroke="#334155" stroke-width="1.5"/>
+      <path d="M49 27l3-9c.6-1.8 2.3-3 4.2-3h7.6c1.9 0 3.6 1.2 4.2 3l3 9c.7 2.1-.9 4.2-3.1 4.2-1.2 0-2.3-.6-2.9-1.6l-1.4-2.1h-7.2l-1.4 2.1c-.6 1-1.7 1.6-2.9 1.6-2.2 0-3.8-2.1-3.1-4.2z" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="64.5" cy="20.5" r="1.2" fill="#38bdf8"/>
+      <circle cx="67" cy="23" r="1.2" fill="#38bdf8"/>
+      <path d="M54.5 20.5v4M52.5 22.5h4" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>`
+  );
 
 // Configurazione GitHub + IsThereAnyDeal salvata localmente nel dispositivo
 let appConfig = {
@@ -34,6 +49,38 @@ function decodeBase64UTF8(base64) {
   const bin = atob(base64.replace(/\s/g, ""));
   const bytes = Uint8Array.from(bin, (m) => m.codePointAt(0));
   return new TextDecoder().decode(bytes);
+}
+
+function normalizeTitleForMatch(title) {
+  return (title || "")
+    .toLowerCase()
+    .replace(/[™®©]/g, "")
+    .replace(/[:\-–—_.,!?'"()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// --- PRIORITÀ STORE PREFERITI (STEAM, EPIC, GOG) ---
+function getPreferredStoreRank(storeName) {
+  const name = (storeName || "").trim().toLowerCase();
+  if (name === "steam") return 0;
+  if (name.includes("epic")) return 1;
+  if (name === "gog" || name.startsWith("gog.")) return 2;
+  return 3;
+}
+
+function sortDealsForDropdown(deals) {
+  return [...deals].sort((a, b) => {
+    const rankA = getPreferredStoreRank(a.storeName);
+    const rankB = getPreferredStoreRank(b.storeName);
+    if (rankA !== rankB) {
+      return rankA - rankB;
+    }
+    if (Math.abs(a.price - b.price) > 0.001) {
+      return a.price - b.price;
+    }
+    return a.storeName.localeCompare(b.storeName);
+  });
 }
 
 // --- FORMATTAZIONE VALUTA & DATE ---
@@ -242,10 +289,51 @@ function bindEvents() {
   document.getElementById("sortWishlist").addEventListener("change", render);
   document.getElementById("filterStatus").addEventListener("change", render);
 
-  // Ricerca giochi
-  document.getElementById("btnSearch").addEventListener("click", searchGames);
-  document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchGames();
+  // Ricerca giochi live (suggerimenti mentre si digita) + invio immediato
+  const searchInputEl = document.getElementById("searchInput");
+  const searchResultsEl = document.getElementById("searchResults");
+
+  searchInputEl.addEventListener("input", () => {
+    clearTimeout(searchDebounceTimer);
+    const q = searchInputEl.value.trim();
+    if (q.length < 2) {
+      latestSearchSeq++;
+      searchResultsEl.classList.add("hidden");
+      searchResultsEl.innerHTML = "";
+      return;
+    }
+    searchDebounceTimer = setTimeout(() => {
+      searchGames(true);
+    }, 300);
+  });
+
+  searchInputEl.addEventListener("focus", () => {
+    if (searchInputEl.value.trim().length >= 2 && searchResultsEl.innerHTML.trim() !== "") {
+      searchResultsEl.classList.remove("hidden");
+    }
+  });
+
+  searchInputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      clearTimeout(searchDebounceTimer);
+      searchGames(false);
+    } else if (e.key === "Escape") {
+      searchResultsEl.classList.add("hidden");
+    }
+  });
+
+  document.getElementById("btnSearch").addEventListener("click", () => {
+    clearTimeout(searchDebounceTimer);
+    searchGames(false);
+  });
+
+  // Chiude i suggerimenti cliccando fuori dal pannello di ricerca
+  document.addEventListener("click", (e) => {
+    const addPanel = document.querySelector(".add-panel");
+    if (addPanel && !addPanel.contains(e.target)) {
+      searchResultsEl.classList.add("hidden");
+    }
   });
 
   // Form manuale
@@ -473,7 +561,7 @@ function normalizeItadDeals(rawDeals) {
     }));
 }
 
-// --- FALLBACK LEGACY (CHEAPSHARK) ---
+// --- FALLBACK LEGACY (CHEAPSHARK) & COPERTINE ---
 async function loadCheapSharkStoresMap() {
   try {
     const res = await fetch("https://www.cheapshark.com/api/1.0/stores");
@@ -486,28 +574,82 @@ async function loadCheapSharkStoresMap() {
   }
 }
 
-// --- RICERCA E AGGIUNTA GIOCHI ---
-async function searchGames() {
-  const query = document.getElementById("searchInput").value.trim();
-  if (!query) return;
+async function fetchCheapSharkSearch(query, limit = 15) {
+  const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=${limit}`);
+  if (!res.ok) return [];
+  return await res.json();
+}
 
+function buildThumbnailLookup(csResults) {
+  const map = new Map();
+  if (!Array.isArray(csResults)) return map;
+  csResults.forEach((item) => {
+    if (item && item.external && item.thumb) {
+      const norm = normalizeTitleForMatch(item.external);
+      if (norm && !map.has(norm)) {
+        map.set(norm, item.thumb);
+      }
+    }
+  });
+  return map;
+}
+
+function resolveSearchThumb(item, thumbMap) {
+  if (item.assets) {
+    const direct = item.assets.banner145 || item.assets.banner300 || item.assets.boxart;
+    if (direct) return direct;
+  }
+  const norm = normalizeTitleForMatch(item.title);
+  if (thumbMap.has(norm)) {
+    return thumbMap.get(norm);
+  }
+  for (const [key, thumb] of thumbMap.entries()) {
+    if (key.startsWith(norm) || norm.startsWith(key)) {
+      return thumb;
+    }
+  }
+  return FALLBACK_GAME_THUMB;
+}
+
+// --- RICERCA LIVE E AGGIUNTA GIOCHI ---
+async function searchGames(isLive = false) {
+  const query = document.getElementById("searchInput").value.trim();
   const container = document.getElementById("searchResults");
+
+  if (!query) {
+    container.classList.add("hidden");
+    return;
+  }
+
+  const seq = ++latestSearchSeq;
   container.classList.remove("hidden");
-  container.innerHTML = "<p class='hint'>Ricerca in corso...</p>";
+  if (!isLive || container.innerHTML.trim() === "") {
+    container.innerHTML = "<p class='hint'>Ricerca in corso...</p>";
+  }
 
   let renderedPrimary = false;
 
   if (appConfig.itadKey) {
-    try {
-      const results = await itadSearchGames(query);
+    const [itadRes, csRes] = await Promise.allSettled([
+      itadSearchGames(query),
+      fetchCheapSharkSearch(query, 15)
+    ]);
+
+    if (seq !== latestSearchSeq) return;
+
+    if (itadRes.status === "fulfilled" && Array.isArray(itadRes.value)) {
+      const thumbMap = csRes.status === "fulfilled" ? buildThumbnailLookup(csRes.value) : new Map();
       container.innerHTML = "";
       renderedPrimary = true;
 
-      results.forEach((item) => {
+      itadRes.value.forEach((item) => {
         const card = document.createElement("div");
         card.className = "search-card";
         const typeLabel = item.type && item.type !== "game" ? ` (${item.type.toUpperCase()})` : "";
+        const thumbUrl = resolveSearchThumb(item, thumbMap);
+
         card.innerHTML = `
+          <img src="${thumbUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'">
           <div class="search-card-info">
             <div class="search-card-title" title="${item.title}">${item.title}${typeLabel}</div>
             <div class="search-card-price" style="color: var(--blue-text);">Aggiungi (ITAD EUR € + data rilascio)</div>
@@ -516,22 +658,21 @@ async function searchGames() {
         card.addEventListener("click", () => addGameFromItad(item.id, item.title));
         container.appendChild(card);
       });
-    } catch (err) {
-      console.warn("Ricerca diretta ITAD non disponibile nel browser, uso fallback:", err);
     }
   }
 
   if (!renderedPrimary) {
     try {
-      const res = await fetch(`https://www.cheapshark.com/api/1.0/games?title=${encodeURIComponent(query)}&limit=7`);
-      const results = await res.json();
+      const results = await fetchCheapSharkSearch(query, 8);
+      if (seq !== latestSearchSeq) return;
       container.innerHTML = "";
 
       results.forEach((item) => {
         const card = document.createElement("div");
         card.className = "search-card";
+        const thumbUrl = item.thumb || FALLBACK_GAME_THUMB;
         card.innerHTML = `
-          <img src="${item.thumb}" alt="">
+          <img src="${thumbUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'">
           <div class="search-card-info">
             <div class="search-card-title" title="${item.external}">${item.external}</div>
             <div class="search-card-price">Aggiungi (verrà convertito in EUR € via GitHub Action)</div>
@@ -541,14 +682,18 @@ async function searchGames() {
         container.appendChild(card);
       });
     } catch (err) {
+      if (seq !== latestSearchSeq) return;
       container.innerHTML = "";
     }
   }
+
+  if (seq !== latestSearchSeq) return;
 
   // Opzione diretta per giochi non ancora rilasciati / TBA
   const tbaCard = document.createElement("div");
   tbaCard.className = "search-card search-card-tba";
   tbaCard.innerHTML = `
+    <img src="${FALLBACK_GAME_THUMB}" alt="">
     <div class="search-card-info">
       <div class="search-card-title">+ Aggiungi "${query}" (Non Rilasciato / TBA)</div>
       <div class="search-card-price" style="color: var(--amber-text);">Salva subito e aggiorna via ITAD</div>
@@ -814,15 +959,20 @@ function renderDealsModalContent(game) {
     return;
   }
 
+  const orderedDeals = sortDealsForDropdown(allDeals);
   bodyEl.innerHTML = "";
-  allDeals.forEach((d) => {
+
+  orderedDeals.forEach((d) => {
     const isActive = activeDeal && activeDeal.uid === d.uid;
+    const isPreferred = getPreferredStoreRank(d.storeName) < 3;
     const row = document.createElement("div");
     row.className = `deal-row ${isActive ? "deal-row-active" : ""}`;
 
     const typeBadge = d.isCustom
       ? `<span class="badge badge-purple">Keyshop / Custom</span>`
-      : `<span class="badge badge-blue">Ufficiale</span>`;
+      : isPreferred
+        ? `<span class="badge badge-green">Preferito</span>`
+        : `<span class="badge badge-blue">Ufficiale</span>`;
 
     row.innerHTML = `
       <div>
@@ -1006,10 +1156,21 @@ function render() {
 
     let storeHtml = g.bestStore || "-";
     if (allDeals.length > 0) {
-      const optionsHtml = allDeals.map((d) => {
+      const dropdownDeals = sortDealsForDropdown(allDeals);
+      const preferredDeals = dropdownDeals.filter((d) => getPreferredStoreRank(d.storeName) < 3);
+      const otherDeals = dropdownDeals.filter((d) => getPreferredStoreRank(d.storeName) >= 3);
+
+      const renderOption = (d) => {
         const isSelected = activeDeal && d.uid === activeDeal.uid;
         return `<option value="${d.uid}" ${isSelected ? "selected" : ""}>${d.storeName} (${formatMoney(d.price, d.currency)})</option>`;
-      }).join("");
+      };
+
+      let optionsHtml = preferredDeals.map(renderOption).join("");
+      if (preferredDeals.length > 0 && otherDeals.length > 0) {
+        optionsHtml += `<option disabled>──────────────</option>`;
+      }
+      optionsHtml += otherDeals.map(renderOption).join("");
+
       storeHtml = `<select class="store-select" data-action="store">${optionsHtml}</select>`;
     }
 
