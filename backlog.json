@@ -6413,43 +6413,6 @@
     "schemaVersion": 2
   },
   {
-    "id": "1795811633516_w_68",
-    "title": "GTA+",
-    "thumb": "https://assets.isthereanydeal.com/019562a8-8634-71e9-80e1-0727de75c48c/banner400.jpg?t=1786384818",
-    "category": "wishlist",
-    "hype": false,
-    "steamAppId": null,
-    "itadId": "019562a8-8634-71e9-80e1-0727de75c48c",
-    "cheapsharkId": null,
-    "selectedStoreId": "itad_61",
-    "released": true,
-    "releaseDate": "4 mar 2025",
-    "releaseDateISO": "2025-03-04",
-    "releaseNote": "",
-    "manualReleaseOverride": false,
-    "currency": "EUR",
-    "salePrice": 7.99,
-    "retailPrice": 7.99,
-    "discount": 0,
-    "bestStore": "Steam",
-    "deals": [
-      {
-        "uid": "itad_61",
-        "shopId": 61,
-        "shopName": "Steam",
-        "price": 7.99,
-        "retailPrice": 7.99,
-        "savings": 0,
-        "currency": "EUR",
-        "url": "https://itad.link/01956295-9062-72e9-b8c0-7f53ae986014/?app=1lmbp4"
-      }
-    ],
-    "customDeals": [],
-    "free": false,
-    "status": "Not Played",
-    "schemaVersion": 2
-  },
-  {
     "id": "1795811633683_w_69",
     "title": "GUNDAM ROGUE ORBIT",
     "thumb": "https://assets.isthereanydeal.com/019e99bf-51a2-70cb-a112-d55013a1e11a/banner400.jpg?t=1792428926",
