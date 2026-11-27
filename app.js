@@ -10,13 +10,19 @@ let latestSearchSeq = 0;
 const FALLBACK_GAME_THUMB =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="45" viewBox="0 0 120 45">
-      <rect width="120" height="45" rx="6" fill="#1e293b"/>
-      <rect x="1" y="1" width="118" height="43" rx="5" fill="none" stroke="#334155" stroke-width="1.5"/>
-      <path d="M49 27l3-9c.6-1.8 2.3-3 4.2-3h7.6c1.9 0 3.6 1.2 4.2 3l3 9c.7 2.1-.9 4.2-3.1 4.2-1.2 0-2.3-.6-2.9-1.6l-1.4-2.1h-7.2l-1.4 2.1c-.6 1-1.7 1.6-2.9 1.6-2.2 0-3.8-2.1-3.1-4.2z" fill="none" stroke="#64748b" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="64.5" cy="20.5" r="1.2" fill="#38bdf8"/>
-      <circle cx="67" cy="23" r="1.2" fill="#38bdf8"/>
-      <path d="M54.5 20.5v4M52.5 22.5h4" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"/>
+    `<svg xmlns="http://www.w3.org/2000/svg" width="460" height="215" viewBox="0 0 460 215">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+      </defs>
+      <rect width="460" height="215" fill="url(#bg)"/>
+      <rect x="2" y="2" width="456" height="211" rx="10" fill="none" stroke="#334155" stroke-width="2"/>
+      <path d="M196 125l10-30c2-6 7.5-10 13.8-10h20.4c6.3 0 11.8 4 13.8 10l10 30c2.3 7-3 14-10.3 14-4 0-7.7-2-9.7-5.3l-4.6-7h-18.8l-4.6 7c-2 3.3-5.7 5.3-9.7 5.3-7.3 0-12.6-7-10.3-14z" fill="none" stroke="#64748b" stroke-width="3.5" stroke-linejoin="round"/>
+      <circle cx="244" cy="103" r="3" fill="#38bdf8"/>
+      <circle cx="252" cy="111" r="3" fill="#38bdf8"/>
+      <path d="M213 102v14M206 109h14" stroke="#94a3b8" stroke-width="3.2" stroke-linecap="round"/>
     </svg>`
   );
 
@@ -356,6 +362,7 @@ function bindEvents() {
     game.releaseNote = game.released ? "" : (dateVal || "TBA");
     game.manualReleaseOverride = true;
 
+    updateDealsModalHero(game);
     await saveBacklog(`Update release info for ${game.title}`);
   });
 
@@ -393,6 +400,7 @@ function bindEvents() {
     }
 
     document.getElementById("customDealForm").reset();
+    updateDealsModalHero(game);
     renderDealsModalContent(game);
     await saveBacklog(`Add ${storeName} price for ${game.title}`);
   });
@@ -596,7 +604,7 @@ function buildThumbnailLookup(csResults) {
 
 function resolveSearchThumb(item, thumbMap) {
   if (item.assets) {
-    const direct = item.assets.banner145 || item.assets.banner300 || item.assets.boxart;
+    const direct = item.assets.banner300 || item.assets.banner145 || item.assets.boxart;
     if (direct) return direct;
   }
   const norm = normalizeTitleForMatch(item.title);
@@ -647,6 +655,7 @@ async function searchGames(isLive = false) {
         card.className = "search-card";
         const typeLabel = item.type && item.type !== "game" ? ` (${item.type.toUpperCase()})` : "";
         const thumbUrl = resolveSearchThumb(item, thumbMap);
+        const realThumb = thumbUrl !== FALLBACK_GAME_THUMB ? thumbUrl : null;
 
         card.innerHTML = `
           <img src="${thumbUrl}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'">
@@ -655,7 +664,7 @@ async function searchGames(isLive = false) {
             <div class="search-card-price" style="color: var(--blue-text);">Aggiungi (ITAD EUR € + data rilascio)</div>
           </div>
         `;
-        card.addEventListener("click", () => addGameFromItad(item.id, item.title));
+        card.addEventListener("click", () => addGameFromItad(item.id, item.title, realThumb));
         container.appendChild(card);
       });
     }
@@ -706,6 +715,7 @@ async function searchGames(isLive = false) {
     backlog.push({
       id: Date.now().toString(),
       title: query,
+      thumb: null,
       category: targetCategory,
       hype: false,
       itadId: null,
@@ -730,7 +740,7 @@ async function searchGames(isLive = false) {
   container.appendChild(tbaCard);
 }
 
-async function addGameFromItad(itadId, fallbackTitle) {
+async function addGameFromItad(itadId, fallbackTitle, preloadedThumb = null) {
   const targetCategory = document.getElementById("addTargetCategory").value;
   document.getElementById("searchResults").classList.add("hidden");
   document.getElementById("searchInput").value = "";
@@ -750,10 +760,12 @@ async function addGameFromItad(itadId, fallbackTitle) {
 
   const priceEntry = Array.isArray(priceEntries) ? priceEntries.find((p) => p.id === itadId) : null;
   const normalizedDeals = priceEntry ? normalizeItadDeals(priceEntry.deals) : [];
+  const assetThumb = info.assets ? (info.assets.banner300 || info.assets.banner145 || info.assets.boxart) : null;
 
   const newGame = {
     id: Date.now().toString(),
     title: info.title || fallbackTitle,
+    thumb: assetThumb || preloadedThumb || null,
     category: targetCategory,
     hype: false,
     itadId,
@@ -782,7 +794,6 @@ async function addGameFromItad(itadId, fallbackTitle) {
   backlog.push(newGame);
   await saveBacklog(`Add ${newGame.title}`);
 
-  // Se il browser ha bloccato prezzi/info via CORS, GitHub Action aggiorna backlog.json in ~15s: ricarichiamo automaticamente
   if (infoRes.status === "rejected" || priceRes.status === "rejected") {
     setTimeout(() => loadBacklog(), 18000);
   }
@@ -800,6 +811,7 @@ async function addGameFromCheapShark(cheapsharkId) {
     const newGame = {
       id: Date.now().toString(),
       title: data.info.title,
+      thumb: data.info.thumb || null,
       category: targetCategory,
       hype: false,
       itadId: null,
@@ -847,6 +859,7 @@ async function addManualGame(e) {
   backlog.push({
     id: Date.now().toString(),
     title,
+    thumb: null,
     category,
     hype,
     itadId: null,
@@ -882,12 +895,18 @@ async function refreshSingleGame(game, skipSave = false) {
         itadFetchBulkPrices([game.itadId])
       ]);
 
-      if (infoRes.status === "fulfilled" && !game.manualReleaseOverride) {
-        const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
-        game.released = rel.released;
-        game.releaseDate = rel.releaseDate;
-        game.releaseDateISO = rel.releaseDateISO;
-        game.releaseNote = rel.released ? "" : rel.releaseDate;
+      if (infoRes.status === "fulfilled") {
+        if (infoRes.value.assets) {
+          const assetThumb = infoRes.value.assets.banner300 || infoRes.value.assets.banner145 || infoRes.value.assets.boxart;
+          if (assetThumb) game.thumb = assetThumb;
+        }
+        if (!game.manualReleaseOverride) {
+          const rel = parseReleaseStatusFromISO(infoRes.value.releaseDate);
+          game.released = rel.released;
+          game.releaseDate = rel.releaseDate;
+          game.releaseDateISO = rel.releaseDateISO;
+          game.releaseNote = rel.released ? "" : rel.releaseDate;
+        }
       }
 
       if (priceRes.status === "fulfilled") {
@@ -910,6 +929,9 @@ async function refreshSingleGame(game, skipSave = false) {
     if (game.cheapsharkId) {
       const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
       const data = await res.json();
+      if (data.info && data.info.thumb) {
+        game.thumb = data.info.thumb;
+      }
       game.deals = data.deals || [];
       game.currency = "USD";
 
@@ -948,14 +970,82 @@ async function refreshAllPrices() {
   }
 }
 
-// --- MODAL DETTAGLI E CONFRONTO ---
+// --- MODAL DETTAGLI, COPERTINA E CONFRONTO ---
+function updateDealsModalHero(game) {
+  const coverEl = document.getElementById("dealsModalCover");
+  const titleEl = document.getElementById("dealsModalTitle");
+  const badgesEl = document.getElementById("dealsModalBadges");
+  const subtitleEl = document.getElementById("dealsModalSubtitle");
+
+  coverEl.onerror = () => {
+    coverEl.onerror = null;
+    coverEl.src = FALLBACK_GAME_THUMB;
+  };
+  coverEl.src = game.thumb || FALLBACK_GAME_THUMB;
+  titleEl.textContent = game.title;
+
+  const releaseInfo = getReleaseBadgeInfo(game);
+  const allDeals = getAllDeals(game);
+  const activeDeal = findSelectedDeal(game, allDeals);
+  const currency = activeDeal ? activeDeal.currency : (game.currency || (game.itadId ? "EUR" : "USD"));
+  const saleVal = activeDeal ? activeDeal.price : game.salePrice;
+  const discountVal = activeDeal ? activeDeal.savings : (game.discount || 0);
+
+  let priceBadgeHtml = `<span class="badge badge-red">Prezzo N/D</span>`;
+  if (saleVal !== null && saleVal !== undefined) {
+    const cls = discountVal > 0 ? "badge-green" : "badge-blue";
+    const discTxt = discountVal > 0 ? ` (-${discountVal}%)` : "";
+    priceBadgeHtml = `<span class="badge ${cls}">${formatMoney(saleVal, currency)}${discTxt}</span>`;
+  }
+
+  const hypeBadgeHtml = game.hype ? `<span class="badge badge-purple">★ In Hype</span>` : "";
+
+  badgesEl.innerHTML = `
+    <span class="badge ${releaseInfo.badgeClass}">${releaseInfo.text}</span>
+    ${priceBadgeHtml}
+    ${hypeBadgeHtml}
+  `;
+
+  if (activeDeal) {
+    subtitleEl.textContent = `Store attivo: ${activeDeal.storeName} · Listino: ${formatMoney(activeDeal.retailPrice, currency)}`;
+  } else {
+    subtitleEl.textContent = "Nessuna offerta ufficiale rilevata al momento.";
+  }
+}
+
+async function resolveAndCacheMissingThumb(game) {
+  if (game.thumb) return;
+  try {
+    const csResults = await fetchCheapSharkSearch(game.title, 8);
+    if (currentModalGameId !== game.id) return;
+
+    const thumbMap = buildThumbnailLookup(csResults);
+    const resolved = resolveSearchThumb({ title: game.title }, thumbMap);
+    if (resolved && resolved !== FALLBACK_GAME_THUMB) {
+      game.thumb = resolved;
+      const coverEl = document.getElementById("dealsModalCover");
+      if (coverEl) {
+        coverEl.src = resolved;
+      }
+      await saveBacklog(`Cache cover art for ${game.title}`);
+    }
+  } catch (err) {
+    console.warn("Copertina non trovata per:", game.title, err);
+  }
+}
+
 function renderDealsModalContent(game) {
   const bodyEl = document.getElementById("dealsModalBody");
+  const countEl = document.getElementById("dealsModalCount");
   const allDeals = getAllDeals(game);
   const activeDeal = findSelectedDeal(game, allDeals);
 
+  if (countEl) {
+    countEl.textContent = `${allDeals.length} ${allDeals.length === 1 ? "store" : "store"}`;
+  }
+
   if (!allDeals.length) {
-    bodyEl.innerHTML = "<p class='hint'>Nessun prezzo ufficiale ancora disponibile (gioco TBA o sincronizzazione ITAD in corso). Puoi usare i pulsanti sopra per cercare sui keyshop o inserirne uno manualmente.</p>";
+    bodyEl.innerHTML = "<p class='hint'>Nessun prezzo ufficiale ancora disponibile (gioco TBA o sincronizzazione ITAD in corso). Usa i pulsanti qui sopra per cercare sui keyshop o inserirne uno manualmente.</p>";
     return;
   }
 
@@ -980,9 +1070,9 @@ function renderDealsModalContent(game) {
           <strong>${d.storeName}</strong>
           ${typeBadge}
         </div>
-        <div class="hint">Base: ${formatMoney(d.retailPrice, d.currency)}</div>
+        <div class="hint">Prezzo di listino: ${formatMoney(d.retailPrice, d.currency)}</div>
       </div>
-      <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; justify-content:flex-end;">
+      <div class="deal-actions-right">
         <span class="badge ${d.savings > 0 ? "badge-green" : "badge-blue"}">${formatMoney(d.price, d.currency)} (-${d.savings}%)</span>
         <button class="btn btn-sm ${isActive ? "btn-success" : "btn-secondary"}" data-action="select">
           ${isActive ? "Attivo" : "Seleziona"}
@@ -994,6 +1084,7 @@ function renderDealsModalContent(game) {
 
     row.querySelector('[data-action="select"]').addEventListener("click", async () => {
       applyDealToGame(game, d);
+      updateDealsModalHero(game);
       renderDealsModalContent(game);
       await saveBacklog(`Select ${d.storeName} for ${game.title}`);
     });
@@ -1011,6 +1102,7 @@ function renderDealsModalContent(game) {
           game.discount = 0;
           game.bestStore = "";
         }
+        updateDealsModalHero(game);
         renderDealsModalContent(game);
         await saveBacklog(`Remove ${d.storeName} from ${game.title}`);
       });
@@ -1023,12 +1115,9 @@ function renderDealsModalContent(game) {
 async function openDealsModal(game, focusRelease = false) {
   currentModalGameId = game.id;
   const modal = document.getElementById("dealsModal");
-  const titleEl = document.getElementById("dealsModalTitle");
   const linksEl = document.getElementById("quickSearchLinks");
 
-  titleEl.textContent = `Dettagli & Store: ${game.title}`;
   document.getElementById("customDealForm").reset();
-
   document.getElementById("modalReleaseState").value = isGameReleased(game) ? "released" : "unreleased";
   document.getElementById("modalReleaseDate").value = getReleaseDateText(game);
 
@@ -1043,8 +1132,13 @@ async function openDealsModal(game, focusRelease = false) {
     linksEl.appendChild(a);
   });
 
+  updateDealsModalHero(game);
   modal.classList.remove("hidden");
   renderDealsModalContent(game);
+
+  if (!game.thumb) {
+    resolveAndCacheMissingThumb(game);
+  }
 
   if (focusRelease) {
     document.getElementById("modalReleaseDate").focus();
