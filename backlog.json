@@ -23145,5 +23145,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813751669",
+    "title": "LEGO® Batman 2™ DC Super Heroes",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-ea4c-73d2-ac68-0c0e8c50ceae/banner400.jpg?t=1794609324",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-ea4c-73d2-ac68-0c0e8c50ceae",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "19 giu 2012",
+    "releaseDateISO": "2012-06-19",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 3.29,
+    "retailPrice": 19.99,
+    "discount": 84,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "30",
+        "dealID": "69zsohVj5C97T6uPNKqhizIDYzwuB1n1y3Jh7XPpdXE%3D",
+        "price": "3.29",
+        "retailPrice": "19.99",
+        "savings": "83.541771"
+      },
+      {
+        "storeID": "27",
+        "dealID": "jB%2FvrdRify81DXdsd2Sy7MkOMrgJY6a9m44hhaPQ6XU%3D",
+        "price": "3.49",
+        "retailPrice": "19.99",
+        "savings": "82.541271"
+      },
+      {
+        "storeID": "1",
+        "dealID": "PLK%2BInMYUooml%2FkEGWW%2Bw8MluNwy5q9ZSzKcLaciTU4%3D",
+        "price": "3.99",
+        "retailPrice": "19.99",
+        "savings": "80.040020"
+      },
+      {
+        "storeID": "7",
+        "dealID": "QUBirWYvDAO2lFUT7k8cjHda6iIDuS%2Bw1kVpNEgokYE%3D",
+        "price": "3.99",
+        "retailPrice": "19.99",
+        "savings": "80.040020"
+      },
+      {
+        "storeID": "3",
+        "dealID": "gzdRaRqy6ekoqc9C0XWpMqsFVD7fym15S82RWAdTL18%3D",
+        "price": "4.00",
+        "retailPrice": "19.99",
+        "savings": "79.989995"
+      },
+      {
+        "storeID": "2",
+        "dealID": "%2BaN5g45v2klUKroQZea7HRwlMDFsB50wuzbgbfTcylg%3D",
+        "price": "4.00",
+        "retailPrice": "19.99",
+        "savings": "79.989995"
+      },
+      {
+        "storeID": "21",
+        "dealID": "qmEeL5Ve1oU9yyG07HWy%2BmN6eJxTPLIE6fy%2BOUeZ%2Fvc%3D",
+        "price": "16.69",
+        "retailPrice": "19.99",
+        "savings": "16.508254"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
