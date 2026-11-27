@@ -22972,5 +22972,53 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813496336",
+    "title": "Fallout 2: A Post Nuclear Role Playing Game",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-039b-724c-b8fa-1766fbdf4ea9/banner400.jpg?t=1786653956",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-039b-724c-b8fa-1766fbdf4ea9",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_15",
+    "released": true,
+    "releaseDate": "30 set 1998",
+    "releaseDateISO": "1998-09-30",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.19,
+    "retailPrice": 9.99,
+    "discount": 78,
+    "bestStore": "Fanatical",
+    "deals": [
+      {
+        "storeID": "15",
+        "dealID": "0a7t4K8bqNt27N8MSeruU6Tn8TsNeLydPH8tDAAUcU0%3D",
+        "price": "2.19",
+        "retailPrice": "9.99",
+        "savings": "78.078078"
+      },
+      {
+        "storeID": "1",
+        "dealID": "n49S9cFwSz9coCHFlNIsNqhmA6l9be0WoRbLuS3FVXg%3D",
+        "price": "2.49",
+        "retailPrice": "9.99",
+        "savings": "75.075075"
+      },
+      {
+        "storeID": "3",
+        "dealID": "ZanUGpV4XlRwygQfXVgb07PF6XcZKVcj2cKsku2rNJ4%3D",
+        "price": "2.50",
+        "retailPrice": "9.99",
+        "savings": "74.974975"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
