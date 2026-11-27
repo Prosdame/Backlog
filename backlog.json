@@ -24274,5 +24274,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814809889",
+    "title": "Like a Dragon: Ishin!",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-64bc-703c-b03b-0fd86173f093/banner400.jpg?t=1786642539",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-64bc-703c-b03b-0fd86173f093",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "21 feb 2023",
+    "releaseDateISO": "2023-02-21",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 8.46,
+    "retailPrice": 39.99,
+    "discount": 79,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "pRZKOkS4Pbh6IqA0BoDjPsxfpbZwCFoGqnuo%2FfIdoXU%3D",
+        "price": "8.46",
+        "retailPrice": "39.99",
+        "savings": "78.844711"
+      },
+      {
+        "storeID": "15",
+        "dealID": "WrjiZ%2FEgBS%2F6eh3tiZEkfk6wEezIzJaMRaR4Te2c%2FMo%3D",
+        "price": "9.39",
+        "retailPrice": "39.99",
+        "savings": "76.519130"
+      },
+      {
+        "storeID": "27",
+        "dealID": "KRmK5OY%2B89kdMNgnQ31diZ02AaMP0sJMIqckickD6dY%3D",
+        "price": "9.65",
+        "retailPrice": "39.99",
+        "savings": "75.868967"
+      },
+      {
+        "storeID": "1",
+        "dealID": "tZxQOXKST4tm7C%2F%2B6kDu0KVfEbZ4cXTRE1kujLlx4oc%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "21",
+        "dealID": "gfhFvVAi9QsXRmFCZM8zxPQ%2BGH0H0I%2F5NlOQsnKtMSA%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "3",
+        "dealID": "I%2FlCqI31a%2BqjPZ0ft%2FIugm6TVYY8dbdRDFqYnrAGxUs%3D",
+        "price": "10.00",
+        "retailPrice": "39.99",
+        "savings": "74.993748"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
