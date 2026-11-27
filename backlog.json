@@ -1,20 +1,5 @@
 [
   {
-    "id": "1732724000001",
-    "title": "12 Minutes",
-    "category": "wishlist",
-    "hype": false,
-    "cheapsharkId": "195725",
-    "releaseNote": "",
-    "salePrice": 7.13,
-    "retailPrice": 23.79,
-    "discount": 70,
-    "bestStore": "Steam",
-    "deals": [],
-    "free": false,
-    "status": "Not Played"
-  },
-  {
     "id": "1732724000002",
     "title": "Ace Combat 8",
     "category": "owned",
