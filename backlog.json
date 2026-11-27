@@ -23259,5 +23259,88 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813783385",
+    "title": "Mafia III: Definitive Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-4292-724a-a13a-1f1da1652741/banner400.jpg?t=1795461310",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-4292-724a-a13a-1f1da1652741",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_21",
+    "released": true,
+    "releaseDate": "26 ott 2016",
+    "releaseDateISO": "2016-10-26",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.75,
+    "retailPrice": 29.99,
+    "discount": 91,
+    "bestStore": "WinGameStore",
+    "deals": [
+      {
+        "storeID": "21",
+        "dealID": "PmQEVHCXKHahwJbEiSoB0TXWE%2B8BQEqEnv%2B%2FsUVQtos%3D",
+        "price": "2.75",
+        "retailPrice": "29.99",
+        "savings": "90.830277"
+      },
+      {
+        "storeID": "15",
+        "dealID": "SwPR0Sm%2Blg17rIQgOoZWs2Q99jfNQprMbkfEsqmj5Nk%3D",
+        "price": "4.94",
+        "retailPrice": "29.99",
+        "savings": "83.527843"
+      },
+      {
+        "storeID": "27",
+        "dealID": "rBdiRrqqjLI3sTvBT6QYOakLmW3tSD4UNVVtZv5V1L4%3D",
+        "price": "5.77",
+        "retailPrice": "29.99",
+        "savings": "80.760253"
+      },
+      {
+        "storeID": "1",
+        "dealID": "JhKI%2BPh1I9uRVnIUj2DiiOjMOKaZGfYptmX0q71ZwM4%3D",
+        "price": "5.99",
+        "retailPrice": "29.99",
+        "savings": "80.026676"
+      },
+      {
+        "storeID": "30",
+        "dealID": "raIRdYFR36kVBjNsIs3BeLd1biqzBA6AkVbDvqpEnps%3D",
+        "price": "5.99",
+        "retailPrice": "29.99",
+        "savings": "80.026676"
+      },
+      {
+        "storeID": "7",
+        "dealID": "0oLpmUN6Niks%2F0LV45g4jxZHNxldnoiBL09OIid0Dno%3D",
+        "price": "5.99",
+        "retailPrice": "29.99",
+        "savings": "80.026676"
+      },
+      {
+        "storeID": "2",
+        "dealID": "IuM%2B0hb5QQFEmI4pM%2F%2F5xN3OTGpjsYfQuPxkPiCQ7jQ%3D",
+        "price": "6.00",
+        "retailPrice": "29.99",
+        "savings": "79.993331"
+      },
+      {
+        "storeID": "3",
+        "dealID": "4G7JVOvwTxG2a%2FQuQWccRMEypACgCUf%2BauZePYHHGH8%3D",
+        "price": "6.00",
+        "retailPrice": "29.99",
+        "savings": "79.993331"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
