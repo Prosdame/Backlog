@@ -24205,5 +24205,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814795506",
+    "title": "Like a Dragon Gaiden: The Man Who Erased His Name",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6ed0-735b-99ec-00618f11608d/banner400.jpg?t=1786651536",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6ed0-735b-99ec-00618f11608d",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "8 nov 2023",
+    "releaseDateISO": "2023-11-08",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 9.95,
+    "retailPrice": 49.99,
+    "discount": 80,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "sO6F41eazIVIh%2F45kIPt3npG5qHzde9mal5QWKFxvgc%3D",
+        "price": "9.95",
+        "retailPrice": "49.99",
+        "savings": "80.096019"
+      },
+      {
+        "storeID": "1",
+        "dealID": "i5aNH08IUKwNOmTpRFhq%2FZV60oCZnpHd2WGM47I%2FqDg%3D",
+        "price": "9.99",
+        "retailPrice": "49.99",
+        "savings": "80.016003"
+      },
+      {
+        "storeID": "15",
+        "dealID": "pGNWLj59auRjcbCl2t77b3wGx%2Bsoko9Tr9WoOUNF4%2FM%3D",
+        "price": "11.74",
+        "retailPrice": "49.99",
+        "savings": "76.515303"
+      },
+      {
+        "storeID": "27",
+        "dealID": "hHOwlY0W%2Bxj87M9q042Ie3nQpTic9%2BvLgRNxVJB3k3Y%3D",
+        "price": "11.99",
+        "retailPrice": "49.99",
+        "savings": "76.015203"
+      },
+      {
+        "storeID": "21",
+        "dealID": "aYwAL3A2C9S8mwc82r3w0oha9CjKz8dC286fcdGi6eI%3D",
+        "price": "12.39",
+        "retailPrice": "49.99",
+        "savings": "75.215043"
+      },
+      {
+        "storeID": "3",
+        "dealID": "Dhu%2FTh4puoqjyG2GTX9ptwkEO0Cwk3wxvI8v3y8rNXk%3D",
+        "price": "12.50",
+        "retailPrice": "49.99",
+        "savings": "74.994999"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
