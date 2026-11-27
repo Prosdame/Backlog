@@ -22447,5 +22447,88 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813266370",
+    "title": "Ace Combat 7: Skies Unknown",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-279a-71f0-b3cb-9f8b9a20ead2/banner400.jpg?t=1793156709",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-279a-71f0-b3cb-9f8b9a20ead2",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "31 gen 2019",
+    "releaseDateISO": "2019-01-31",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 49.74,
+    "retailPrice": 59.99,
+    "discount": 17,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "J1wg8QF0C4q2%2BuKwCAq66yAMCdTWDP0VdaaDlUz0Kqc%3D",
+        "price": "49.74",
+        "retailPrice": "59.99",
+        "savings": "17.086181"
+      },
+      {
+        "storeID": "27",
+        "dealID": "FFJ2KoOF2dbqwj7KDr2%2F1OeyVkARknFmJZlgfmjZY3M%3D",
+        "price": "49.79",
+        "retailPrice": "59.99",
+        "savings": "17.002834"
+      },
+      {
+        "storeID": "21",
+        "dealID": "90q00TS7dwla%2FHJiufcGfJKlTvdPb2o6B1y2oLm0Xk4%3D",
+        "price": "49.99",
+        "retailPrice": "59.99",
+        "savings": "16.669445"
+      },
+      {
+        "storeID": "15",
+        "dealID": "c9F9R7to6O3U3H%2BpbY9fNb0LQsHDLdGUD2sAjLPUcSY%3D",
+        "price": "52.19",
+        "retailPrice": "59.99",
+        "savings": "13.002167"
+      },
+      {
+        "storeID": "3",
+        "dealID": "bsIFXMXS4VGwsDTng1hQ5WBv7sTXFPCJWj6YO%2Fjd%2F8w%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "2",
+        "dealID": "ucEEgvZevXgwfINOQguLrmHvOvl3ebWgXHw7ldSQ%2Bzg%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "1",
+        "dealID": "%2BeTRZ2v2MmcvRbWqgX1xM3ttDTQ2lHIoiGYVrvd5zFk%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "30",
+        "dealID": "FEotrKbGfxAaKjGvf64nRlqX%2F1nkJ1SRb0ez0qENQEE%3D",
+        "price": "59.99",
+        "retailPrice": "59.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
