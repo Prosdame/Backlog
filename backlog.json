@@ -22860,5 +22860,95 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813475935",
+    "title": "En Garde!",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6efb-70bd-ae76-90494953de2c/banner400.jpg?t=1786992060",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6efb-70bd-ae76-90494953de2c",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "16 ago 2023",
+    "releaseDateISO": "2023-08-16",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 4.04,
+    "retailPrice": 19.99,
+    "discount": 80,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "Kqj1mQDnF97%2FTbuWYbcjofqhKc9C3xrAtOhOpFUVUCY%3D",
+        "price": "4.04",
+        "retailPrice": "19.99",
+        "savings": "79.789895"
+      },
+      {
+        "storeID": "30",
+        "dealID": "xvFTokK9wDEZE76a8G%2F4MSKhmxNf3u6jJtRYXx6XUJE%3D",
+        "price": "4.08",
+        "retailPrice": "19.99",
+        "savings": "79.589795"
+      },
+      {
+        "storeID": "15",
+        "dealID": "CZZUYDypgN5UY5YWFK%2BSEik3%2FoitBpHhdrmpnGNt%2BD0%3D",
+        "price": "4.59",
+        "retailPrice": "19.99",
+        "savings": "77.038519"
+      },
+      {
+        "storeID": "27",
+        "dealID": "k6aO3Ane279I1YIl1u94NnBPFPyyWH5ZIN55OkQYlus%3D",
+        "price": "4.94",
+        "retailPrice": "19.99",
+        "savings": "75.287644"
+      },
+      {
+        "storeID": "3",
+        "dealID": "tL3eeiJ%2Bwy%2FPaKGvH4kYui0Yihr1RzjxrQMEle3yllE%3D",
+        "price": "5.00",
+        "retailPrice": "19.99",
+        "savings": "74.987494"
+      },
+      {
+        "storeID": "2",
+        "dealID": "61fFzLvrSsP7LOvXR%2BPQidGKfFomnfNE2VG9x1mrciU%3D",
+        "price": "5.00",
+        "retailPrice": "19.99",
+        "savings": "74.987494"
+      },
+      {
+        "storeID": "21",
+        "dealID": "zYjzi5BLWLe3yeC4t6bnmHHX0bKNzyOQmszNy6Pd3ZQ%3D",
+        "price": "17.89",
+        "retailPrice": "19.99",
+        "savings": "10.505253"
+      },
+      {
+        "storeID": "1",
+        "dealID": "KJPn6GRHemIR5ZWsQ7Hj3aGEa0R8ea2GlQkTfAQ6hsw%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "7",
+        "dealID": "GWIUOHYxMtQ%2BCHGv8QO%2B2OYYbqeyEy39%2FE70U2k%2F41A%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
