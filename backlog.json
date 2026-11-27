@@ -23695,5 +23695,39 @@
     "free": false,
     "status": "Dropped",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814580425",
+    "title": "Tomb Raider Game of the Year Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-f9f4-7235-b38c-bfdcb325b577/banner400.jpg?t=1792779624",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-f9f4-7235-b38c-bfdcb325b577",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "4 mar 2013",
+    "releaseDateISO": "2013-03-04",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 19.99,
+    "retailPrice": 19.99,
+    "discount": 0,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "30",
+        "dealID": "W8Kw4QfeIvBNmol0aD0%2FlLOGnZBdCA0hoeuYCFNloms%3D",
+        "price": "19.99",
+        "retailPrice": "19.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
