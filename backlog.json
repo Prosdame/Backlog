@@ -23605,5 +23605,31 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814092776",
+    "title": "Rhythm Doctor",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-278b-70cd-9886-3f06164a6690/banner400.jpg?t=1793377220",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-278b-70cd-9886-3f06164a6690",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": true,
+    "releaseDate": "7 dic 2025",
+    "releaseDateISO": "2025-12-07",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
