@@ -23486,5 +23486,67 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813846254",
+    "title": "Nioh: Complete Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937e-ff9a-7155-8cc8-0f2b7c01ded6/banner400.jpg?t=1786416321",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937e-ff9a-7155-8cc8-0f2b7c01ded6",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "7 nov 2017",
+    "releaseDateISO": "2017-11-07",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 7.49,
+    "retailPrice": 49.99,
+    "discount": 85,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "0o%2F9e5nQP1XVTxhOzayol7%2Fpj9yS9PyAsYTEtNlM1bI%3D",
+        "price": "7.49",
+        "retailPrice": "49.99",
+        "savings": "85.017003"
+      },
+      {
+        "storeID": "23",
+        "dealID": "Q0zhAYJO10pSkdBog%2BD1vE6xtWJskM1txjFO6qegq9c%3D",
+        "price": "41.44",
+        "retailPrice": "49.99",
+        "savings": "17.103421"
+      },
+      {
+        "storeID": "27",
+        "dealID": "S3VqH3Gs05aees7CiCJO8hlG2p7ThRkcex7%2F3NhWKoI%3D",
+        "price": "44.99",
+        "retailPrice": "49.99",
+        "savings": "10.002000"
+      },
+      {
+        "storeID": "15",
+        "dealID": "AJRgE9BSw%2FOaF1QEL6aEvCnkxDntHjRyFTJAJ%2BZqflE%3D",
+        "price": "47.99",
+        "retailPrice": "49.99",
+        "savings": "4.000800"
+      },
+      {
+        "storeID": "30",
+        "dealID": "fiM5xxzqnlG0ZNwvkQLiXE4czE4uFG%2BY53eqH8L7Vgg%3D",
+        "price": "54.88",
+        "retailPrice": "54.88",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
