@@ -23169,5 +23169,95 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813779701",
+    "title": "Mafia II: Definitive Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-4292-724a-a13a-1f1da1e0ad6c/banner400.jpg?t=1795035309",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-4292-724a-a13a-1f1da1e0ad6c",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "9 mag 2020",
+    "releaseDateISO": "2020-05-09",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 4.9,
+    "retailPrice": 29.99,
+    "discount": 84,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "NAocnegPGLBuI1H1iVYFfVxo%2FOK2tes8U2E6vWT%2BEj0%3D",
+        "price": "4.90",
+        "retailPrice": "29.99",
+        "savings": "83.661220"
+      },
+      {
+        "storeID": "15",
+        "dealID": "C1uKHrD9Njaluvm9LF6t3VSfnIoIp3CjaHNOOpOge5g%3D",
+        "price": "4.94",
+        "retailPrice": "29.99",
+        "savings": "83.527843"
+      },
+      {
+        "storeID": "27",
+        "dealID": "ap42N61Jfoi7C06CuueEB%2Bbs%2BvDgp8XKccflQd17vXs%3D",
+        "price": "5.77",
+        "retailPrice": "29.99",
+        "savings": "80.760253"
+      },
+      {
+        "storeID": "30",
+        "dealID": "M4p6DrnIP6gjiIHhEiuLd239nTFyvNc8IomUEWMvt%2FM%3D",
+        "price": "5.99",
+        "retailPrice": "29.99",
+        "savings": "80.026676"
+      },
+      {
+        "storeID": "7",
+        "dealID": "YngSsDHrJe57YJim6%2FjZ9wPB%2BZvupVDvwCx306ZjrZc%3D",
+        "price": "5.99",
+        "retailPrice": "29.99",
+        "savings": "80.026676"
+      },
+      {
+        "storeID": "3",
+        "dealID": "4O32ur%2BUBy1SP1cQ8EoDNIACsOaVD2Ou8v%2F%2FvcUPtQI%3D",
+        "price": "6.00",
+        "retailPrice": "29.99",
+        "savings": "79.993331"
+      },
+      {
+        "storeID": "2",
+        "dealID": "oQzjIQxDc520zKE0UUFTn2izfOmC08%2BjbfaRsX%2FgN2M%3D",
+        "price": "6.00",
+        "retailPrice": "29.99",
+        "savings": "79.993331"
+      },
+      {
+        "storeID": "21",
+        "dealID": "Wzxzx8%2BDjDvUu1tOS8SwXEizGXsDIGnsUuHzZd3OfKE%3D",
+        "price": "27.29",
+        "retailPrice": "29.99",
+        "savings": "9.003001"
+      },
+      {
+        "storeID": "1",
+        "dealID": "vGQekj8VdD73%2Fm%2FByeiHlrByNczxvZHCeCPFcs79ZFE%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
