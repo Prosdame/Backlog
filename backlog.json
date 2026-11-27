@@ -23812,5 +23812,39 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814696566",
+    "title": "Wo Long: Fallen Dynasty",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6766-7186-9066-e9ac2e26b709/banner400.jpg?t=1792381513",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-6766-7186-9066-e9ac2e26b709",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "3 mar 2023",
+    "releaseDateISO": "2023-03-03",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 15.99,
+    "retailPrice": 39.99,
+    "discount": 60,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "I53tcBMBvFAs61J5mUIc%2F4rm%2F%2FDZ0m96NERBvXsI54Y%3D",
+        "price": "15.99",
+        "retailPrice": "39.99",
+        "savings": "60.015004"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
