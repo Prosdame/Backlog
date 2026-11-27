@@ -176,5 +176,138 @@
     "customDeals": [],
     "free": false,
     "status": "Not Played"
+  },
+  {
+    "id": "1795803250743",
+    "title": "STRANGER THAN HEAVEN",
+    "category": "wishlist",
+    "hype": false,
+    "itadId": "019dffae-892d-71d7-8d94-b028abd1b3de",
+    "cheapsharkId": null,
+    "selectedStoreId": "itad_29",
+    "released": false,
+    "releaseDate": "15 gen 2027",
+    "releaseDateISO": "2027-01-15",
+    "releaseNote": "15 gen 2027",
+    "currency": "EUR",
+    "salePrice": 57.59,
+    "retailPrice": 63.99,
+    "discount": 10,
+    "bestStore": "GamesPlanet US",
+    "deals": [
+      {
+        "uid": "itad_29",
+        "shopId": 29,
+        "shopName": "GamesPlanet US",
+        "price": 57.59,
+        "retailPrice": 63.99,
+        "savings": 10,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea76d-a421-7111-a6b2-a8b6d7e14e8b/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_6",
+        "shopId": 6,
+        "shopName": "Fanatical",
+        "price": 60.89,
+        "retailPrice": 69.99,
+        "savings": 13,
+        "currency": "EUR",
+        "url": "https://itad.link/019eabdd-aaf6-7348-b14b-66867a048805/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_36",
+        "shopId": 36,
+        "shopName": "GreenManGaming",
+        "price": 60.89,
+        "retailPrice": 69.99,
+        "savings": 13,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea75c-095f-725e-a422-04bbc75d3911/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_28",
+        "shopId": 28,
+        "shopName": "GamesPlanet FR",
+        "price": 62.99,
+        "retailPrice": 69.99,
+        "savings": 10,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea76d-6127-7277-81aa-9ae0e36cca6c/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_27",
+        "shopId": 27,
+        "shopName": "GamesPlanet DE",
+        "price": 62.99,
+        "retailPrice": 69.99,
+        "savings": 10,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea76d-8449-72b7-bd11-4cece8b44e6e/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_64",
+        "shopId": 64,
+        "shopName": "WinGameStore",
+        "price": 63.99,
+        "retailPrice": 63.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019ff180-d0b8-7314-bc97-094c53263cbd/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_61",
+        "shopId": 61,
+        "shopName": "Steam",
+        "price": 69.99,
+        "retailPrice": 69.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019e99da-e751-7021-9ab1-4cce6a3bec68/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_20",
+        "shopId": 20,
+        "shopName": "GameBillet",
+        "price": 69.99,
+        "retailPrice": 69.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019ecaa0-0dee-7195-86e8-edbd69d16ea9/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_73",
+        "shopId": 73,
+        "shopName": "PlanetPlay",
+        "price": 69.99,
+        "retailPrice": 69.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea656-56f7-7103-922f-89db42b72b5a/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_37",
+        "shopId": 37,
+        "shopName": "Humble Store",
+        "price": 69.99,
+        "retailPrice": 69.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019eb7f9-7848-70a3-90e6-f323f9a2505c/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_26",
+        "shopId": 26,
+        "shopName": "GamesPlanet UK",
+        "price": 70.06,
+        "retailPrice": 77.85,
+        "savings": 10,
+        "currency": "EUR",
+        "url": "https://itad.link/019ea780-21f5-739d-b914-8710f53544c2/?app=1lmbp4"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played"
   }
 ]
