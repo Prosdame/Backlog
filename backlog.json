@@ -24276,5 +24276,31 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795815714016",
+    "title": "ANANTA",
+    "thumb": "https://assets.isthereanydeal.com/01a03a22-5120-70bc-93bb-324a626d1652/banner400.jpg?t=1794835216",
+    "category": "wishlist",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01a03a22-5120-70bc-93bb-324a626d1652",
+    "cheapsharkId": null,
+    "selectedStoreId": null,
+    "released": false,
+    "releaseDate": "15 gen 2027",
+    "releaseDateISO": "2027-01-15",
+    "releaseNote": "15 gen 2027",
+    "manualReleaseOverride": false,
+    "currency": "EUR",
+    "salePrice": null,
+    "retailPrice": null,
+    "discount": 0,
+    "bestStore": "",
+    "deals": [],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
