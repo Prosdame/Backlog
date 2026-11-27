@@ -86,7 +86,7 @@
     "category": "wishlist",
     "hype": false,
     "cheapsharkId": "233284",
-    "selectedStoreId": "23",
+    "selectedStoreId": "cs_23",
     "releaseNote": "",
     "salePrice": 5.83,
     "retailPrice": 24.99,
@@ -122,13 +122,6 @@
         "savings": "74.429772"
       },
       {
-        "storeID": "1",
-        "dealID": "rCdVxS9qWbNrcYXnnIJFw5LJRoHYvgUMq3htjM18UsI%3D",
-        "price": "7.49",
-        "retailPrice": "24.99",
-        "savings": "70.028011"
-      },
-      {
         "storeID": "21",
         "dealID": "UquIpwoyyl6Eaqn2xov16lb6gGPB0wbYqFGItTOL7UA%3D",
         "price": "7.49",
@@ -136,15 +129,22 @@
         "savings": "70.028011"
       },
       {
-        "storeID": "2",
-        "dealID": "7VqvHqyYPVfxn7834Brz9uyUJuq0ivITo4dTUzP%2BSXI%3D",
+        "storeID": "1",
+        "dealID": "rCdVxS9qWbNrcYXnnIJFw5LJRoHYvgUMq3htjM18UsI%3D",
+        "price": "7.49",
+        "retailPrice": "24.99",
+        "savings": "70.028011"
+      },
+      {
+        "storeID": "3",
+        "dealID": "PHzDXA2RtyQvK6nvFqDMze8HVqpn4sLtqHhIjpx6h6Y%3D",
         "price": "7.50",
         "retailPrice": "24.99",
         "savings": "69.987995"
       },
       {
-        "storeID": "3",
-        "dealID": "PHzDXA2RtyQvK6nvFqDMze8HVqpn4sLtqHhIjpx6h6Y%3D",
+        "storeID": "2",
+        "dealID": "7VqvHqyYPVfxn7834Brz9uyUJuq0ivITo4dTUzP%2BSXI%3D",
         "price": "7.50",
         "retailPrice": "24.99",
         "savings": "69.987995"
