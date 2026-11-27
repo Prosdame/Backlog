@@ -166,12 +166,12 @@
     "category": "wishlist",
     "hype": false,
     "cheapsharkId": "324081",
-    "selectedStoreId": "cs_1",
+    "selectedStoreId": "cs_23",
     "releaseNote": "",
-    "salePrice": 69.99,
+    "salePrice": 60.87,
     "retailPrice": 69.99,
-    "discount": 0,
-    "bestStore": "Steam",
+    "discount": 13,
+    "bestStore": "GameBillet",
     "deals": [
       {
         "storeID": "23",
