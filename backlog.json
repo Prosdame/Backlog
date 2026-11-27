@@ -219,24 +219,5 @@
     "customDeals": [],
     "free": false,
     "status": "Not Played"
-  },
-  {
-    "id": "1795800511942",
-    "title": "persona 6",
-    "category": "wishlist",
-    "hype": false,
-    "cheapsharkId": null,
-    "selectedStoreId": null,
-    "released": false,
-    "releaseDate": "TBA",
-    "releaseNote": "TBA",
-    "salePrice": null,
-    "retailPrice": null,
-    "discount": 0,
-    "bestStore": "",
-    "deals": [],
-    "customDeals": [],
-    "free": false,
-    "status": "Not Played"
   }
 ]
