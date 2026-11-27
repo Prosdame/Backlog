@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Game Backlog & Price Tracker</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="topbar-left">
-      <h1>Game Backlog</h1>
-      <span id="syncStatus" class="badge badge-warn">Solo Lettura</span>
-      <span id="apiEngineBadge" class="badge badge-grey">Store: Base</span>
+    <div class="brand">
+      <h1>Game Backlog & Deals</h1>
+      <span id="syncStatus" class="badge badge-warn">Non connesso</span>
+      <span id="apiEngineBadge" class="badge badge-blue">Store: ITAD (EUR €)</span>
     </div>
-    <div class="topbar-actions">
-      <button id="btnRefreshAll" class="btn btn-secondary">Aggiorna Prezzi</button>
+    <div class="header-actions">
+      <button id="btnReloadBacklog" class="btn btn-secondary" title="Ricarica i dati aggiornati da GitHub">Ricarica</button>
+      <button id="btnRefreshAll" class="btn btn-secondary" title="Aggiorna prezzi store">Aggiorna Prezzi</button>
       <button id="btnOpenConfig" class="btn btn-primary">Configura</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- Sezione Aggiunta Gioco -->
-    <section class="add-panel">
+    <!-- Barra Aggiunta Gioco -->
+    <section class="card add-panel">
       <div class="search-row">
-        <input type="text" id="searchInput" placeholder="Cerca qualsiasi gioco (es. Persona 6, Stranger Than Heaven, Hades II...)" autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Cerca qualsiasi gioco (es. Persona 6, Stranger Than Heaven, Hades II...)" />
         <select id="addTargetCategory">
           <option value="wishlist">In: Wishlist</option>
           <option value="owned">In: Owned</option>
@@ -32,51 +33,50 @@
         <button id="btnToggleManual" class="btn btn-secondary">+ Manuale / TBA</button>
       </div>
 
-      <!-- Risultati ricerca API -->
+      <!-- Risultati ricerca -->
       <div id="searchResults" class="search-results hidden"></div>
 
       <!-- Form inserimento manuale -->
       <form id="manualForm" class="manual-form hidden">
-        <input type="text" id="manualTitle" placeholder="Titolo esatto" required>
+        <input type="text" id="manualTitle" placeholder="Titolo gioco (es. Persona 6)" required />
         <select id="manualReleaseState">
           <option value="unreleased">Non Rilasciato</option>
           <option value="released">Rilasciato</option>
         </select>
-        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, 15 gen 2027)" value="TBA">
+        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, Q4 2026, 15 gen 2027)" />
         <select id="manualCategory">
           <option value="wishlist">Wishlist</option>
           <option value="owned">Owned</option>
         </select>
         <label class="checkbox-label">
-          <input type="checkbox" id="manualHype"> Hype
+          <input type="checkbox" id="manualHype" /> Hype
         </label>
         <button type="submit" class="btn btn-success">Aggiungi</button>
       </form>
     </section>
 
-    <!-- Navigazione Tab e Filtri -->
-    <section class="controls-bar">
+    <!-- Navigazione Tab & Filtri -->
+    <section class="toolbar">
       <div class="tabs">
         <button class="tab active" data-tab="wishlist">Wishlist (<span id="countWishlist">0</span>)</button>
         <button class="tab" data-tab="owned">Owned (<span id="countOwned">0</span>)</button>
       </div>
-
       <div class="filters">
-        <input type="text" id="filterText" placeholder="Filtra per titolo...">
+        <input type="text" id="filterText" placeholder="Filtra per titolo..." />
         <label class="checkbox-label">
-          <input type="checkbox" id="filterHype"> Solo Hype
+          <input type="checkbox" id="filterHype" /> Solo Hype
         </label>
         <select id="filterWishlistState">
           <option value="ALL">Tutti i giochi</option>
-          <option value="DISCOUNTED">Solo Scontati</option>
+          <option value="DISCOUNTED">Solo in sconto</option>
           <option value="RELEASED">Solo Rilasciati</option>
-          <option value="UNRELEASED">Non Rilasciati / TBA</option>
+          <option value="UNRELEASED">Solo Non Rilasciati / TBA</option>
         </select>
         <select id="sortWishlist">
-          <option value="TITLE_ASC">Ordine: A → Z</option>
-          <option value="HYPE_FIRST">Ordine: Hype prima</option>
-          <option value="PRICE_ASC">Ordine: Prezzo crescente</option>
-          <option value="DISCOUNT_DESC">Ordine: % Sconto</option>
+          <option value="TITLE_ASC">Ordine: A &rarr; Z</option>
+          <option value="HYPE_FIRST">Hype in alto</option>
+          <option value="PRICE_ASC">Prezzo crescente</option>
+          <option value="DISCOUNT_DESC">Sconto maggiore</option>
         </select>
         <select id="filterStatus" class="hidden">
           <option value="ALL">Tutti gli stati</option>
@@ -90,7 +90,7 @@
     </section>
 
     <!-- Tabella Wishlist -->
-    <section id="sectionWishlist" class="table-wrapper">
+    <section id="sectionWishlist" class="card table-wrapper">
       <table>
         <thead>
           <tr>
@@ -109,7 +109,7 @@
     </section>
 
     <!-- Tabella Owned -->
-    <section id="sectionOwned" class="table-wrapper hidden">
+    <section id="sectionOwned" class="card table-wrapper hidden">
       <table>
         <thead>
           <tr>
@@ -125,87 +125,78 @@
     </section>
   </main>
 
-  <!-- Modal Dettagli Gioco, Stato Rilascio & Confronto Store -->
-  <div id="dealsModal" class="modal hidden">
-    <div class="modal-content modal-lg">
-      <div class="modal-header">
-        <h2 id="dealsModalTitle">Confronto Store</h2>
-        <button class="btn-close" data-close="dealsModal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <!-- Modifica Stato e Data di Rilascio -->
-        <form id="releaseEditorForm" class="custom-deal-form">
-          <div class="section-label">Stato e Data di Rilascio</div>
-          <div class="release-editor-row">
-            <select id="modalReleaseState">
-              <option value="released">Rilasciato</option>
-              <option value="unreleased">Non Rilasciato / Preorder</option>
-            </select>
-            <input type="text" id="modalReleaseDate" placeholder="Data o finestra (es. 15 gen 2027, TBA)">
-            <button type="submit" class="btn btn-sm btn-primary">Salva Rilascio</button>
-          </div>
-        </form>
-
-        <!-- Link rapidi Keyshop -->
-        <div>
-          <div class="section-label">Ricerca rapida Keyshop & Store</div>
-          <div id="quickSearchLinks" class="quick-links"></div>
-        </div>
-
-        <!-- Form aggiunta prezzo Keyshop / Store custom -->
-        <form id="customDealForm" class="custom-deal-form">
-          <div class="section-label">Salva prezzo Keyshop nel menu a tendina</div>
-          <div class="custom-deal-grid">
-            <input type="text" id="customStoreName" list="keyshopPresets" placeholder="Store (es. Instant Gaming)" required>
-            <datalist id="keyshopPresets">
-              <option value="Instant Gaming">
-              <option value="CDKeys">
-              <option value="Eneba">
-              <option value="Kinguin">
-              <option value="G2A">
-              <option value="Epic Games">
-            </datalist>
-            <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo attuale € (es. 14.50)" required>
-            <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Prezzo base € (opzionale)">
-            <input type="url" id="customDealUrl" placeholder="Link offerta (opzionale)">
-          </div>
-          <button type="submit" class="btn btn-sm btn-success">+ Aggiungi Store al Gioco</button>
-        </form>
-
-        <!-- Lista offerte attive -->
-        <div>
-          <div class="section-label">Offerte salvate (ordinate per prezzo)</div>
-          <div id="dealsModalBody" class="deals-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Configurazione GitHub & IsThereAnyDeal -->
+  <!-- Modal Configurazione -->
   <div id="configModal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Configurazione Sync & Store API</h2>
+        <h2>Configurazione GitHub & Store API</h2>
         <button class="btn-close" data-close="configModal">&times;</button>
       </div>
-      <form id="configForm" class="modal-body">
-        <p class="hint">Le chiavi vengono salvate esclusivamente nella memoria locale di questo browser.</p>
-        <label>Username GitHub
-          <input type="text" id="cfgOwner" required placeholder="es. tuousername">
+      <form id="configForm">
+        <label>GitHub Username / Owner
+          <input type="text" id="cfgOwner" placeholder="es. Prosdame" required />
         </label>
         <label>Nome Repository
-          <input type="text" id="cfgRepo" required placeholder="es. game-backlog">
+          <input type="text" id="cfgRepo" placeholder="es. Backlog" required />
         </label>
-        <label>GitHub Personal Access Token (Contents: Read & Write)
-          <input type="password" id="cfgToken" required placeholder="github_pat_...">
+        <label>GitHub Personal Access Token (Fine-grained: Contents Read & Write)
+          <input type="password" id="cfgToken" placeholder="github_pat_..." required />
         </label>
-        <label>IsThereAnyDeal API Key (Prezzi EUR €, giochi TBA & date uscita)
-          <input type="password" id="cfgItadKey" placeholder="Incolla API Key da isthereanydeal.com/dev/app/">
+        <label>IsThereAnyDeal API Key (opzionale per ricerca)
+          <input type="password" id="cfgItadKey" placeholder="Incolla la tua ITAD API Key..." />
         </label>
+        <p class="hint">Le credenziali vengono salvate solo nel <code>localStorage</code> di questo browser.</p>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Salva e Connetti</button>
+          <button type="submit" class="btn btn-primary">Salva Configurazione</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Dettagli Store, Rilascio & Keyshop -->
+  <div id="dealsModal" class="modal hidden">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="dealsModalTitle">Dettagli & Store</h2>
+        <button class="btn-close" data-close="dealsModal">&times;</button>
+      </div>
+
+      <!-- Modifica Stato / Data di Rilascio -->
+      <div class="release-editor-box">
+        <div class="keyshop-box-header">
+          <strong>Stato & Data di Rilascio</strong>
+          <span class="hint">Modifica manualmente o lascia aggiornare ad ITAD</span>
+        </div>
+        <form id="releaseEditorForm" class="release-editor-form">
+          <select id="modalReleaseState">
+            <option value="released">Rilasciato</option>
+            <option value="unreleased">Non Rilasciato / TBA</option>
+          </select>
+          <input type="text" id="modalReleaseDate" placeholder="Data rilascio (es. 15 gen 2027, Q4 2026, TBA)" />
+          <button type="submit" class="btn btn-sm btn-primary">Salva Rilascio</button>
+        </form>
+      </div>
+
+      <!-- Sezione Ricerca Rapida Keyshop -->
+      <div class="keyshop-box">
+        <div class="keyshop-box-header">
+          <strong>Cerca sui Keyshop & Store</strong>
+          <span class="hint">Apre la ricerca diretta in una nuova scheda</span>
+        </div>
+        <div id="quickSearchLinks" class="quick-links"></div>
+
+        <!-- Form Aggiunta Prezzo Keyshop / Custom -->
+        <form id="customDealForm" class="custom-deal-form">
+          <input type="text" id="customStoreName" placeholder="Nome Store (es. Instant Gaming)" required />
+          <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo € (es. 34.99)" required />
+          <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Listino € (opz.)" />
+          <input type="url" id="customDealUrl" placeholder="Link offerta (opzionale)" />
+          <button type="submit" class="btn btn-sm btn-success">+ Aggiungi Store</button>
+        </form>
+      </div>
+
+      <h3 class="deals-section-title">Tutti gli Store Disponibili (ordinati dal più economico)</h3>
+      <div id="dealsModalBody" class="deals-list"></div>
     </div>
   </div>
 
