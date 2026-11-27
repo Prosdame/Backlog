@@ -22964,5 +22964,46 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813549345",
+    "title": "FINAL FANTASY VII REMAKE INTERGRADE",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-5b12-7380-a77e-8754efb603d0/banner400.jpg?t=1789460722",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-5b12-7380-a77e-8754efb603d0",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "16 dic 2021",
+    "releaseDateISO": "2021-12-16",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 7.19,
+    "retailPrice": 39.99,
+    "discount": 82,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "pNOL829vk6CJPi8%2FsgkHo7WWKltzGGVwpaRs5cncewA%3D",
+        "price": "7.19",
+        "retailPrice": "39.99",
+        "savings": "82.020505"
+      },
+      {
+        "storeID": "3",
+        "dealID": "1%2BpzR8VkSFLw3hgNZnPMFfVTNrrPQqG5YfRIO9SVONY%3D",
+        "price": "7.20",
+        "retailPrice": "39.99",
+        "savings": "81.995499"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
