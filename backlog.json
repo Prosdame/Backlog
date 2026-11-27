@@ -23893,5 +23893,46 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814355852",
+    "title": "The Witcher 3: Wild Hunt",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-1212-7232-b23f-a046f6fd4a57/banner400.jpg?t=1793901331",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-1212-7232-b23f-a046f6fd4a57",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_7",
+    "released": true,
+    "releaseDate": "18 mag 2015",
+    "releaseDateISO": "2015-05-18",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 19.99,
+    "retailPrice": 49.99,
+    "discount": 60,
+    "bestStore": "GOG",
+    "deals": [
+      {
+        "storeID": "7",
+        "dealID": "OR%2BVz0QIAULaNU5tjUdvoTs3iqGm6lodrS%2BXzXvxPXg%3D",
+        "price": "19.99",
+        "retailPrice": "49.99",
+        "savings": "60.012002"
+      },
+      {
+        "storeID": "1",
+        "dealID": "euqnWBWrNuYJRZcmBvRsrfFRGIoPWUgNODLCgSA%2BDTY%3D",
+        "price": "19.99",
+        "retailPrice": "49.99",
+        "savings": "60.012002"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
