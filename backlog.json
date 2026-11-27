@@ -211,7 +211,7 @@
     "title": "1666: Amsterdam",
     "thumb": "https://assets.isthereanydeal.com/019e99bf-6773-73b1-baae-6d75fd9d163e/banner400.jpg?t=1795224622",
     "category": "wishlist",
-    "hype": false,
+    "hype": true,
     "steamAppId": "3949550",
     "itadId": "019e99bf-6773-73b1-baae-6d75fd9d163e",
     "cheapsharkId": null,
