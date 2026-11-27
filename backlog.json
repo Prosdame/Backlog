@@ -22795,5 +22795,88 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813395337",
+    "title": "Disco Elysium - The Final Cut",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-51f4-727c-95c0-ba550d156c86/banner400.jpg?t=1787172032",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-51f4-727c-95c0-ba550d156c86",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_30",
+    "released": true,
+    "releaseDate": "14 ott 2019",
+    "releaseDateISO": "2019-10-14",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 8.08,
+    "retailPrice": 39.99,
+    "discount": 80,
+    "bestStore": "IndieGala",
+    "deals": [
+      {
+        "storeID": "30",
+        "dealID": "3Y%2Fp3MbsSuCo%2FLOFoOL7cnlYwZl1qBKQCMsAaqZHRl8%3D",
+        "price": "8.08",
+        "retailPrice": "39.99",
+        "savings": "79.794949"
+      },
+      {
+        "storeID": "27",
+        "dealID": "AUvSqG%2BjgjZBM4JGg0dEDho7mk8Sxn2CpCvml8OEW40%3D",
+        "price": "9.47",
+        "retailPrice": "39.99",
+        "savings": "76.319080"
+      },
+      {
+        "storeID": "21",
+        "dealID": "aymbLiXk9HqRzVGZS%2B2cilmOHdlPAnRyWpf6%2FrdJM%2Bg%3D",
+        "price": "9.49",
+        "retailPrice": "39.99",
+        "savings": "76.269067"
+      },
+      {
+        "storeID": "7",
+        "dealID": "fo%2BHT27GrgZT0g2USsPLQ2dVGTnq%2Fb%2FBnY2L2%2Bi8BWk%3D",
+        "price": "9.99",
+        "retailPrice": "39.99",
+        "savings": "75.018755"
+      },
+      {
+        "storeID": "3",
+        "dealID": "yH4q9vjfXHzCoklo17NcmhyjszB1yCsJkdj6wNWmJSo%3D",
+        "price": "10.00",
+        "retailPrice": "39.99",
+        "savings": "74.993748"
+      },
+      {
+        "storeID": "2",
+        "dealID": "qC4WrLpAECdOAkMdFbFR6v1enxAovFyS9bUIR41KGmQ%3D",
+        "price": "10.00",
+        "retailPrice": "39.99",
+        "savings": "74.993748"
+      },
+      {
+        "storeID": "15",
+        "dealID": "UgYbZfH00wFDvUZF8Nk1uNP7npZA2HEibK%2BCD%2FGadgk%3D",
+        "price": "37.99",
+        "retailPrice": "39.99",
+        "savings": "5.001250"
+      },
+      {
+        "storeID": "1",
+        "dealID": "Uk9pH81%2BgPUwbkh9YzwMnYLT%2B%2FEaktqN8AgwMr6Y2wQ%3D",
+        "price": "39.99",
+        "retailPrice": "39.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
