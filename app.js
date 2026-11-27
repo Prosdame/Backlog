@@ -3,6 +3,7 @@ let backlog = [];
 let storesMap = {};
 let currentTab = "wishlist";
 let currentSha = null;
+let currentModalGameId = null;
 
 // Configurazione GitHub salvata localmente nel dispositivo
 let ghConfig = {
@@ -34,29 +35,83 @@ function decodeBase64UTF8(base64) {
   return new TextDecoder().decode(bytes);
 }
 
-// --- ORDINAMENTO E SELEZIONE OFFERTE ---
-function getSortedDeals(deals) {
-  if (!Array.isArray(deals)) return [];
-  return [...deals].sort((a, b) => {
-    const priceA = parseFloat(a.price);
-    const priceB = parseFloat(b.price);
-    if (Math.abs(priceA - priceB) > 0.001) {
-      return priceA - priceB;
-    }
-    const nameA = storesMap[a.storeID] || `Store #${a.storeID}`;
-    const nameB = storesMap[b.storeID] || `Store #${b.storeID}`;
-    return nameA.localeCompare(nameB);
+// --- UNIFICAZIONE E ORDINAMENTO OFFERTE (UFFICIALI + KEYSHOP) ---
+function getAllDeals(game) {
+  const officialDeals = (Array.isArray(game.deals) ? game.deals : []).map((d) => ({
+    uid: `cs_${d.storeID}`,
+    isCustom: false,
+    storeID: d.storeID.toString(),
+    storeName: storesMap[d.storeID] || `Store #${d.storeID}`,
+    price: parseFloat(d.price),
+    retailPrice: parseFloat(d.retailPrice),
+    savings: Math.round(parseFloat(d.savings)),
+    url: `https://www.cheapshark.com/redirect?dealID=${d.dealID}`
+  }));
+
+  const fallbackRetail = officialDeals.length > 0
+    ? officialDeals[0].retailPrice
+    : (game.retailPrice !== null && game.retailPrice > 0 ? parseFloat(game.retailPrice) : null);
+
+  const customDeals = (Array.isArray(game.customDeals) ? game.customDeals : []).map((c) => {
+    const price = parseFloat(c.price);
+    const retail = c.retailPrice && parseFloat(c.retailPrice) > 0
+      ? parseFloat(c.retailPrice)
+      : (fallbackRetail !== null ? fallbackRetail : price);
+    const savings = retail > price && retail > 0
+      ? Math.round(((retail - price) / retail) * 100)
+      : 0;
+
+    return {
+      uid: c.id,
+      isCustom: true,
+      storeID: c.id,
+      storeName: c.storeName,
+      price,
+      retailPrice: retail,
+      savings,
+      url: c.url || ""
+    };
   });
+
+  return [...officialDeals, ...customDeals].sort((a, b) => {
+    if (Math.abs(a.price - b.price) > 0.001) {
+      return a.price - b.price;
+    }
+    return a.storeName.localeCompare(b.storeName);
+  });
+}
+
+function findSelectedDeal(game, allDeals) {
+  if (!allDeals.length) return null;
+  if (game.selectedStoreId) {
+    const sel = game.selectedStoreId.toString();
+    const match = allDeals.find((d) => d.uid === sel || (!d.isCustom && d.storeID === sel));
+    if (match) return match;
+  }
+  return allDeals[0];
 }
 
 function applyDealToGame(game, deal) {
   if (!deal) return;
-  game.selectedStoreId = deal.storeID.toString();
-  game.salePrice = parseFloat(deal.price);
-  game.retailPrice = parseFloat(deal.retailPrice);
-  game.discount = Math.round(parseFloat(deal.savings));
-  game.bestStore = storesMap[deal.storeID] || `Store #${deal.storeID}`;
+  game.selectedStoreId = deal.uid;
+  game.salePrice = deal.price;
+  game.retailPrice = deal.retailPrice;
+  game.discount = deal.savings;
+  game.bestStore = deal.storeName;
   game.releaseNote = "";
+}
+
+function getKeyshopSearchLinks(title) {
+  const q = encodeURIComponent(title);
+  return [
+    { name: "Instant Gaming", url: `https://www.instant-gaming.com/it/ricerca/?q=${q}`, highlight: true },
+    { name: "CDKeys", url: `https://www.cdkeys.com/?q=${q}`, highlight: false },
+    { name: "Eneba", url: `https://www.eneba.com/store/all?text=${q}`, highlight: false },
+    { name: "Kinguin", url: `https://www.kinguin.net/listing?phrase=${q}`, highlight: false },
+    { name: "G2A", url: `https://www.g2a.com/search?query=${q}`, highlight: false },
+    { name: "GG.deals", url: `https://gg.deals/games/?title=${q}`, highlight: false },
+    { name: "AllKeyShop", url: `https://www.allkeyshop.com/blog/catalogue/search-${q}/`, highlight: false }
+  ];
 }
 
 // --- INIZIALIZZAZIONE ---
@@ -97,6 +152,43 @@ function bindEvents() {
   });
   document.getElementById("manualForm").addEventListener("submit", addManualGame);
 
+  // Form aggiunta Keyshop / Store custom nel modal
+  document.getElementById("customDealForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const game = backlog.find((g) => g.id === currentModalGameId);
+    if (!game) return;
+
+    const storeName = document.getElementById("customStoreName").value.trim();
+    const salePrice = parseFloat(document.getElementById("customSalePrice").value);
+    const retailRaw = document.getElementById("customRetailPrice").value.trim();
+    const url = document.getElementById("customDealUrl").value.trim();
+
+    if (!storeName || isNaN(salePrice)) return;
+
+    if (!Array.isArray(game.customDeals)) {
+      game.customDeals = [];
+    }
+
+    const newCustomId = `custom_${Date.now()}`;
+    game.customDeals.push({
+      id: newCustomId,
+      storeName,
+      price: salePrice,
+      retailPrice: retailRaw ? parseFloat(retailRaw) : null,
+      url
+    });
+
+    const allDeals = getAllDeals(game);
+    const addedDeal = allDeals.find((d) => d.uid === newCustomId);
+    if (addedDeal) {
+      applyDealToGame(game, addedDeal);
+    }
+
+    document.getElementById("customDealForm").reset();
+    renderDealsModalContent(game);
+    await saveBacklog(`Add ${storeName} price for ${game.title}`);
+  });
+
   // Aggiornamento massivo
   document.getElementById("btnRefreshAll").addEventListener("click", refreshAllPrices);
 
@@ -111,6 +203,9 @@ function bindEvents() {
   document.querySelectorAll(".btn-close").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.getElementById(btn.dataset.close).classList.add("hidden");
+      if (btn.dataset.close === "dealsModal") {
+        currentModalGameId = null;
+      }
     });
   });
 
@@ -268,8 +363,6 @@ async function addGameFromApi(cheapsharkId) {
   try {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${cheapsharkId}`);
     const data = await res.json();
-    const sortedDeals = getSortedDeals(data.deals || []);
-    const bestDeal = sortedDeals.length ? sortedDeals[0] : null;
 
     const newGame = {
       id: Date.now().toString(),
@@ -277,16 +370,22 @@ async function addGameFromApi(cheapsharkId) {
       category: targetCategory,
       hype: false,
       cheapsharkId: cheapsharkId.toString(),
-      selectedStoreId: bestDeal ? bestDeal.storeID.toString() : null,
+      selectedStoreId: null,
       releaseNote: "",
-      salePrice: bestDeal ? parseFloat(bestDeal.price) : null,
-      retailPrice: bestDeal ? parseFloat(bestDeal.retailPrice) : null,
-      discount: bestDeal ? Math.round(parseFloat(bestDeal.savings)) : 0,
-      bestStore: bestDeal ? (storesMap[bestDeal.storeID] || "Store") : "",
-      deals: sortedDeals,
+      salePrice: null,
+      retailPrice: null,
+      discount: 0,
+      bestStore: "",
+      deals: data.deals || [],
+      customDeals: [],
       free: false,
       status: "Not Played"
     };
+
+    const allDeals = getAllDeals(newGame);
+    if (allDeals.length > 0) {
+      applyDealToGame(newGame, allDeals[0]);
+    }
 
     backlog.push(newGame);
     await saveBacklog(`Add ${newGame.title}`);
@@ -317,6 +416,7 @@ async function addManualGame(e) {
     discount: 0,
     bestStore: "",
     deals: [],
+    customDeals: [],
     free: false,
     status: "Not Played"
   });
@@ -331,14 +431,12 @@ async function refreshSingleGame(game, skipSave = false) {
   try {
     const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${game.cheapsharkId}`);
     const data = await res.json();
-    const sortedDeals = getSortedDeals(data.deals || []);
-    game.deals = sortedDeals;
+    game.deals = data.deals || [];
 
-    if (sortedDeals.length > 0) {
-      const preferredDeal = game.selectedStoreId
-        ? sortedDeals.find((d) => d.storeID.toString() === game.selectedStoreId.toString())
-        : null;
-      applyDealToGame(game, preferredDeal || sortedDeals[0]);
+    const allDeals = getAllDeals(game);
+    const chosenDeal = findSelectedDeal(game, allDeals);
+    if (chosenDeal) {
+      applyDealToGame(game, chosenDeal);
     }
     if (!skipSave) await saveBacklog(`Refresh ${game.title}`);
   } catch (err) {
@@ -368,47 +466,104 @@ async function refreshAllPrices() {
   await saveBacklog("Batch update wishlist prices");
 }
 
-async function openDealsModal(game) {
-  const modal = document.getElementById("dealsModal");
-  const titleEl = document.getElementById("dealsModalTitle");
+function renderDealsModalContent(game) {
   const bodyEl = document.getElementById("dealsModalBody");
+  const allDeals = getAllDeals(game);
+  const activeDeal = findSelectedDeal(game, allDeals);
 
-  titleEl.textContent = `Confronto Store: ${game.title}`;
-  modal.classList.remove("hidden");
-
-  if (!game.cheapsharkId) {
-    bodyEl.innerHTML = `<p class="hint">Gioco inserito manualmente (${game.releaseNote || "Nessuno store collegato"}).</p>`;
-    return;
-  }
-
-  bodyEl.innerHTML = "<p class='hint'>Caricamento prezzi da tutti gli storefront...</p>";
-  await refreshSingleGame(game, true);
-  render();
-
-  const sortedDeals = getSortedDeals(game.deals);
-  if (!sortedDeals.length) {
-    bodyEl.innerHTML = "<p class='hint'>Nessuna offerta attiva trovata sugli store.</p>";
+  if (!allDeals.length) {
+    bodyEl.innerHTML = "<p class='hint'>Nessuna offerta salvata. Usa i pulsanti sopra per cercare su Instant Gaming o altri keyshop e salva qui il prezzo.</p>";
     return;
   }
 
   bodyEl.innerHTML = "";
-  sortedDeals.forEach((d) => {
-    const storeName = storesMap[d.storeID] || `Store #${d.storeID}`;
-    const savings = Math.round(parseFloat(d.savings));
+  allDeals.forEach((d) => {
+    const isActive = activeDeal && activeDeal.uid === d.uid;
     const row = document.createElement("div");
-    row.className = "deal-row";
+    row.className = `deal-row ${isActive ? "deal-row-active" : ""}`;
+
+    const typeBadge = d.isCustom
+      ? `<span class="badge badge-purple">Keyshop / Custom</span>`
+      : `<span class="badge badge-blue">Ufficiale</span>`;
+
     row.innerHTML = `
       <div>
-        <strong>${storeName}</strong>
-        <div class="hint">Base: $${parseFloat(d.retailPrice).toFixed(2)}</div>
+        <div class="deal-store-title">
+          <strong>${d.storeName}</strong>
+          ${typeBadge}
+        </div>
+        <div class="hint">Base: $${d.retailPrice.toFixed(2)}</div>
       </div>
-      <div style="display:flex; align-items:center; gap:0.6rem;">
-        <span class="badge ${savings > 0 ? "badge-green" : "badge-blue"}">$${parseFloat(d.price).toFixed(2)} (-${savings}%)</span>
-        <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Apri</a>
+      <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; justify-content:flex-end;">
+        <span class="badge ${d.savings > 0 ? "badge-green" : "badge-blue"}">$${d.price.toFixed(2)} (-${d.savings}%)</span>
+        <button class="btn btn-sm ${isActive ? "btn-success" : "btn-secondary"}" data-action="select">
+          ${isActive ? "Attivo" : "Seleziona"}
+        </button>
+        ${d.url ? `<a href="${d.url}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">Apri</a>` : ""}
+        ${d.isCustom ? `<button class="btn btn-sm btn-danger" data-action="remove" title="Rimuovi">&times;</button>` : ""}
       </div>
     `;
+
+    row.querySelector('[data-action="select"]').addEventListener("click", async () => {
+      applyDealToGame(game, d);
+      renderDealsModalContent(game);
+      await saveBacklog(`Select ${d.storeName} for ${game.title}`);
+    });
+
+    if (d.isCustom) {
+      row.querySelector('[data-action="remove"]').addEventListener("click", async () => {
+        game.customDeals = (game.customDeals || []).filter((c) => c.id !== d.uid);
+        const remaining = getAllDeals(game);
+        if (remaining.length > 0) {
+          applyDealToGame(game, remaining[0]);
+        } else {
+          game.selectedStoreId = null;
+          game.salePrice = null;
+          game.retailPrice = null;
+          game.discount = 0;
+          game.bestStore = "";
+          game.releaseNote = "To Be Announced";
+        }
+        renderDealsModalContent(game);
+        await saveBacklog(`Remove ${d.storeName} from ${game.title}`);
+      });
+    }
+
     bodyEl.appendChild(row);
   });
+}
+
+async function openDealsModal(game) {
+  currentModalGameId = game.id;
+  const modal = document.getElementById("dealsModal");
+  const titleEl = document.getElementById("dealsModalTitle");
+  const linksEl = document.getElementById("quickSearchLinks");
+  const bodyEl = document.getElementById("dealsModalBody");
+
+  titleEl.textContent = `Confronto Store: ${game.title}`;
+  document.getElementById("customDealForm").reset();
+
+  // Popola link rapidi di ricerca Keyshop
+  linksEl.innerHTML = "";
+  getKeyshopSearchLinks(game.title).forEach((site) => {
+    const a = document.createElement("a");
+    a.href = site.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.className = `btn btn-sm ${site.highlight ? "btn-primary" : "btn-secondary"}`;
+    a.textContent = site.name;
+    linksEl.appendChild(a);
+  });
+
+  modal.classList.remove("hidden");
+
+  if (game.cheapsharkId) {
+    bodyEl.innerHTML = "<p class='hint'>Aggiornamento prezzi ufficiali in corso...</p>";
+    await refreshSingleGame(game, true);
+    render();
+  }
+
+  renderDealsModalContent(game);
 }
 
 // --- RENDERING TABELLE ---
@@ -433,20 +588,12 @@ function render() {
     .filter((g) => (!onlyHype ? true : g.hype))
     .forEach((g) => {
       const tr = document.createElement("tr");
-      const sortedDeals = getSortedDeals(g.deals);
+      const allDeals = getAllDeals(g);
+      const activeDeal = findSelectedDeal(g, allDeals);
 
-      // Se ci sono offerte salvate, usa lo store selezionato (o il più economico)
-      let activeDeal = null;
-      if (sortedDeals.length > 0) {
-        activeDeal = g.selectedStoreId
-          ? sortedDeals.find((d) => d.storeID.toString() === g.selectedStoreId.toString())
-          : null;
-        if (!activeDeal) activeDeal = sortedDeals[0];
-      }
-
-      const retailVal = activeDeal ? parseFloat(activeDeal.retailPrice) : g.retailPrice;
-      const saleVal = activeDeal ? parseFloat(activeDeal.price) : g.salePrice;
-      const discountVal = activeDeal ? Math.round(parseFloat(activeDeal.savings)) : g.discount;
+      const retailVal = activeDeal ? activeDeal.retailPrice : g.retailPrice;
+      const saleVal = activeDeal ? activeDeal.price : g.salePrice;
+      const discountVal = activeDeal ? activeDeal.savings : g.discount;
 
       const basePriceText = retailVal !== null ? `$${retailVal.toFixed(2)}` : "N/D";
 
@@ -463,11 +610,10 @@ function render() {
         : "N/D";
 
       let storeHtml = g.bestStore || "-";
-      if (sortedDeals.length > 0) {
-        const optionsHtml = sortedDeals.map((d) => {
-          const sName = storesMap[d.storeID] || `Store #${d.storeID}`;
-          const isSelected = d.storeID.toString() === activeDeal.storeID.toString();
-          return `<option value="${d.storeID}" ${isSelected ? "selected" : ""}>${sName} ($${parseFloat(d.price).toFixed(2)})</option>`;
+      if (allDeals.length > 0) {
+        const optionsHtml = allDeals.map((d) => {
+          const isSelected = activeDeal && d.uid === activeDeal.uid;
+          return `<option value="${d.uid}" ${isSelected ? "selected" : ""}>${d.storeName} ($${d.price.toFixed(2)})</option>`;
         }).join("");
         storeHtml = `<select class="store-select" data-action="store">${optionsHtml}</select>`;
       }
@@ -497,8 +643,8 @@ function render() {
       const storeSelect = tr.querySelector('[data-action="store"]');
       if (storeSelect) {
         storeSelect.addEventListener("change", (e) => {
-          const chosenId = e.target.value;
-          const chosenDeal = sortedDeals.find((d) => d.storeID.toString() === chosenId);
+          const chosenUid = e.target.value;
+          const chosenDeal = allDeals.find((d) => d.uid === chosenUid);
           if (chosenDeal) {
             applyDealToGame(g, chosenDeal);
             saveBacklog(`Select ${g.bestStore} for ${g.title}`);
