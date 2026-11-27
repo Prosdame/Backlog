@@ -21,10 +21,10 @@
     "hype": false,
     "cheapsharkId": "329795",
     "releaseNote": "",
-    "salePrice": 26.35,
+    "salePrice": 29.99,
     "retailPrice": 29.99,
-    "discount": 12,
-    "bestStore": "GameBillet",
+    "discount": 0,
+    "bestStore": "Steam",
     "deals": [
       {
         "storeID": "23",
@@ -77,7 +77,8 @@
       }
     ],
     "free": false,
-    "status": "Not Played"
+    "status": "Not Played",
+    "selectedStoreId": "1"
   },
   {
     "id": "1795799241738",
