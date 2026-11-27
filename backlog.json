@@ -22314,5 +22314,88 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813235597",
+    "title": "Apollo Justice: Ace Attorney Trilogy",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-7596-706f-b75d-834d73c4e1b8/banner400.jpg?t=1791444936",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-7596-706f-b75d-834d73c4e1b8",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "24 gen 2024",
+    "releaseDateISO": "2024-01-24",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 21.2,
+    "retailPrice": 49.99,
+    "discount": 58,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "Jd8ZASfFtPpsBCglwEqO%2Bhza%2FPxAhGaXWITctE%2FVPO8%3D",
+        "price": "21.20",
+        "retailPrice": "49.99",
+        "savings": "57.591518"
+      },
+      {
+        "storeID": "15",
+        "dealID": "N6TyrpeiJ1WwliI3suL%2F8r%2BZzrxH54W4wfLuZI78CgU%3D",
+        "price": "21.24",
+        "retailPrice": "49.99",
+        "savings": "57.511502"
+      },
+      {
+        "storeID": "27",
+        "dealID": "YFNUkq2gv740vMylWJFkfwMS8MpDY41e0oh7TTZjezc%3D",
+        "price": "22.77",
+        "retailPrice": "49.99",
+        "savings": "54.450890"
+      },
+      {
+        "storeID": "21",
+        "dealID": "uA9gn%2Fw1AhT8%2FvSuNhqw9i2HThm9ogfn%2BEkd0yO7zW8%3D",
+        "price": "23.39",
+        "retailPrice": "49.99",
+        "savings": "53.210642"
+      },
+      {
+        "storeID": "30",
+        "dealID": "BG%2BoqoYYFoQ%2F5viviicEhoVGO1i4XJCiElttP1AE%2F%2FM%3D",
+        "price": "24.99",
+        "retailPrice": "49.99",
+        "savings": "50.010002"
+      },
+      {
+        "storeID": "2",
+        "dealID": "od3FlttcCWBs0wH6xSgj3hCdY3Po3m0z9jtoblislFQ%3D",
+        "price": "25.00",
+        "retailPrice": "49.99",
+        "savings": "49.989998"
+      },
+      {
+        "storeID": "3",
+        "dealID": "WFGYSN%2Ffv09zuEo%2Bbclm2mIiOQ5q19GMUYCNLG2V0QI%3D",
+        "price": "25.00",
+        "retailPrice": "49.99",
+        "savings": "49.989998"
+      },
+      {
+        "storeID": "1",
+        "dealID": "VpLygLoWoEQWEPnQ%2BHevUe1j67IA%2FhIEH2tbONvNwr0%3D",
+        "price": "49.99",
+        "retailPrice": "49.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
