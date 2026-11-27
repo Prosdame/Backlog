@@ -23605,5 +23605,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814124085",
+    "title": "Shattered - Tale of the Forgotten King",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-27c1-7079-815a-f51a5fbaa1da/banner400.jpg?t=1787858446",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-27c1-7079-815a-f51a5fbaa1da",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_15",
+    "released": true,
+    "releaseDate": "17 feb 2021",
+    "releaseDateISO": "2021-02-17",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 1.99,
+    "retailPrice": 9.99,
+    "discount": 80,
+    "bestStore": "Fanatical",
+    "deals": [
+      {
+        "storeID": "15",
+        "dealID": "lHfZ2N5thmzrDFtcGvHfltkLa65eIMNSd53KAZnXiq4%3D",
+        "price": "1.99",
+        "retailPrice": "9.99",
+        "savings": "80.080080"
+      },
+      {
+        "storeID": "27",
+        "dealID": "LPs8tLSR%2FpRTQ5h0JkRwL%2BEl0vq%2FfxjYFwQYCF%2B6G5g%3D",
+        "price": "5.90",
+        "retailPrice": "9.99",
+        "savings": "40.940941"
+      },
+      {
+        "storeID": "30",
+        "dealID": "2U0GJkg%2F78cfCJ19ki%2Fx0tjzc6zAJbb%2BoIT3v8RtJkQ%3D",
+        "price": "6.99",
+        "retailPrice": "9.99",
+        "savings": "30.030030"
+      },
+      {
+        "storeID": "1",
+        "dealID": "hRhS0J2pu%2FQVrczDGFUlXiOPUeg25ubIZ80U0qI74DY%3D",
+        "price": "6.99",
+        "retailPrice": "9.99",
+        "savings": "30.030030"
+      },
+      {
+        "storeID": "7",
+        "dealID": "rD1wxn%2Fvo4Z%2Bj96TXYOMPFnA7LXbuUniAwdurVVhvDg%3D",
+        "price": "6.99",
+        "retailPrice": "9.99",
+        "savings": "30.030030"
+      },
+      {
+        "storeID": "3",
+        "dealID": "JUH1XUkGKJj2lAoSTkoTWc%2BUVyfyUO3ZBRyNLGVYxHM%3D",
+        "price": "9.99",
+        "retailPrice": "9.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "21",
+        "dealID": "z5h4b1AKTHDNDq8fQby7TX5A3arXx5nIo%2Bl4pu356Os%3D",
+        "price": "9.99",
+        "retailPrice": "9.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
