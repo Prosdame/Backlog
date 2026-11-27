@@ -24,7 +24,7 @@
       <div class="search-row">
         <input type="text" id="searchInput" placeholder="Cerca gioco per nome (Steam, Epic, GOG, Humble...)" autocomplete="off">
         <select id="addTargetCategory">
-          <option value="wishlist">In: To be Owned</option>
+          <option value="wishlist">In: Wishlist</option>
           <option value="owned">In: Owned</option>
         </select>
         <button id="btnSearch" class="btn btn-primary">Cerca</button>
@@ -36,10 +36,14 @@
 
       <!-- Form inserimento manuale per giochi non ancora usciti -->
       <form id="manualForm" class="manual-form hidden">
-        <input type="text" id="manualTitle" placeholder="Titolo esatto (es. Atomic Heart 2)" required>
-        <input type="text" id="manualNote" placeholder="Nota stato (es. To Be Announced / Rilascio: 2027)" value="To Be Announced">
+        <input type="text" id="manualTitle" placeholder="Titolo esatto (es. Persona 6)" required>
+        <select id="manualReleaseState">
+          <option value="unreleased">Non Rilasciato</option>
+          <option value="released">Rilasciato</option>
+        </select>
+        <input type="text" id="manualNote" placeholder="Data / Nota rilascio (es. TBA, 2027, 15 Ott 2026)" value="TBA">
         <select id="manualCategory">
-          <option value="wishlist">To be Owned</option>
+          <option value="wishlist">Wishlist</option>
           <option value="owned">Owned</option>
         </select>
         <label class="checkbox-label">
@@ -52,7 +56,7 @@
     <!-- Navigazione Tab e Filtri -->
     <section class="controls-bar">
       <div class="tabs">
-        <button class="tab active" data-tab="wishlist">To be Owned (<span id="countWishlist">0</span>)</button>
+        <button class="tab active" data-tab="wishlist">Wishlist (<span id="countWishlist">0</span>)</button>
         <button class="tab" data-tab="owned">Owned (<span id="countOwned">0</span>)</button>
       </div>
 
@@ -64,7 +68,7 @@
         <select id="filterStatus" class="hidden">
           <option value="ALL">Tutti gli stati</option>
           <option value="Not Played">Not Played</option>
-          <option value="Playing">Playing</option>
+          <option value="Ongoing">Ongoing</option>
           <option value="Hold">Hold</option>
           <option value="Dropped">Dropped</option>
           <option value="Completed">Completed</option>
@@ -72,13 +76,14 @@
       </div>
     </section>
 
-    <!-- Tabella To be Owned -->
+    <!-- Tabella Wishlist -->
     <section id="sectionWishlist" class="table-wrapper">
       <table>
         <thead>
           <tr>
             <th>GAME</th>
             <th class="center">HYPE</th>
+            <th>RELEASE</th>
             <th>BASE PRICE</th>
             <th>PRICE</th>
             <th>% DISCOUNT</th>
@@ -107,7 +112,7 @@
     </section>
   </main>
 
-  <!-- Modal Confronto Prezzi Multi-Store & Keyshop -->
+  <!-- Modal Dettagli Gioco, Stato Rilascio & Confronto Store -->
   <div id="dealsModal" class="modal hidden">
     <div class="modal-content modal-lg">
       <div class="modal-header">
@@ -115,9 +120,22 @@
         <button class="btn-close" data-close="dealsModal">&times;</button>
       </div>
       <div class="modal-body">
+        <!-- Modifica Stato e Data di Rilascio -->
+        <form id="releaseEditorForm" class="custom-deal-form">
+          <div class="section-label">Stato e Data di Rilascio</div>
+          <div class="release-editor-row">
+            <select id="modalReleaseState">
+              <option value="released">Rilasciato</option>
+              <option value="unreleased">Non Rilasciato / Preorder</option>
+            </select>
+            <input type="text" id="modalReleaseDate" placeholder="Data o finestra (es. 2027, Q4 2026, TBA)">
+            <button type="submit" class="btn btn-sm btn-primary">Salva Rilascio</button>
+          </div>
+        </form>
+
         <!-- Link rapidi Keyshop -->
         <div>
-          <div class="section-label">Ricerca rapida Keyshop & Aggregatori</div>
+          <div class="section-label">Ricerca rapida Keyshop & Store</div>
           <div id="quickSearchLinks" class="quick-links"></div>
         </div>
 
