@@ -100,6 +100,12 @@ function formatMoney(amount, currency = "EUR") {
   return `${sym}${Number(amount).toFixed(2)}`;
 }
 
+function toEurAmount(amount, currency = "EUR") {
+  if (amount === null || amount === undefined || isNaN(amount)) return 0;
+  const val = Number(amount);
+  return currency === "USD" ? val * 0.92 : val;
+}
+
 function parseReleaseStatusFromISO(isoDate) {
   if (!isoDate) {
     return { released: false, releaseDate: "TBA", releaseDateISO: null };
@@ -285,6 +291,8 @@ function bindEvents() {
       currentTab = btn.dataset.tab;
       document.getElementById("sectionWishlist").classList.toggle("hidden", currentTab !== "wishlist");
       document.getElementById("sectionOwned").classList.toggle("hidden", currentTab !== "owned");
+      document.getElementById("sectionStats").classList.toggle("hidden", currentTab !== "stats");
+      document.getElementById("toolbarFilters").classList.toggle("hidden", currentTab === "stats");
       document.getElementById("filterWishlistState").classList.toggle("hidden", currentTab !== "wishlist");
       document.getElementById("sortWishlist").classList.toggle("hidden", currentTab !== "wishlist");
       document.getElementById("filterStatus").classList.toggle("hidden", currentTab !== "owned");
@@ -298,6 +306,11 @@ function bindEvents() {
   document.getElementById("filterWishlistState").addEventListener("change", render);
   document.getElementById("sortWishlist").addEventListener("change", render);
   document.getElementById("filterStatus").addEventListener("change", render);
+
+  // Controlli interattivi Statistiche (Simulatore & Ruota del Destino)
+  document.getElementById("simHoursPerWeek").addEventListener("input", updateBacklogSimulator);
+  document.getElementById("simAvgGameHours").addEventListener("input", updateBacklogSimulator);
+  document.getElementById("btnSpinRoulette").addEventListener("click", spinDestinyRoulette);
 
   // Ricerca giochi live (suggerimenti mentre si digita) + invio immediato
   const searchInputEl = document.getElementById("searchInput");
@@ -1032,9 +1045,6 @@ async function fetchUpdatedFieldsForGame(game) {
       return patch;
     }
 
-    // Se ITAD POST è bloccato nel browser via CORS:
-    // - conserva eventuali prezzi EUR già sincronizzati dalla GitHub Action
-    // - se il gioco ha ancora 0 offerte (N/D), usa il fallback immediato
     const hasExistingEurDeals =
       game.currency === "EUR" && Array.isArray(game.deals) && game.deals.length > 0;
     if (!hasExistingEurDeals) {
@@ -1331,6 +1341,653 @@ function getOwnedStatusSelectClass(status) {
   }
 }
 
+// --- MOTORE STATISTICHE, GRAFICI & FUN FACTS ---
+function getGameEffectiveFinancials(game) {
+  const allDeals = getAllDeals(game);
+  const activeDeal = findSelectedDeal(game, allDeals);
+  const currency = activeDeal ? activeDeal.currency : (game.currency || (game.itadId ? "EUR" : "USD"));
+  const rawSale = activeDeal ? activeDeal.price : game.salePrice;
+  const rawRetail = activeDeal ? activeDeal.retailPrice : game.retailPrice;
+  const savings = activeDeal ? activeDeal.savings : (game.discount || 0);
+  const storeName = activeDeal ? activeDeal.storeName : (game.bestStore || "");
+
+  const saleEur = rawSale !== null && rawSale !== undefined ? toEurAmount(rawSale, currency) : null;
+  const retailEur = rawRetail !== null && rawRetail !== undefined
+    ? toEurAmount(rawRetail, currency)
+    : saleEur;
+
+  return {
+    saleEur,
+    retailEur,
+    savings,
+    storeName,
+    allDeals
+  };
+}
+
+function extractReleaseYear(game) {
+  if (game.releaseDateISO && /^\d{4}/.test(game.releaseDateISO)) {
+    return parseInt(game.releaseDateISO.slice(0, 4), 10);
+  }
+  const text = getReleaseDateText(game);
+  const match = text.match(/\b(19\d{2}|20\d{2})\b/);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  return null;
+}
+
+function buildDonutSvg(segments) {
+  const total = segments.reduce((acc, s) => acc + s.count, 0);
+  const radius = 58;
+  const circumference = 2 * Math.PI * radius;
+
+  if (total === 0) {
+    return `
+      <svg viewBox="0 0 156 156" width="156" height="156">
+        <circle cx="78" cy="78" r="${radius}" fill="none" stroke="#263244" stroke-width="18" />
+      </svg>
+    `;
+  }
+
+  let cumulative = 0;
+  const circles = segments
+    .filter((s) => s.count > 0)
+    .map((s) => {
+      const len = (s.count / total) * circumference;
+      const offset = -cumulative;
+      cumulative += len;
+      return `<circle cx="78" cy="78" r="${radius}" fill="none" stroke="${s.color}" stroke-width="18" stroke-dasharray="${len.toFixed(2)} ${circumference.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}" transform="rotate(-90 78 78)" />`;
+    })
+    .join("");
+
+  return `
+    <svg viewBox="0 0 156 156" width="156" height="156">
+      <circle cx="78" cy="78" r="${radius}" fill="none" stroke="#1a2333" stroke-width="18" />
+      ${circles}
+    </svg>
+  `;
+}
+
+function renderDistributionBarsHtml(items, barColor = "var(--blue-solid)") {
+  const maxVal = Math.max(1, ...items.map((i) => i.count));
+  const total = items.reduce((acc, i) => acc + i.count, 0);
+
+  return items
+    .map((item) => {
+      const widthPct = Math.round((item.count / maxVal) * 100);
+      const sharePct = total > 0 ? Math.round((item.count / total) * 100) : 0;
+      const fill = item.color || barColor;
+      return `
+        <div class="dist-bar-item">
+          <div class="dist-bar-meta">
+            <span class="dist-bar-name">${item.label}</span>
+            <span class="dist-bar-val">${item.count} (${sharePct}%)</span>
+          </div>
+          <div class="dist-bar-track">
+            <div class="dist-bar-fill" style="width: ${widthPct}%; background: ${fill};"></div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function updateBacklogSimulator() {
+  const hoursPerWeek = parseInt(document.getElementById("simHoursPerWeek").value, 10) || 10;
+  const avgGameHours = parseInt(document.getElementById("simAvgGameHours").value, 10) || 25;
+
+  document.getElementById("simHoursPerWeekVal").textContent = `${hoursPerWeek} ore/sett.`;
+  document.getElementById("simAvgGameHoursVal").textContent = `${avgGameHours} ore/gioco`;
+
+  const ownedGames = backlog.filter((g) => g.category === "owned");
+  const wishlistGames = backlog.filter((g) => g.category === "wishlist");
+  const unfinishedOwned = ownedGames.filter((g) => {
+    const st = g.status === "Playing" ? "Ongoing" : (g.status || "Not Played");
+    return st !== "Completed" && st !== "Dropped";
+  });
+
+  const ownedHours = unfinishedOwned.length * avgGameHours;
+  const wishlistHours = wishlistGames.length * avgGameHours;
+  const totalHours = ownedHours + wishlistHours;
+
+  document.getElementById("simTotalHoursBadge").textContent = `${totalHours.toLocaleString("it-IT")} ore totali`;
+
+  const formatDuration = (hours) => {
+    if (hours === 0) return "0 settimane (già in pari!)";
+    const weeks = hours / hoursPerWeek;
+    if (weeks < 8) return `${Math.ceil(weeks)} settimane`;
+    const months = weeks / 4.345;
+    if (months < 24) return `${months.toFixed(1)} mesi`;
+    return `${(months / 12).toFixed(1)} anni`;
+  };
+
+  document.getElementById("simOutputBox").innerHTML = `
+    <div><strong>Backlog Owned da finire (${unfinishedOwned.length} giochi):</strong> ${ownedHours.toLocaleString("it-IT")} ore &rarr; <span style="color: var(--green-text); font-weight: 700;">${formatDuration(ownedHours)}</span></div>
+    <div><strong>Se comprassi tutta la Wishlist (+${wishlistGames.length} giochi):</strong> +${wishlistHours.toLocaleString("it-IT")} ore &rarr; <span style="color: var(--amber-text); font-weight: 700;">${formatDuration(totalHours)} complessivi</span></div>
+  `;
+}
+
+function spinDestinyRoulette() {
+  const mode = document.getElementById("rouletteMode").value;
+  const resultBox = document.getElementById("rouletteResult");
+
+  let pool = [];
+  if (mode === "OWNED_UNPLAYED") {
+    pool = backlog.filter((g) => g.category === "owned" && (!g.status || g.status === "Not Played"));
+  } else if (mode === "WISHLIST_DISCOUNT") {
+    pool = backlog.filter((g) => {
+      if (g.category !== "wishlist") return false;
+      const fin = getGameEffectiveFinancials(g);
+      return fin.savings > 0;
+    });
+  } else if (mode === "HYPE_ANY") {
+    pool = backlog.filter((g) => g.hype);
+  } else {
+    pool = [...backlog];
+  }
+
+  if (!pool.length) {
+    resultBox.innerHTML = `<p class="hint">Nessun gioco disponibile in questa categoria per l'estrazione.</p>`;
+    return;
+  }
+
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  const fin = getGameEffectiveFinancials(picked);
+  const catBadge = picked.category === "owned"
+    ? `<span class="badge badge-green">Owned · ${picked.status || "Not Played"}</span>`
+    : `<span class="badge badge-blue">Wishlist · ${fin.saleEur !== null ? formatMoney(fin.saleEur, "EUR") : "TBA"}</span>`;
+  const hypeBadge = picked.hype ? `<span class="badge badge-purple">★ Hype</span>` : "";
+
+  resultBox.innerHTML = `
+    <div class="roulette-picked">
+      <img src="${picked.thumb || FALLBACK_GAME_THUMB}" alt="" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'" />
+      <div class="roulette-picked-info">
+        <strong style="font-size: 1rem;">${picked.title}</strong>
+        <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+          ${catBadge}
+          ${hypeBadge}
+        </div>
+        <div>
+          <button id="btnOpenPickedDetails" class="btn btn-sm btn-secondary">Apri Dettagli & Store</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("btnOpenPickedDetails").addEventListener("click", () => {
+    openDealsModal(picked, false);
+  });
+}
+
+function renderStats() {
+  const allWishlist = backlog.filter((g) => g.category === "wishlist");
+  const allOwned = backlog.filter((g) => g.category === "owned");
+  const totalGames = backlog.length;
+
+  // --- Calcoli economici Wishlist ---
+  let wishRetailTotal = 0;
+  let wishSaleTotal = 0;
+  let wishReleasedSaleTotal = 0;
+  let wishUnreleasedRetailTotal = 0;
+  let wishPricedCount = 0;
+  let wishDiscountedCount = 0;
+  let wishDiscountSum = 0;
+  let totalTrackedOffers = 0;
+
+  let bestDiscountGame = null;
+  let bestDiscountPct = 0;
+  let bestDiscountFin = null;
+
+  let mostExpensiveWish = null;
+  let mostExpensivePrice = -1;
+  let cheapestWish = null;
+  let cheapestPrice = Number.POSITIVE_INFINITY;
+
+  let widestSpreadGame = null;
+  let widestSpreadVal = -1;
+  let widestSpreadInfo = null;
+
+  const storeCounts = new Map();
+
+  allWishlist.forEach((g) => {
+    const fin = getGameEffectiveFinancials(g);
+    const released = isGameReleased(g);
+    totalTrackedOffers += fin.allDeals.length;
+
+    if (fin.storeName) {
+      storeCounts.set(fin.storeName, (storeCounts.get(fin.storeName) || 0) + 1);
+    }
+
+    if (fin.allDeals.length >= 2) {
+      const minD = fin.allDeals[0];
+      const maxD = fin.allDeals[fin.allDeals.length - 1];
+      const spread = toEurAmount(maxD.price, maxD.currency) - toEurAmount(minD.price, minD.currency);
+      if (spread > widestSpreadVal) {
+        widestSpreadVal = spread;
+        widestSpreadGame = g;
+        widestSpreadInfo = {
+          minStore: minD.storeName,
+          minPrice: toEurAmount(minD.price, minD.currency),
+          maxStore: maxD.storeName,
+          maxPrice: toEurAmount(maxD.price, maxD.currency)
+        };
+      }
+    }
+
+    if (fin.saleEur !== null) {
+      wishPricedCount++;
+      wishSaleTotal += fin.saleEur;
+      const retail = fin.retailEur !== null ? fin.retailEur : fin.saleEur;
+      wishRetailTotal += retail;
+
+      if (released) {
+        wishReleasedSaleTotal += fin.saleEur;
+      } else {
+        wishUnreleasedRetailTotal += retail;
+      }
+
+      if (fin.saleEur > mostExpensivePrice) {
+        mostExpensivePrice = fin.saleEur;
+        mostExpensiveWish = g;
+      }
+      if (fin.saleEur < cheapestPrice) {
+        cheapestPrice = fin.saleEur;
+        cheapestWish = g;
+      }
+    }
+
+    if (fin.savings > 0) {
+      wishDiscountedCount++;
+      wishDiscountSum += fin.savings;
+      if (fin.savings > bestDiscountPct) {
+        bestDiscountPct = fin.savings;
+        bestDiscountGame = g;
+        bestDiscountFin = fin;
+      }
+    }
+  });
+
+  const wishPotentialSavings = Math.max(0, wishRetailTotal - wishSaleTotal);
+  const avgDiscountActive = wishDiscountedCount > 0 ? Math.round(wishDiscountSum / wishDiscountedCount) : 0;
+
+  // --- Calcoli economici & stato Owned ---
+  let ownedRetailValue = 0;
+  let ownedFreeValue = 0;
+  let ownedFreeCount = 0;
+  let pileOfShameCount = 0;
+  let pileOfShameValue = 0;
+
+  const statusCounts = {
+    Completed: 0,
+    Ongoing: 0,
+    "Not Played": 0,
+    Hold: 0,
+    Dropped: 0
+  };
+
+  allOwned.forEach((g) => {
+    const fin = getGameEffectiveFinancials(g);
+    const val = fin.retailEur !== null ? fin.retailEur : (fin.saleEur || 0);
+    ownedRetailValue += val;
+
+    if (g.free) {
+      ownedFreeCount++;
+      ownedFreeValue += val;
+    }
+
+    const st = g.status === "Playing" ? "Ongoing" : (g.status || "Not Played");
+    if (statusCounts[st] !== undefined) {
+      statusCounts[st]++;
+    } else {
+      statusCounts["Not Played"]++;
+    }
+
+    if (st === "Not Played") {
+      pileOfShameCount++;
+      pileOfShameValue += val;
+    }
+  });
+
+  const ownedRatioPct = totalGames > 0 ? Math.round((allOwned.length / totalGames) * 100) : 0;
+  const activeOwnedDenominator = allOwned.length - statusCounts["Not Played"];
+  const completionPct = activeOwnedDenominator > 0
+    ? Math.round((statusCounts.Completed / activeOwnedDenominator) * 100)
+    : (allOwned.length > 0 ? Math.round((statusCounts.Completed / allOwned.length) * 100) : 0);
+
+  // --- Calcoli Hype ---
+  const hypeWishlist = allWishlist.filter((g) => g.hype);
+  const hypeOwned = allOwned.filter((g) => g.hype);
+  const hypeWishCost = hypeWishlist.reduce((sum, g) => {
+    const fin = getGameEffectiveFinancials(g);
+    return sum + (fin.saleEur !== null ? fin.saleEur : 0);
+  }, 0);
+  const hypeOwnedCompleted = hypeOwned.filter((g) => g.status === "Completed").length;
+  const hypeOwnedUnplayed = hypeOwned.filter((g) => !g.status || g.status === "Not Played").length;
+
+  // --- Render KPI Grid ---
+  const bestDealCardHtml = bestDiscountGame
+    ? `
+      <article id="kpiBestDealCard" class="kpi-card kpi-card-clickable" title="Clicca per aprire i dettagli">
+        <div class="kpi-header">
+          <span class="stats-eyebrow">Gioco Più in Sconto</span>
+          <span class="badge badge-green">-${bestDiscountPct}%</span>
+        </div>
+        <div class="kpi-best-deal-body">
+          <img src="${bestDiscountGame.thumb || FALLBACK_GAME_THUMB}" alt="" onerror="this.onerror=null;this.src='${FALLBACK_GAME_THUMB}'" />
+          <div>
+            <div class="kpi-best-deal-title">${bestDiscountGame.title}</div>
+            <div class="kpi-sub">
+              <strong style="color: var(--green-text);">${formatMoney(bestDiscountFin.saleEur, "EUR")}</strong>
+              <span style="text-decoration: line-through; opacity: 0.7;">${formatMoney(bestDiscountFin.retailEur, "EUR")}</span>
+              · ${bestDiscountFin.storeName}
+            </div>
+          </div>
+        </div>
+      </article>
+    `
+    : `
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="stats-eyebrow">Gioco Più in Sconto</span>
+          <span class="badge badge-warn">0%</span>
+        </div>
+        <div class="kpi-value">Nessun saldo</div>
+        <div class="kpi-sub">Nessun gioco in wishlist risulta attualmente scontato.</div>
+      </article>
+    `;
+
+  document.getElementById("statsKpiGrid").innerHTML = `
+    <article class="kpi-card">
+      <div class="kpi-header">
+        <span class="stats-eyebrow">Totale Giochi Tracciati</span>
+        <span class="badge badge-blue">${ownedRatioPct}% Posseduti</span>
+      </div>
+      <div class="kpi-value">${totalGames} titoli</div>
+      <div class="kpi-progress-track">
+        <div class="kpi-progress-fill" style="width: ${ownedRatioPct}%; background: var(--green-solid);"></div>
+      </div>
+      <div class="kpi-sub"><strong>${allOwned.length}</strong> Owned · <strong>${allWishlist.length}</strong> Wishlist</div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-header">
+        <span class="stats-eyebrow">Valore Giochi Posseduti</span>
+        <span class="badge badge-green">${ownedFreeCount} Gratis</span>
+      </div>
+      <div class="kpi-value">${formatMoney(ownedRetailValue, "EUR")}</div>
+      <div class="kpi-sub">Valore riscattato gratis: <strong style="color: var(--green-text);">${formatMoney(ownedFreeValue, "EUR")}</strong> · Spesa netta stimata: <strong>${formatMoney(Math.max(0, ownedRetailValue - ownedFreeValue), "EUR")}</strong></div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-header">
+        <span class="stats-eyebrow">Valore Giochi Desiderati</span>
+        <span class="badge badge-green">-${formatMoney(wishPotentialSavings, "EUR")} di sconti</span>
+      </div>
+      <div class="kpi-value">${formatMoney(wishSaleTotal, "EUR")}</div>
+      <div class="kpi-sub">Listino pieno: <strong>${formatMoney(wishRetailTotal, "EUR")}</strong> (${wishPricedCount}/${allWishlist.length} prezzati) · Già usciti: <strong>${formatMoney(wishReleasedSaleTotal, "EUR")}</strong></div>
+    </article>
+
+    ${bestDealCardHtml}
+
+    <article class="kpi-card">
+      <div class="kpi-header">
+        <span class="stats-eyebrow">Radar Hype</span>
+        <span class="badge badge-purple">★ ${hypeWishlist.length + hypeOwned.length} totali</span>
+      </div>
+      <div class="kpi-value">${formatMoney(hypeWishCost, "EUR")}</div>
+      <div class="kpi-sub">Costo per prendere i <strong>${hypeWishlist.length}</strong> giochi Hype in wishlist · Hype Owned finiti: <strong>${hypeOwnedCompleted}/${hypeOwned.length}</strong></div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-header">
+        <span class="stats-eyebrow">Offerte & Sconto Medio</span>
+        <span class="badge badge-blue">${wishDiscountedCount} in saldo</span>
+      </div>
+      <div class="kpi-value">-${avgDiscountActive}% medio</div>
+      <div class="kpi-sub"><strong>${totalTrackedOffers}</strong> offerte store confrontate · Prezzo medio wishlist: <strong>${formatMoney(wishPricedCount > 0 ? wishSaleTotal / wishPricedCount : 0, "EUR")}</strong></div>
+    </article>
+  `;
+
+  if (bestDiscountGame) {
+    document.getElementById("kpiBestDealCard").addEventListener("click", () => {
+      openDealsModal(bestDiscountGame, false);
+    });
+  }
+
+  // --- Render Grafici & Distribuzioni ---
+  const donutSegments = [
+    { label: "Completed", count: statusCounts.Completed, color: "#22c55e" },
+    { label: "Ongoing", count: statusCounts.Ongoing, color: "#3b82f6" },
+    { label: "Not Played", count: statusCounts["Not Played"], color: "#64748b" },
+    { label: "Hold", count: statusCounts.Hold, color: "#f59e0b" },
+    { label: "Dropped", count: statusCounts.Dropped, color: "#ef4444" }
+  ];
+
+  const donutLegendHtml = donutSegments
+    .map((seg) => {
+      const pct = allOwned.length > 0 ? Math.round((seg.count / allOwned.length) * 100) : 0;
+      return `
+        <div class="donut-legend-row">
+          <div class="donut-legend-left">
+            <span class="legend-dot" style="background: ${seg.color};"></span>
+            <span>${seg.label}</span>
+          </div>
+          <strong>${seg.count} <span style="color: var(--text-muted); font-weight: 400;">(${pct}%)</span></strong>
+        </div>
+      `;
+    })
+    .join("");
+
+  // Distribuzione Store Wishlist
+  const storeDistItems = [...storeCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([store, count]) => ({
+      label: store,
+      count,
+      color: getPreferredStoreRank(store) < 3 ? "var(--green-solid)" : "var(--blue-solid)"
+    }));
+
+  // Distribuzione Fasce di Prezzo Wishlist
+  const priceBuckets = [
+    { label: "Sotto i 5€ (Affari lampo)", count: 0, color: "#22c55e" },
+    { label: "5€ – 15€", count: 0, color: "#3b82f6" },
+    { label: "15€ – 30€", count: 0, color: "#60a5fa" },
+    { label: "30€ – 50€", count: 0, color: "#a855f7" },
+    { label: "Oltre 50€ (Tripla A)", count: 0, color: "#f59e0b" },
+    { label: "TBA / Prezzo N/D", count: 0, color: "#64748b" }
+  ];
+
+  allWishlist.forEach((g) => {
+    const fin = getGameEffectiveFinancials(g);
+    if (fin.saleEur === null) {
+      priceBuckets[5].count++;
+    } else if (fin.saleEur < 5) {
+      priceBuckets[0].count++;
+    } else if (fin.saleEur < 15) {
+      priceBuckets[1].count++;
+    } else if (fin.saleEur < 30) {
+      priceBuckets[2].count++;
+    } else if (fin.saleEur <= 50) {
+      priceBuckets[3].count++;
+    } else {
+      priceBuckets[4].count++;
+    }
+  });
+
+  // Distribuzione Fasce di Sconto Wishlist
+  const discountBuckets = [
+    { label: "Prezzo pieno (0%)", count: 0, color: "#64748b" },
+    { label: "Sconto lieve (1% – 25%)", count: 0, color: "#3b82f6" },
+    { label: "Buon affare (26% – 50%)", count: 0, color: "#a855f7" },
+    { label: "Occasione (51% – 75%)", count: 0, color: "#22c55e" },
+    { label: "Sconto estremo (> 75%)", count: 0, color: "#fbbf24" }
+  ];
+
+  allWishlist.forEach((g) => {
+    const fin = getGameEffectiveFinancials(g);
+    if (fin.savings <= 0) discountBuckets[0].count++;
+    else if (fin.savings <= 25) discountBuckets[1].count++;
+    else if (fin.savings <= 50) discountBuckets[2].count++;
+    else if (fin.savings <= 75) discountBuckets[3].count++;
+    else discountBuckets[4].count++;
+  });
+
+  // Distribuzione per Anno di Uscita (tutto il backlog)
+  const yearMap = new Map();
+  let tbaYearCount = 0;
+  backlog.forEach((g) => {
+    const yr = extractReleaseYear(g);
+    if (!yr) {
+      tbaYearCount++;
+    } else {
+      yearMap.set(yr, (yearMap.get(yr) || 0) + 1);
+    }
+  });
+
+  const yearItems = [...yearMap.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .slice(0, 6)
+    .map(([yr, count]) => ({
+      label: `Anno ${yr}`,
+      count,
+      color: yr >= 2026 ? "var(--amber-text)" : "var(--blue-solid)"
+    }));
+  if (tbaYearCount > 0) {
+    yearItems.push({ label: "Data TBA / Non nota", count: tbaYearCount, color: "#64748b" });
+  }
+
+  document.getElementById("statsChartsGrid").innerHTML = `
+    <article class="card stats-chart-card">
+      <div class="stats-card-header">
+        <div>
+          <span class="stats-eyebrow">Libreria Owned</span>
+          <h3>Distribuzione Stati di Gioco</h3>
+        </div>
+        <span class="badge badge-green">${statusCounts.Completed} completati</span>
+      </div>
+      <div class="donut-layout">
+        <div class="donut-svg-wrap">
+          ${buildDonutSvg(donutSegments)}
+          <div class="donut-center-label">
+            <span class="donut-center-pct">${completionPct}%</span>
+            <span class="donut-center-sub">Completion</span>
+          </div>
+        </div>
+        <div class="donut-legend">${donutLegendHtml}</div>
+      </div>
+    </article>
+
+    <article class="card stats-chart-card">
+      <div class="stats-card-header">
+        <div>
+          <span class="stats-eyebrow">Confronto Piattaforme</span>
+          <h3>Store Migliori nella Wishlist</h3>
+        </div>
+        <span class="badge badge-blue">${storeCounts.size} store attivi</span>
+      </div>
+      <div class="dist-bars">
+        ${storeDistItems.length ? renderDistributionBarsHtml(storeDistItems) : "<p class='hint'>Nessuno store ancora associato ai giochi in wishlist.</p>"}
+      </div>
+    </article>
+
+    <article class="card stats-chart-card">
+      <div class="stats-card-header">
+        <div>
+          <span class="stats-eyebrow">Budget & Fascia</span>
+          <h3>Distribuzione Prezzi Wishlist</h3>
+        </div>
+        <span class="badge badge-purple">EUR €</span>
+      </div>
+      <div class="dist-bars">
+        ${renderDistributionBarsHtml(priceBuckets)}
+      </div>
+    </article>
+
+    <article class="card stats-chart-card">
+      <div class="stats-card-header">
+        <div>
+          <span class="stats-eyebrow">Intensità Saldi</span>
+          <h3>Distribuzione Sconti Wishlist</h3>
+        </div>
+        <span class="badge badge-green">${wishDiscountedCount}/${allWishlist.length} scontati</span>
+      </div>
+      <div class="dist-bars">
+        ${renderDistributionBarsHtml(discountBuckets)}
+      </div>
+    </article>
+
+    <article class="card stats-chart-card">
+      <div class="stats-card-header">
+        <div>
+          <span class="stats-eyebrow">Cronologia</span>
+          <h3>Distribuzione per Anno di Uscita</h3>
+        </div>
+        <span class="badge badge-warn">${totalGames} giochi</span>
+      </div>
+      <div class="dist-bars">
+        ${yearItems.length ? renderDistributionBarsHtml(yearItems) : "<p class='hint'>Nessun dato di uscita disponibile.</p>"}
+      </div>
+    </article>
+  `;
+
+  // --- Render Fun Facts Cards ---
+  const extremesHtml = mostExpensiveWish && cheapestWish
+    ? `
+      <div class="fun-card-metric">${formatMoney(mostExpensivePrice, "EUR")} vs ${formatMoney(cheapestPrice, "EUR")}</div>
+      <div class="fun-card-desc">
+        Il più caro è <strong>${mostExpensiveWish.title}</strong> (${formatMoney(mostExpensivePrice, "EUR")}), mentre il più economico è <strong>${cheapestWish.title}</strong> (${formatMoney(cheapestPrice, "EUR")}).
+      </div>
+    `
+    : `
+      <div class="fun-card-metric">N/D</div>
+      <div class="fun-card-desc">Aggiungi giochi prezzati in wishlist per confrontare gli estremi.</div>
+    `;
+
+  const spreadHtml = widestSpreadGame && widestSpreadInfo && widestSpreadVal > 0.05
+    ? `
+      <div class="fun-card-metric">+${formatMoney(widestSpreadVal, "EUR")} di divario</div>
+      <div class="fun-card-desc">
+        Su <strong>${widestSpreadGame.title}</strong> passi da <strong>${formatMoney(widestSpreadInfo.minPrice, "EUR")}</strong> (${widestSpreadInfo.minStore}) a <strong>${formatMoney(widestSpreadInfo.maxPrice, "EUR")}</strong> (${widestSpreadInfo.maxStore}).
+      </div>
+    `
+    : `
+      <div class="fun-card-metric">€0.00</div>
+      <div class="fun-card-desc">Nessuna differenza rilevante tra gli store monitorati al momento.</div>
+    `;
+
+  document.getElementById("statsFunCards").innerHTML = `
+    <article class="fun-card">
+      <span class="fun-card-tag" style="color: var(--red-text);">La "Pile of Shame"</span>
+      <div class="fun-card-title">Giochi Comprati Mai Avviati</div>
+      <div class="fun-card-metric">${pileOfShameCount} giochi (${formatMoney(pileOfShameValue, "EUR")})</div>
+      <div class="fun-card-desc">Titoli già in <strong>Owned</strong> ancora fermi su <em>Not Played</em> che aspettano il loro turno.</div>
+    </article>
+
+    <article class="fun-card">
+      <span class="fun-card-tag" style="color: var(--amber-text);">Estremi della Wishlist</span>
+      <div class="fun-card-title">Il Più Caro vs Il Più Economico</div>
+      ${extremesHtml}
+    </article>
+
+    <article class="fun-card">
+      <span class="fun-card-tag" style="color: var(--green-text);">Effetto Confronto Store</span>
+      <div class="fun-card-title">Spread Massimo su Singolo Gioco</div>
+      ${spreadHtml}
+    </article>
+
+    <article class="fun-card">
+      <span class="fun-card-tag" style="color: var(--purple-text);">L'Illusione dell'Hype</span>
+      <div class="fun-card-title">Desiderio vs Completamento</div>
+      <div class="fun-card-metric">${hypeOwnedUnplayed} Hype mai iniziati</div>
+      <div class="fun-card-desc">Hai <strong>${hypeWishlist.length}</strong> giochi Hype in wishlist e <strong>${hypeOwned.length}</strong> in Owned (di cui <strong>${hypeOwnedUnplayed}</strong> ancora <em>Not Played</em>).</div>
+    </article>
+  `;
+
+  updateBacklogSimulator();
+}
+
 // --- RENDERING TABELLE ---
 function render() {
   const textFilter = document.getElementById("filterText").value.toLowerCase();
@@ -1571,4 +2228,8 @@ function render() {
 
       tbodyO.appendChild(tr);
     });
+
+  if (currentTab === "stats") {
+    renderStats();
+  }
 }
