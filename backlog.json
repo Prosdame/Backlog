@@ -24,7 +24,7 @@
     "salePrice": 29.99,
     "retailPrice": 29.99,
     "discount": 0,
-    "bestStore": "Steam",
+    "bestStore": "IndieGala",
     "deals": [
       {
         "storeID": "23",
@@ -78,7 +78,7 @@
     ],
     "free": false,
     "status": "Not Played",
-    "selectedStoreId": "1"
+    "selectedStoreId": "30"
   },
   {
     "id": "1795799241738",
