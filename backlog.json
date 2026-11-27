@@ -22028,7 +22028,7 @@
     "bestStore": "",
     "deals": [],
     "customDeals": [],
-    "free": false,
+    "free": true,
     "status": "Not Played",
     "schemaVersion": 2
   },
@@ -22130,7 +22130,7 @@
     "bestStore": "",
     "deals": [],
     "customDeals": [],
-    "free": false,
+    "free": true,
     "status": "Not Played",
     "schemaVersion": 2
   },
