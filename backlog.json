@@ -23557,5 +23557,53 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813933527",
+    "title": "Bread and Fred",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1607680/f5df5f261dc7c5c58bda1f1c3709fefa80d78466/capsule_231x87.jpg?t=1773071421",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": null,
+    "cheapsharkId": "261055",
+    "selectedStoreId": "cs_25",
+    "released": true,
+    "releaseDate": "",
+    "releaseDateISO": null,
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 0,
+    "retailPrice": 14.99,
+    "discount": 100,
+    "bestStore": "Epic Games Store",
+    "deals": [
+      {
+        "storeID": "25",
+        "dealID": "%2F5DFE%2F2K%2FVul88oIaSEPBozm0YOSy8ep%2BifmrdL4J2o%3D",
+        "price": "0.00",
+        "retailPrice": "14.99",
+        "savings": "100.000000"
+      },
+      {
+        "storeID": "7",
+        "dealID": "yFKaQFJOEFJVFci5hU%2FdlTHOXUwY0aeEre6HjDMaBpc%3D",
+        "price": "5.99",
+        "retailPrice": "14.99",
+        "savings": "60.040027"
+      },
+      {
+        "storeID": "1",
+        "dealID": "wXcZQYLlnnUHU3Q%2B0MdSlzdG2YlaYeGEadUr5hqRfdE%3D",
+        "price": "14.99",
+        "retailPrice": "14.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
