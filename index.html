@@ -156,47 +156,77 @@
   <!-- Modal Dettagli Store, Rilascio & Keyshop -->
   <div id="dealsModal" class="modal hidden">
     <div class="modal-content modal-lg">
-      <div class="modal-header">
-        <h2 id="dealsModalTitle">Dettagli & Store</h2>
-        <button class="btn-close" data-close="dealsModal">&times;</button>
-      </div>
-
-      <!-- Modifica Stato / Data di Rilascio -->
-      <div class="release-editor-box">
-        <div class="keyshop-box-header">
-          <strong>Stato & Data di Rilascio</strong>
-          <span class="hint">Modifica manualmente o lascia aggiornare ad ITAD</span>
+      <!-- Hero Header con Copertina Gioco -->
+      <div class="deals-hero">
+        <div class="deals-hero-cover-wrap">
+          <img id="dealsModalCover" class="deals-hero-cover" src="" alt="Copertina gioco" />
         </div>
-        <form id="releaseEditorForm" class="release-editor-form">
-          <select id="modalReleaseState">
-            <option value="released">Rilasciato</option>
-            <option value="unreleased">Non Rilasciato / TBA</option>
-          </select>
-          <input type="text" id="modalReleaseDate" placeholder="Data rilascio (es. 15 gen 2027, Q4 2026, TBA)" />
-          <button type="submit" class="btn btn-sm btn-primary">Salva Rilascio</button>
-        </form>
-      </div>
-
-      <!-- Sezione Ricerca Rapida Keyshop -->
-      <div class="keyshop-box">
-        <div class="keyshop-box-header">
-          <strong>Cerca sui Keyshop & Store</strong>
-          <span class="hint">Apre la ricerca diretta in una nuova scheda</span>
+        <div class="deals-hero-info">
+          <div class="deals-hero-top">
+            <div>
+              <span class="deals-eyebrow">Dettagli & Confronto Store</span>
+              <h2 id="dealsModalTitle" class="deals-hero-title">Titolo Gioco</h2>
+            </div>
+            <button class="btn-close" data-close="dealsModal" title="Chiudi">&times;</button>
+          </div>
+          <div id="dealsModalBadges" class="deals-hero-badges"></div>
+          <p id="dealsModalSubtitle" class="deals-hero-subtitle"></p>
         </div>
-        <div id="quickSearchLinks" class="quick-links"></div>
-
-        <!-- Form Aggiunta Prezzo Keyshop / Custom -->
-        <form id="customDealForm" class="custom-deal-form">
-          <input type="text" id="customStoreName" placeholder="Nome Store (es. Instant Gaming)" required />
-          <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo € (es. 34.99)" required />
-          <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Listino € (opz.)" />
-          <input type="url" id="customDealUrl" placeholder="Link offerta (opzionale)" />
-          <button type="submit" class="btn btn-sm btn-success">+ Aggiungi Store</button>
-        </form>
       </div>
 
-      <h3 class="deals-section-title">Tutti gli Store Disponibili (ordinati dal più economico)</h3>
-      <div id="dealsModalBody" class="deals-list"></div>
+      <div class="deals-modal-sections">
+        <!-- Sezione 1: Stato & Data di Rilascio -->
+        <section class="modal-section-card">
+          <div class="modal-section-header">
+            <h3>Stato & Data di Rilascio</h3>
+            <p class="hint">Modifica manualmente oppure lascia aggiornare in automatico da IsThereAnyDeal.</p>
+          </div>
+          <form id="releaseEditorForm" class="release-editor-form">
+            <select id="modalReleaseState">
+              <option value="released">Rilasciato</option>
+              <option value="unreleased">Non Rilasciato / TBA</option>
+            </select>
+            <input type="text" id="modalReleaseDate" placeholder="Data rilascio (es. 15 gen 2027, Q4 2026, TBA)" />
+            <button type="submit" class="btn btn-primary">Salva Rilascio</button>
+          </form>
+        </section>
+
+        <!-- Sezione 2: Keyshop & Prezzo Manuale -->
+        <section class="modal-section-card">
+          <div class="modal-section-header">
+            <h3>Cerca sui Keyshop & Store Esterni</h3>
+            <p class="hint">Apri la ricerca diretta in una nuova scheda e salva qui sotto l'eventuale offerta trovata.</p>
+          </div>
+
+          <div id="quickSearchLinks" class="quick-links"></div>
+
+          <div class="modal-subsection-divider"></div>
+
+          <form id="customDealForm" class="custom-deal-form">
+            <div class="custom-deal-row-top">
+              <input type="text" id="customStoreName" placeholder="Nome Store (es. Instant Gaming)" required />
+              <input type="number" id="customSalePrice" step="0.01" min="0" placeholder="Prezzo € (es. 34.99)" required />
+              <input type="number" id="customRetailPrice" step="0.01" min="0" placeholder="Listino € (opz.)" />
+            </div>
+            <div class="custom-deal-row-bottom">
+              <input type="url" id="customDealUrl" placeholder="Link diretto all'offerta (opzionale)" />
+              <button type="submit" class="btn btn-success">+ Aggiungi Store</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Sezione 3: Elenco Store Disponibili -->
+        <section class="modal-section-card">
+          <div class="modal-section-header modal-section-header-inline">
+            <div>
+              <h3>Store Disponibili</h3>
+              <p class="hint">Store preferiti (Steam, Epic, GOG) fissati in alto, seguiti dalle altre offerte.</p>
+            </div>
+            <span id="dealsModalCount" class="badge badge-blue">0 store</span>
+          </div>
+          <div id="dealsModalBody" class="deals-list"></div>
+        </section>
+      </div>
     </div>
   </div>
 
