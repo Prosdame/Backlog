@@ -6,20 +6,162 @@
     "hype": false,
     "itadId": "018d937f-4adb-73a6-a9e5-94ff62f6265b",
     "cheapsharkId": null,
-    "selectedStoreId": null,
+    "selectedStoreId": "itad_29",
     "released": true,
     "releaseDate": "21 ott 2022",
     "releaseDateISO": "2022-10-21",
     "releaseNote": "",
     "currency": "EUR",
-    "salePrice": null,
-    "retailPrice": null,
-    "discount": 0,
-    "bestStore": "",
-    "deals": [],
+    "salePrice": 15.72,
+    "retailPrice": 54.87,
+    "discount": 71,
+    "bestStore": "GamesPlanet US",
+    "deals": [
+      {
+        "uid": "itad_29",
+        "shopId": 29,
+        "shopName": "GamesPlanet US",
+        "price": 15.72,
+        "retailPrice": 54.87,
+        "savings": 71,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea609b3254/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_6",
+        "shopId": 6,
+        "shopName": "Fanatical",
+        "price": 16.19,
+        "retailPrice": 59.99,
+        "savings": 73,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea61040420/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_64",
+        "shopId": 64,
+        "shopName": "WinGameStore",
+        "price": 16.27,
+        "retailPrice": 54.87,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea61aae399/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_27",
+        "shopId": 27,
+        "shopName": "GamesPlanet DE",
+        "price": 17.19,
+        "retailPrice": 59.99,
+        "savings": 71,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea62f64699/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_28",
+        "shopId": 28,
+        "shopName": "GamesPlanet FR",
+        "price": 17.19,
+        "retailPrice": 59.99,
+        "savings": 71,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea62b4b97b/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_26",
+        "shopId": 26,
+        "shopName": "GamesPlanet UK",
+        "price": 17.2,
+        "retailPrice": 59.87,
+        "savings": 71,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea627197c2/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_61",
+        "shopId": 61,
+        "shopName": "Steam",
+        "price": 17.99,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea5fd890e5/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_48",
+        "shopId": 48,
+        "shopName": "Microsoft Store",
+        "price": 17.99,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea59ac8ee3/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_36",
+        "shopId": 36,
+        "shopName": "GreenManGaming",
+        "price": 18,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018f9b8b-5a36-703f-a0e1-8ac059243a0c/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_20",
+        "shopId": 20,
+        "shopName": "GameBillet",
+        "price": 18,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea5ca91bf1/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_73",
+        "shopId": 73,
+        "shopName": "PlanetPlay",
+        "price": 18,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/0198e50e-01a4-73f4-af14-cfa6d4c2a621/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_37",
+        "shopId": 37,
+        "shopName": "Humble Store",
+        "price": 18,
+        "retailPrice": 59.99,
+        "savings": 70,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9386-ab6c-72b0-96fc-37ea5f1795f6/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_74",
+        "shopId": 74,
+        "shopName": "PlayerLand",
+        "price": 57.49,
+        "retailPrice": 59.99,
+        "savings": 4,
+        "currency": "EUR",
+        "url": "https://itad.link/019c0b72-8081-7063-8cc7-a410227cb847/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_77",
+        "shopId": 77,
+        "shopName": "Muve",
+        "price": 60.9,
+        "retailPrice": 60.9,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019eb6e5-04c2-734d-9827-864e7086452f/?app=1lmbp4"
+      }
+    ],
     "customDeals": [],
     "free": false,
-    "status": "Not Played"
+    "status": "Not Played",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-4adb-73a6-a9e5-94ff62f6265b/banner300.jpg?t=1786395642"
   },
   {
     "id": "1795805021080",
@@ -28,20 +170,51 @@
     "hype": false,
     "itadId": "018d937f-6ee3-738a-b578-ddd7e9a0d24d",
     "cheapsharkId": null,
-    "selectedStoreId": null,
+    "selectedStoreId": "itad_61",
     "released": true,
     "releaseDate": "6 mag 2024",
     "releaseDateISO": "2024-05-06",
     "releaseNote": "",
     "currency": "EUR",
-    "salePrice": null,
-    "retailPrice": null,
-    "discount": 0,
-    "bestStore": "",
-    "deals": [],
+    "salePrice": 20.29,
+    "retailPrice": 28.99,
+    "discount": 30,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "uid": "itad_61",
+        "shopId": 61,
+        "shopName": "Steam",
+        "price": 20.29,
+        "retailPrice": 28.99,
+        "savings": 30,
+        "currency": "EUR",
+        "url": "https://itad.link/018f4ed9-4868-701f-a1c9-ff248439e1c8/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_16",
+        "shopId": 16,
+        "shopName": "Epic Game Store",
+        "price": 28.99,
+        "retailPrice": 28.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/018d9591-4f72-72a0-b0c5-80e096ae077f/?app=1lmbp4"
+      },
+      {
+        "uid": "itad_48",
+        "shopId": 48,
+        "shopName": "Microsoft Store",
+        "price": 29.99,
+        "retailPrice": 29.99,
+        "savings": 0,
+        "currency": "EUR",
+        "url": "https://itad.link/019d2b85-57ba-71cc-bd87-c4489883dd35/?app=1lmbp4"
+      }
+    ],
     "customDeals": [],
     "free": false,
     "status": "Not Played",
-    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1145350/10c9138570a8d7ac9144f601ab0f2ccbc820337e/capsule_231x87.jpg?t=1779901265"
+    "thumb": "https://assets.isthereanydeal.com/018d937f-6ee3-738a-b578-ddd7e9a0d24d/banner300.jpg?t=1790364922"
   }
 ]
