@@ -24343,5 +24343,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814819559",
+    "title": "Like a Dragon: Pirate Yakuza in Hawaii",
+    "thumb": "https://assets.isthereanydeal.com/01920f27-372f-735d-ac2c-aecacd8ba1b9/banner400.jpg?t=1786652728",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "01920f27-372f-735d-ac2c-aecacd8ba1b9",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "20 feb 2025",
+    "releaseDateISO": "2025-02-20",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 12.71,
+    "retailPrice": 59.99,
+    "discount": 79,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "MjJ2%2Fdh5z9lLFzF5fV7BUkcLSvBSYPEASwHUoyde0%2Fo%3D",
+        "price": "12.71",
+        "retailPrice": "59.99",
+        "savings": "78.813136"
+      },
+      {
+        "storeID": "15",
+        "dealID": "JRirQHVfFXfR8dvvKDrH9iStlHAsbNC1NS7M2VQ5HBw%3D",
+        "price": "14.09",
+        "retailPrice": "59.99",
+        "savings": "76.512752"
+      },
+      {
+        "storeID": "27",
+        "dealID": "25hv6lWoZ4%2B5ulTM0kYzzjfp105E55dRG9P%2FieB5aug%3D",
+        "price": "14.36",
+        "retailPrice": "59.99",
+        "savings": "76.062677"
+      },
+      {
+        "storeID": "21",
+        "dealID": "VX4GUi5tbBiuSFB1Ui7XRyOajlq5v7CBfU87IWklcO8%3D",
+        "price": "14.89",
+        "retailPrice": "59.99",
+        "savings": "75.179197"
+      },
+      {
+        "storeID": "1",
+        "dealID": "JacHKr7QFZhRfmAXKVMJkUPAXy4xWkow5m4JpRvn3Eg%3D",
+        "price": "14.99",
+        "retailPrice": "59.99",
+        "savings": "75.012502"
+      },
+      {
+        "storeID": "3",
+        "dealID": "lx7aHyVlC1DcNxn4jL%2FU8MpP8GlcbSB0nDumVT32%2BDk%3D",
+        "price": "15.00",
+        "retailPrice": "59.99",
+        "savings": "74.995833"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
