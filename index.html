@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Game Backlog & Price Tracker</title>
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
   <header class="topbar">
@@ -60,8 +60,9 @@
       <div class="tabs">
         <button class="tab active" data-tab="wishlist">Wishlist (<span id="countWishlist">0</span>)</button>
         <button class="tab" data-tab="owned">Owned (<span id="countOwned">0</span>)</button>
+        <button class="tab" data-tab="stats">Statistiche</button>
       </div>
-      <div class="filters">
+      <div id="toolbarFilters" class="filters">
         <input type="text" id="filterText" placeholder="Filtra per titolo..." />
         <label class="checkbox-label">
           <input type="checkbox" id="filterHype" /> Solo Hype
@@ -122,6 +123,72 @@
         </thead>
         <tbody id="tbodyOwned"></tbody>
       </table>
+    </section>
+
+    <!-- Sezione Statistiche & Analisi -->
+    <section id="sectionStats" class="stats-dashboard hidden">
+      <!-- KPI Principali -->
+      <div id="statsKpiGrid" class="stats-kpi-grid"></div>
+
+      <!-- Grafici & Distribuzioni -->
+      <div id="statsChartsGrid" class="stats-charts-grid"></div>
+
+      <!-- Fun Facts, Simulatore & Ruota del Destino -->
+      <div class="stats-fun-grid">
+        <div id="statsFunCards" class="stats-fun-cards"></div>
+
+        <div class="stats-interactive-col">
+          <!-- Calcolatore Tempo di Smaltimento -->
+          <article class="card stats-widget-card">
+            <div class="stats-card-header">
+              <div>
+                <span class="stats-eyebrow">Simulatore Backlog</span>
+                <h3>Tempo Stimato di Smaltimento</h3>
+              </div>
+              <span id="simTotalHoursBadge" class="badge badge-blue">0 ore</span>
+            </div>
+            <div class="sim-sliders">
+              <label class="sim-slider-row">
+                <div class="sim-slider-label">
+                  <span>Ritmo di gioco settimanale</span>
+                  <strong id="simHoursPerWeekVal">10 ore/sett.</strong>
+                </div>
+                <input type="range" id="simHoursPerWeek" min="2" max="50" step="1" value="10" />
+              </label>
+              <label class="sim-slider-row">
+                <div class="sim-slider-label">
+                  <span>Durata media stimata per gioco</span>
+                  <strong id="simAvgGameHoursVal">25 ore/gioco</strong>
+                </div>
+                <input type="range" id="simAvgGameHours" min="5" max="100" step="5" value="25" />
+              </label>
+            </div>
+            <div id="simOutputBox" class="sim-output-box"></div>
+          </article>
+
+          <!-- Ruota del Destino -->
+          <article class="card stats-widget-card">
+            <div class="stats-card-header">
+              <div>
+                <span class="stats-eyebrow">Indecisione Cronica</span>
+                <h3>Ruota del Destino</h3>
+              </div>
+              <div class="roulette-controls">
+                <select id="rouletteMode">
+                  <option value="OWNED_UNPLAYED">Owned: Not Played</option>
+                  <option value="WISHLIST_DISCOUNT">Wishlist: In Sconto</option>
+                  <option value="HYPE_ANY">Solo Hype</option>
+                  <option value="ALL">Tutto il Backlog</option>
+                </select>
+                <button id="btnSpinRoulette" class="btn btn-primary btn-sm">Estrai</button>
+              </div>
+            </div>
+            <div id="rouletteResult" class="roulette-result">
+              <p class="hint">Premi <strong>Estrai</strong> per far scegliere al destino il prossimo titolo da avviare o acquistare.</p>
+            </div>
+          </article>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -230,6 +297,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
