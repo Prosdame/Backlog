@@ -23655,5 +23655,81 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795814146027",
+    "title": "Subnautica: Below Zero",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-3800-73ac-bec3-4adf044e55f2/banner400.jpg?t=1788259230",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-3800-73ac-bec3-4adf044e55f2",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "13 mag 2021",
+    "releaseDateISO": "2021-05-13",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 10.76,
+    "retailPrice": 29.99,
+    "discount": 64,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "4OB0oXC1zDA1UoxHyiQKKwLcfTaygNRIlPRPwcapxNA%3D",
+        "price": "10.76",
+        "retailPrice": "29.99",
+        "savings": "64.121374"
+      },
+      {
+        "storeID": "27",
+        "dealID": "H1qPXsSRcXq6W3euChBL3bMEgQNezYksylM5QJKT9Ac%3D",
+        "price": "11.31",
+        "retailPrice": "29.99",
+        "savings": "62.287429"
+      },
+      {
+        "storeID": "21",
+        "dealID": "aZbXTn8vaqVxAJTOpwXi%2Ba%2B33MJTFoDsgX%2BNtR0fU70%3D",
+        "price": "11.99",
+        "retailPrice": "29.99",
+        "savings": "60.020007"
+      },
+      {
+        "storeID": "30",
+        "dealID": "SqTswIRxM8bFMtaDouF3vTf897q5vC1O5wCggTXJWwk%3D",
+        "price": "11.99",
+        "retailPrice": "29.99",
+        "savings": "60.020007"
+      },
+      {
+        "storeID": "2",
+        "dealID": "OOAXJGGeZKQgE0B4MJQYSL6E6ksK7LAfBpvu8wE%2BZag%3D",
+        "price": "12.00",
+        "retailPrice": "29.99",
+        "savings": "59.986662"
+      },
+      {
+        "storeID": "1",
+        "dealID": "0iJ%2FYDgis7sUOa8fXx0U1%2BivzwE8J1kt9w65Q7%2Ff2vg%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      },
+      {
+        "storeID": "15",
+        "dealID": "BlPvDVqU%2F3%2FeM6FkYbQ2RpEfdF73Fb9wTslFLe9oNb4%3D",
+        "price": "29.99",
+        "retailPrice": "29.99",
+        "savings": "0.000000"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
