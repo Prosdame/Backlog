@@ -23445,5 +23445,46 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813841958",
+    "title": "NieR Replicant™ ver.1.22474487139...",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-47c7-730f-9ef2-8025ade99100/banner400.jpg?t=1786468835",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-47c7-730f-9ef2-8025ade99100",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_1",
+    "released": true,
+    "releaseDate": "23 apr 2021",
+    "releaseDateISO": "2021-04-23",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 23.99,
+    "retailPrice": 59.99,
+    "discount": 60,
+    "bestStore": "Steam",
+    "deals": [
+      {
+        "storeID": "1",
+        "dealID": "ppdU%2BaE1kGNpymThtu%2BNOw9mwEc30%2B9UDTGduIms%2B2I%3D",
+        "price": "23.99",
+        "retailPrice": "59.99",
+        "savings": "60.010002"
+      },
+      {
+        "storeID": "3",
+        "dealID": "7pjOToL0J02qoURqrZNNp%2BsuX0f6N9RdkWymlAse66c%3D",
+        "price": "24.00",
+        "retailPrice": "59.99",
+        "savings": "59.993332"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
