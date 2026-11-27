@@ -19121,28 +19121,19 @@
     "steamAppId": null,
     "itadId": null,
     "cheapsharkId": null,
-    "selectedStoreId": "custom_1795815143105",
+    "selectedStoreId": null,
     "released": true,
     "releaseDate": "",
     "releaseDateISO": null,
     "releaseNote": "",
     "manualReleaseOverride": false,
     "currency": "EUR",
-    "salePrice": 30,
-    "retailPrice": 30,
+    "salePrice": null,
+    "retailPrice": null,
     "discount": 0,
-    "bestStore": "Meta",
+    "bestStore": "",
     "deals": [],
-    "customDeals": [
-      {
-        "id": "custom_1795815143105",
-        "storeName": "Meta",
-        "price": 30,
-        "retailPrice": null,
-        "currency": "EUR",
-        "url": ""
-      }
-    ],
+    "customDeals": [],
     "free": false,
     "status": "Dropped",
     "schemaVersion": 2
