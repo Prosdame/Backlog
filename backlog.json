@@ -22507,5 +22507,74 @@
     "free": false,
     "status": "Not Played",
     "schemaVersion": 2
+  },
+  {
+    "id": "1795813314886",
+    "title": "Batman: Arkham Asylum Game of the Year Edition",
+    "thumb": "https://assets.isthereanydeal.com/018d937f-083f-702e-9c07-4813977240a8/banner400.jpg?t=1794609928",
+    "category": "owned",
+    "hype": false,
+    "steamAppId": null,
+    "itadId": "018d937f-083f-702e-9c07-4813977240a8",
+    "cheapsharkId": null,
+    "selectedStoreId": "cs_23",
+    "released": true,
+    "releaseDate": "25 mar 2010",
+    "releaseDateISO": "2010-03-25",
+    "releaseNote": "",
+    "manualReleaseOverride": false,
+    "currency": "USD",
+    "salePrice": 2.35,
+    "retailPrice": 19.99,
+    "discount": 88,
+    "bestStore": "GameBillet",
+    "deals": [
+      {
+        "storeID": "23",
+        "dealID": "LNCZ5EicmEMiwyfYVw%2FNdGPos9V7MzoPId2UuwaBqvA%3D",
+        "price": "2.35",
+        "retailPrice": "19.99",
+        "savings": "88.244122"
+      },
+      {
+        "storeID": "1",
+        "dealID": "HR5V6hEl39sGwYodeqwwWuo8dKtKukteV0W9we9pI7I%3D",
+        "price": "2.99",
+        "retailPrice": "19.99",
+        "savings": "85.042521"
+      },
+      {
+        "storeID": "21",
+        "dealID": "cqgbEYEDBgfjCS%2F%2FVjVMTrZJNwE0GecTvUBFn1ktNlI%3D",
+        "price": "2.99",
+        "retailPrice": "19.99",
+        "savings": "85.042521"
+      },
+      {
+        "storeID": "7",
+        "dealID": "lVqqp3SpHfiI8KgnXdL2mbrlPzsHuu10Cfp81XiBJOk%3D",
+        "price": "2.99",
+        "retailPrice": "19.99",
+        "savings": "85.042521"
+      },
+      {
+        "storeID": "2",
+        "dealID": "4tQy%2B%2BzFKtjfORjPlZ1ffEgxEpqH6Rsyp5kA9vQLxlQ%3D",
+        "price": "3.00",
+        "retailPrice": "19.99",
+        "savings": "84.992496"
+      },
+      {
+        "storeID": "15",
+        "dealID": "od8ovZIEQ6Tzfd5YvkZZQ6B6F6Dfft%2B%2Fhn99oTCje%2Bw%3D",
+        "price": "18.99",
+        "retailPrice": "19.99",
+        "savings": "5.002501"
+      }
+    ],
+    "customDeals": [],
+    "free": false,
+    "status": "Not Played",
+    "schemaVersion": 2
   }
 ]
